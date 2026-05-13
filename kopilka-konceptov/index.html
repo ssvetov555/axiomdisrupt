@@ -12,22 +12,22 @@
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root {
-  --bg: #f1ebde;
-  --bg-card: #ffffff;
+  --bg: #f0ece1;
+  --bg-card: #fbfaf6;
   --ink: #0a0a0a;
-  --ink-soft: #4a4a4a;
+  --ink-soft: #3a3a3a;
   --ink-faint: #8c8c8c;
-  --line: #ddd6c5;
-  --line-soft: #ebe5d4;
-  --accent: #c8230a;
+  --line: #d6cfbc;
+  --line-soft: #e6e0cd;
+  --accent: #1a1a1a;
   --display: 'Space Grotesk', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
   --sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif;
   --mono: 'JetBrains Mono', 'SF Mono', 'Menlo', monospace;
-  --cat-epistem: #1d3fbf;
-  --cat-thermo: #c95a1a;
-  --cat-triz: #b07e1a;
-  --cat-systems: #1c8260;
-  --cat-personal: #6535a3;
+  --cat-epistem: #1a1a1a;
+  --cat-thermo: #3a3a3a;
+  --cat-triz: #555;
+  --cat-systems: #2a2a2a;
+  --cat-personal: #4a4a4a;
 }
 * { box-sizing: border-box; }
 html, body { margin: 0; padding: 0; background: var(--bg); color: var(--ink); font-family: var(--sans); font-size: 15px; line-height: 1.55; -webkit-font-smoothing: antialiased; }
@@ -50,13 +50,14 @@ header.top {
 }
 .search::placeholder { color: var(--ink-faint); }
 .search:focus { border-bottom-color: var(--ink); }
-.viewtoggle { display: flex; gap: 0; align-items: center; font-family: var(--mono); font-size: 11px; letter-spacing: .05em; text-transform: uppercase; }
-.viewtoggle button {
+.viewtoggle, .sort-toggle { display: flex; gap: 0; align-items: center; font-family: var(--mono); font-size: 11px; letter-spacing: .05em; text-transform: uppercase; }
+.viewtoggle button, .sort-toggle button {
   background: transparent; border: 0; padding: 6px 0; font: inherit; font-size: 11px; letter-spacing: .05em; text-transform: uppercase; color: var(--ink-faint); cursor: pointer; transition: color .15s;
 }
-.viewtoggle button:hover { color: var(--ink); }
-.viewtoggle button.active { color: var(--ink); }
-.viewtoggle .sep { color: var(--line); padding: 0 12px; user-select: none; }
+.viewtoggle button:hover, .sort-toggle button:hover { color: var(--ink); }
+.viewtoggle button.active, .sort-toggle button.active { color: var(--ink); font-weight: 600; }
+.viewtoggle .sep, .sort-toggle .sep { color: var(--line); padding: 0 10px; user-select: none; }
+.sort-toggle { margin-left: auto; padding-right: 16px; border-right: 1px solid var(--line); margin-right: 16px; }
 
 main { padding: 56px 36px 96px; max-width: 1440px; margin: 0 auto; }
 
@@ -86,11 +87,11 @@ main { padding: 56px 36px 96px; max-width: 1440px; margin: 0 auto; }
   position: relative; overflow: hidden;
 }
 .card::before {
-  content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 6px;
-  background: var(--cat, var(--ink));
+  content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 2px;
+  background: var(--ink);
 }
-.card:hover { background: #faf6ea; }
-.card:hover .principle { color: var(--accent); }
+.card:hover { background: #f5efde; }
+.card:hover .principle { font-weight: 700; }
 .card .meta-top {
   display: flex; justify-content: space-between; align-items: baseline; gap: 10px;
   margin-bottom: 24px;
@@ -100,14 +101,14 @@ main { padding: 56px 36px 96px; max-width: 1440px; margin: 0 auto; }
   color: var(--ink-faint); letter-spacing: 0;
 }
 .card .category {
-  font-family: var(--mono); font-size: 10px; font-weight: 600;
-  text-transform: uppercase; letter-spacing: .1em;
-  color: var(--cat, var(--ink-soft));
+  font-family: var(--mono); font-size: 10px; font-weight: 500;
+  text-transform: uppercase; letter-spacing: .12em;
+  color: var(--ink-faint);
 }
 .card .principle {
   font-family: var(--display); font-size: 26px; line-height: 1.16; font-weight: 500;
-  color: var(--cat, var(--ink)); margin: 0 0 18px; letter-spacing: -.02em;
-  transition: color .15s;
+  color: var(--ink); margin: 0 0 18px; letter-spacing: -.02em;
+  transition: font-weight .15s;
 }
 .card .preview { font-size: 13.5px; color: var(--ink-soft); margin: 0 0 18px; flex: 1; line-height: 1.55; }
 .card .bottom { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; padding-top: 16px; border-top: 1px solid var(--line-soft); }
@@ -131,7 +132,7 @@ main { padding: 56px 36px 96px; max-width: 1440px; margin: 0 auto; }
   background: var(--bg-card); z-index: 101; box-shadow: -1px 0 0 var(--line), -16px 0 48px rgba(0,0,0,.08);
   transform: translateX(100%); transition: transform .25s ease-out;
   overflow-y: auto; padding: 56px 64px 96px;
-  border-left: 8px solid var(--cat, var(--accent));
+  border-left: 3px solid var(--ink);
 }
 .detail.open { transform: translateX(0); }
 .detail .close {
@@ -156,7 +157,7 @@ main { padding: 56px 36px 96px; max-width: 1440px; margin: 0 auto; }
 }
 .detail .d-principle {
   font-family: var(--display); font-size: 40px; line-height: 1.1; font-weight: 500;
-  color: var(--cat, var(--ink)); margin: 0 0 32px; letter-spacing: -.024em;
+  color: var(--ink); margin: 0 0 32px; letter-spacing: -.024em;
 }
 .detail .d-body { font-size: 15.5px; line-height: 1.68; color: var(--ink); margin-bottom: 36px; }
 .detail h3 {
@@ -166,8 +167,8 @@ main { padding: 56px 36px 96px; max-width: 1440px; margin: 0 auto; }
   display: flex; align-items: center; gap: 10px;
 }
 .detail h3::before {
-  content: ''; display: inline-block; width: 6px; height: 6px;
-  background: var(--cat, var(--accent));
+  content: ''; display: inline-block; width: 5px; height: 5px;
+  background: var(--ink);
 }
 .detail h3:first-of-type { padding-top: 0; border-top: 0; margin-top: 0; }
 .detail .d-source {
@@ -180,8 +181,17 @@ main { padding: 56px 36px 96px; max-width: 1440px; margin: 0 auto; }
   padding-left: 18px; position: relative; line-height: 1.55;
 }
 .detail .d-apps li::before {
-  content: '→'; position: absolute; left: 0; color: var(--accent);
+  content: '→'; position: absolute; left: 0; color: var(--ink);
   font-family: var(--mono); font-size: 12px;
+}
+.detail .d-readings { padding-left: 0; margin: 0; list-style: none; }
+.detail .d-readings li {
+  margin-bottom: 10px; color: var(--ink); font-size: 14px;
+  padding-left: 18px; position: relative; line-height: 1.5;
+}
+.detail .d-readings li::before {
+  content: '◆'; position: absolute; left: 0; color: var(--ink-faint);
+  font-size: 9px; top: 6px;
 }
 .detail .d-related { display: flex; flex-direction: column; gap: 4px; }
 .detail .d-related a {
@@ -247,10 +257,17 @@ footer em { font-style: normal; color: var(--ink-soft); text-transform: none; le
 <header class="top">
   <div class="brand">Копилка <em>концептов</em><sup id="counter">—</sup></div>
   <input type="text" id="search" class="search" placeholder="Поиск по концептам, тегам, формулировкам" />
+  <div class="sort-toggle" id="sort-toggle">
+    <button data-sort="recent" class="active">Новые сверху</button>
+    <span class="sep">/</span>
+    <button data-sort="chrono">Хронология</button>
+    <span class="sep">/</span>
+    <button data-sort="alpha">А→Я</button>
+  </div>
   <div class="viewtoggle">
     <button id="btn-cards" class="active">Карточки</button>
     <span class="sep">/</span>
-    <button id="btn-graph">Хронология</button>
+    <button id="btn-graph">Лента времени</button>
   </div>
 </header>
 
@@ -289,7 +306,11 @@ footer em { font-style: normal; color: var(--ink-soft); text-transform: none; le
       "name": "Бритва Оккама",
       "category": "Эпистемология",
       "year": 1320,
-      "tags": ["мышление", "простота", "редукция"],
+      "tags": [
+        "мышление",
+        "простота",
+        "редукция"
+      ],
       "preview": "Из нескольких объяснений выбирай то, что требует меньше допущений.",
       "body": "Когда есть несколько объяснений одного явления, выбирай самое простое — то, которое требует меньше допущений. Это не значит, что простое всегда верное; это значит, что оно — лучшая отправная точка. Сложные теории нужно заслужить наблюдениями, которые не объясняются простыми.",
       "source": "Уильям Оккам, францисканский монах, XIV в.",
@@ -299,7 +320,11 @@ footer em { font-style: normal; color: var(--ink-soft); text-transform: none; le
         "Анализ людей: некомпетентность чаще злого умысла (бритва Хэнлона — частный случай)",
         "Бизнес: чем больше движущихся частей, тем больше точек отказа"
       ],
-      "influences": []
+      "influences": [],
+      "readings": [
+        "Russell — A History of Western Philosophy, 1945 — глава об Оккаме",
+        "Elliott Sober — Ockham's Razors: A User's Manual, 2015"
+      ]
     },
     {
       "id": "entropy",
@@ -307,7 +332,11 @@ footer em { font-style: normal; color: var(--ink-soft); text-transform: none; le
       "name": "Энтропия",
       "category": "Термодинамика",
       "year": 1865,
-      "tags": ["системы", "порядок", "деградация"],
+      "tags": [
+        "системы",
+        "порядок",
+        "деградация"
+      ],
       "preview": "Любая система без вложений энергии стремится к беспорядку.",
       "body": "Второй закон термодинамики: в изолированной системе мера беспорядка не уменьшается. В практическом переносе: всё, что ты построил — отношения, бизнес, тело, дом, кодовая база — деградирует без постоянного приложения энергии. Поддержание состояния стоит работы; не вкладываться — значит, выбирать деградацию.",
       "source": "Рудольф Клаузиус, 1865; Людвиг Больцман, 1877",
@@ -317,7 +346,12 @@ footer em { font-style: normal; color: var(--ink-soft); text-transform: none; le
         "Код: legacy — не лень, а энтропия",
         "Дом: чистота — это процесс, а не состояние"
       ],
-      "influences": []
+      "influences": [],
+      "readings": [
+        "Peter Atkins — The Second Law, 1984",
+        "Brian Greene — Until the End of Time, 2020",
+        "Roger Penrose — The Road to Reality, гл. 27"
+      ]
     },
     {
       "id": "pareto",
@@ -325,7 +359,11 @@ footer em { font-style: normal; color: var(--ink-soft); text-transform: none; le
       "name": "Принцип Парето",
       "category": "Системное мышление",
       "year": 1896,
-      "tags": ["фокус", "приоритеты", "распределение"],
+      "tags": [
+        "фокус",
+        "приоритеты",
+        "распределение"
+      ],
       "preview": "В любой системе вклад распределён крайне неравномерно.",
       "body": "Вильфредо Парето обнаружил: 80% земли в Италии принадлежит 20% владельцев. Закон оказался шире — 80/20 встречается в продажах, багах, причинах смертности, в треках, которые ты слушаешь. Практический вывод: найди те 20% (клиентов, действий, инструментов), которые дают результат — и отдай им непропорционально много внимания. Остальное часто можно сократить, не теряя главного.",
       "source": "Вильфредо Парето, экономист, 1896",
@@ -335,7 +373,11 @@ footer em { font-style: normal; color: var(--ink-soft); text-transform: none; le
         "Обучение: 20% грамматики покроет 80% бытовой речи",
         "Гардероб: ты носишь 20% одежды 80% времени — остальное можно отдать"
       ],
-      "influences": []
+      "influences": [],
+      "readings": [
+        "Richard Koch — Принцип 80/20, 1997",
+        "Nassim Taleb — Чёрный лебедь, гл. о степенных распределениях"
+      ]
     },
     {
       "id": "ikr",
@@ -343,7 +385,11 @@ footer em { font-style: normal; color: var(--ink-soft); text-transform: none; le
       "name": "ИКР — Идеальный конечный результат",
       "category": "ТРИЗ",
       "year": 1956,
-      "tags": ["изобретательство", "инверсия", "минимализм"],
+      "tags": [
+        "изобретательство",
+        "инверсия",
+        "минимализм"
+      ],
       "preview": "Думай не как сделать систему, а как обойтись без неё.",
       "body": "Принцип ТРИЗ Альтшуллера: формулируй задачу через идеальный исход, при котором проблема решается сама собой, без затрат и побочных эффектов. Не «как улучшить упаковку», а «упаковки нет, а товар защищён». Это разрывает шаблон оптимизации и заставляет искать решения вне привычного поля. Звучит как фантастика, но именно из таких формулировок рождаются прорывы.",
       "source": "Генрих Альтшуллер, ТРИЗ, 1956",
@@ -353,7 +399,14 @@ footer em { font-style: normal; color: var(--ink-soft); text-transform: none; le
         "Команда: какая должность должна исчезнуть, потому что её функция растворится в системе?",
         "Личное: какую привычку можно убрать, при которой её результат сохранится?"
       ],
-      "influences": ["occam", "contradictions"]
+      "influences": [
+        "occam",
+        "contradictions"
+      ],
+      "readings": [
+        "Г. С. Альтшуллер — Найти идею, 1986",
+        "Г. С. Альтшуллер — Творчество как точная наука, 1979"
+      ]
     },
     {
       "id": "antifragile",
@@ -361,7 +414,11 @@ footer em { font-style: normal; color: var(--ink-soft); text-transform: none; le
       "name": "Антихрупкость",
       "category": "Системное мышление",
       "year": 2012,
-      "tags": ["устойчивость", "стресс", "адаптация"],
+      "tags": [
+        "устойчивость",
+        "стресс",
+        "адаптация"
+      ],
       "preview": "Хрупкое ломается от стресса, прочное — терпит, антихрупкое — растёт.",
       "body": "Талеб делит системы на три класса. Хрупкие — теряют от случайности и стресса (стеклянный стакан). Прочные — не меняются (камень). Антихрупкие — выигрывают от стресса (мышцы от нагрузки, иммунитет от инфекций, идеи от критики, рынки от шоков). Цель — строить системы и себя так, чтобы шок был не угрозой, а топливом.",
       "source": "Нассим Талеб, «Антихрупкость», 2012",
@@ -371,7 +428,16 @@ footer em { font-style: normal; color: var(--ink-soft); text-transform: none; le
         "Бизнес: маленькие частые ошибки лучше одной редкой и фатальной",
         "Психика: контролируемая дискомфортность тренирует, защищённость атрофирует"
       ],
-      "influences": ["entropy", "lindy", "popper", "black-swan"]
+      "influences": [
+        "entropy",
+        "lindy",
+        "popper",
+        "black-swan"
+      ],
+      "readings": [
+        "Nassim Taleb — Антихрупкость, 2012",
+        "Taleb — Skin in the Game, 2018"
+      ]
     },
     {
       "id": "self-congruence",
@@ -379,7 +445,11 @@ footer em { font-style: normal; color: var(--ink-soft); text-transform: none; le
       "name": "Принцип самоконгруэнтности",
       "category": "Личная философия",
       "year": 2025,
-      "tags": ["ценности", "целостность", "энергия"],
+      "tags": [
+        "ценности",
+        "целостность",
+        "энергия"
+      ],
       "preview": "Когда цели тянут в разные стороны, мощность падает в разы.",
       "body": "Если базовые ценности (свобода, мастерство, влияние, созидание) конфликтуют между собой или с актуальными целями, появляется когнитивный диссонанс. Диссонанс — это не дискомфорт, это энергозатраты. Поэтому сначала вычисляется ядро 3–5 непротиворечивых ценностей-глаголов, потом каждая цель проверяется на конгруэнтность ядру: если конфликтует — переформулируется или удаляется. Внешний результат вторичен к внутренней целостности.",
       "source": "Серж, синтез на базе теории когнитивного диссонанса и Талеба, 2025",
@@ -389,7 +459,16 @@ footer em { font-style: normal; color: var(--ink-soft); text-transform: none; le
         "Формулировка: «копить деньги» → «создать резерв для автономии» (та же активность, но связана с ценностью)",
         "Энергия: усталость без нагрузки = диссонанс, ищи источник"
       ],
-      "influences": ["antifragile", "metacognition", "goodhart", "dichotomy"]
+      "influences": [
+        "antifragile",
+        "metacognition",
+        "goodhart",
+        "dichotomy"
+      ],
+      "readings": [
+        "Леон Фестингер — Теория когнитивного диссонанса, 1957",
+        "Carl Rogers — On Becoming a Person, 1961"
+      ]
     },
     {
       "id": "socratic",
@@ -397,7 +476,11 @@ footer em { font-style: normal; color: var(--ink-soft); text-transform: none; le
       "name": "Сократический метод",
       "category": "Эпистемология",
       "year": -399,
-      "tags": ["вопросы", "диалог", "майевтика"],
+      "tags": [
+        "вопросы",
+        "диалог",
+        "майевтика"
+      ],
       "preview": "Знание не передаётся — оно вытаскивается вопросами из самого собеседника.",
       "body": "Сократ не утверждал, что знает. Он расспрашивал — последовательно, простодушно, пока собеседник не упирался в собственные противоречия. Платон называл это майевтикой — повивальным искусством: задача учителя не вложить новое, а помочь родить осознание самому. Современная форма: задай столько вопросов, чтобы человек сам понял, вместо того чтобы говорить ему, что и как. Любая глубокая рефлексия, хороший менторинг и любая работающая терапия стоят на этом.",
       "source": "Сократ, через диалоги Платона, ~400 г. до н.э.",
@@ -407,7 +490,11 @@ footer em { font-style: normal; color: var(--ink-soft); text-transform: none; le
         "Самопонимание: задавай себе наивные вопросы — где я лгу себе?",
         "Найм: задавай больше «почему», чем «что» — там настоящий человек"
       ],
-      "influences": []
+      "influences": [],
+      "readings": [
+        "Платон — Диалоги (Менон, Теэтет, Апология Сократа)",
+        "Pierre Hadot — Философия как способ жить, 1995"
+      ]
     },
     {
       "id": "hanlon",
@@ -415,7 +502,11 @@ footer em { font-style: normal; color: var(--ink-soft); text-transform: none; le
       "name": "Бритва Хэнлона",
       "category": "Эпистемология",
       "year": 1980,
-      "tags": ["мышление", "атрибуция", "интерпретация"],
+      "tags": [
+        "мышление",
+        "атрибуция",
+        "интерпретация"
+      ],
       "preview": "Большинство «зла» — это некомпетентность, усталость или невнимательность.",
       "body": "Названа в честь Роберта Хэнлона; похожие формулировки встречаются и раньше, у Гёте и Хайнлайна. Это частный случай Бритвы Оккама, применённый к человеческим действиям: гипотеза «человек был глуп, устал, не подумал» требует меньше допущений, чем «он спланировал коварство». В большинстве ситуаций реальность подтверждает это. Принцип особенно полезен в переписках, корпоративных конфликтах и при чтении новостей — там, где легко увидеть заговор там, где работает обычная человеческая бестолковость.",
       "source": "Роберт Хэнлон, антология «Murphy's Law Book Two», 1980",
@@ -425,7 +516,13 @@ footer em { font-style: normal; color: var(--ink-soft); text-transform: none; le
         "Чужие решения: руководство «не понимает» — у них другая информация, а не потому что глупые",
         "К себе тоже: «я опять забыл» — не моральный провал, а человеческое"
       ],
-      "influences": ["occam"]
+      "influences": [
+        "occam"
+      ],
+      "readings": [
+        "Robert Hanlon (ed.) — Murphy's Law Book Two, 1980",
+        "Hugo Mercier — Not Born Yesterday, 2020"
+      ]
     },
     {
       "id": "toc",
@@ -433,7 +530,11 @@ footer em { font-style: normal; color: var(--ink-soft); text-transform: none; le
       "name": "Теория ограничений (TOC)",
       "category": "Системное мышление",
       "year": 1984,
-      "tags": ["узкое место", "пропускная способность", "поток"],
+      "tags": [
+        "узкое место",
+        "пропускная способность",
+        "поток"
+      ],
       "preview": "Усиливать систему имеет смысл только в одной точке — узком месте.",
       "body": "Элияху Голдратт сформулировал в романе «Цель»: любая производственная или организационная система имеет одно (редко больше) ограничение — узкое место, через которое идёт самый медленный поток. Усиливать любые другие части системы бесполезно: они уже работают быстрее ограничения, и инвестиции в них уходят в простой. Пять шагов TOC: найди ограничение, выжми из него максимум, подчини всё остальное ему, расшири его, найди новое (потому что оно сместится). Принцип переносится с заводов на команды, переговоры, личную продуктивность.",
       "source": "Элияху Голдратт, «Цель», 1984",
@@ -443,7 +544,14 @@ footer em { font-style: normal; color: var(--ink-soft); text-transform: none; le
         "Личное: какой ресурс ограничивает твой день — внимание, сон, время? Работай с ним",
         "Переговоры: какое условие — настоящий блокер? Не растрачивай уступки на второстепенное"
       ],
-      "influences": ["pareto", "bogdanov-minimum"]
+      "influences": [
+        "pareto",
+        "bogdanov-minimum"
+      ],
+      "readings": [
+        "Эли Голдратт — Цель, 1984",
+        "Голдратт — Дело не в везении, 1994"
+      ]
     },
     {
       "id": "dunning-kruger",
@@ -451,7 +559,11 @@ footer em { font-style: normal; color: var(--ink-soft); text-transform: none; le
       "name": "Эффект Даннинга-Крюгера",
       "category": "Эпистемология",
       "year": 1999,
-      "tags": ["когнитивные искажения", "самооценка", "компетентность"],
+      "tags": [
+        "когнитивные искажения",
+        "самооценка",
+        "компетентность"
+      ],
       "preview": "Без минимальной компетенции невозможно увидеть собственную некомпетентность.",
       "body": "Даннинг и Крюгер показали экспериментально: люди с низкой компетенцией в области переоценивают свои способности, потому что им не хватает той же самой компетенции, чтобы свою некомпетентность распознать. Уверенность падает по мере роста знаний (человек осознаёт глубину области), и постепенно восстанавливается на более здоровом основании. Практический вывод: в любой области, где ты только начинаешь, твоя оценка собственного уровня почти наверняка завышена. Настоящий эксперт часто звучит неуверенно — он видит границы своего знания.",
       "source": "Дэвид Даннинг, Джастин Крюгер, психологи, 1999",
@@ -461,7 +573,11 @@ footer em { font-style: normal; color: var(--ink-soft); text-transform: none; le
         "Споры: чем сильнее уверенность собеседника, тем чаще он на пике ДК",
         "Управление: не давай новичку самостоятельную задачу в новой области, пока он не пройдёт пик"
       ],
-      "influences": []
+      "influences": [],
+      "readings": [
+        "Kruger & Dunning — Unskilled and Unaware of It, J. Personality and Social Psychology, 1999",
+        "Daniel Kahneman — Думай медленно… решай быстро"
+      ]
     },
     {
       "id": "butterfly",
@@ -469,7 +585,11 @@ footer em { font-style: normal; color: var(--ink-soft); text-transform: none; le
       "name": "Эффект бабочки",
       "category": "Системное мышление",
       "year": 1963,
-      "tags": ["хаос", "нелинейность", "чувствительность"],
+      "tags": [
+        "хаос",
+        "нелинейность",
+        "чувствительность"
+      ],
       "preview": "Малые причины ведут к большим следствиям, и предсказать их нельзя в принципе.",
       "body": "Эдвард Лоренц, метеоролог, заметил: округление одного входного параметра в шестом знаке после запятой полностью меняет прогноз погоды через две недели. Из этого выросла теория хаоса. Метафора «бабочка машет крыльями в Бразилии → ураган в Техасе» означает не магию, а строгий математический факт: в нелинейных системах (а почти все настоящие системы такие) даже идеальная модель упирается в чувствительность к начальным условиям, которые нельзя измерить с бесконечной точностью. Следствие: долгосрочный детерминированный прогноз невозможен в принципе.",
       "source": "Эдвард Лоренц, «Deterministic Nonperiodic Flow», 1963",
@@ -479,7 +599,11 @@ footer em { font-style: normal; color: var(--ink-soft); text-transform: none; le
         "Стратегия: не путай неопределённость с риском — это разные явления",
         "Карьера: одно ключевое знакомство меняет траекторию десятилетий"
       ],
-      "influences": []
+      "influences": [],
+      "readings": [
+        "Edward Lorenz — Deterministic Nonperiodic Flow, J. Atmospheric Sci., 1963",
+        "James Gleick — Хаос: создание новой науки, 1987"
+      ]
     },
     {
       "id": "maslow",
@@ -487,7 +611,11 @@ footer em { font-style: normal; color: var(--ink-soft); text-transform: none; le
       "name": "Пирамида потребностей Маслоу",
       "category": "Личная философия",
       "year": 1943,
-      "tags": ["потребности", "мотивация", "иерархия"],
+      "tags": [
+        "потребности",
+        "мотивация",
+        "иерархия"
+      ],
       "preview": "Сначала еда и безопасность, потом любовь и уважение, и только потом — самореализация.",
       "body": "Абрахам Маслоу предложил пятиступенчатую модель: физиологические потребности → безопасность → принадлежность и любовь → уважение → самоактуализация. Идея в том, что мотивация на более высоком уровне просыпается только после закрытия нижних: бесполезно мотивировать сотрудника карьерным ростом, если он не выспался. Современная критика отмечает, что иерархия не строго линейная (есть исключения и культурные различия), но базовая интуиция работает: важно знать, на каком уровне ты сейчас, и не пытаться прыгать сразу на вершину.",
       "source": "Абрахам Маслоу, «A Theory of Human Motivation», 1943",
@@ -497,7 +625,11 @@ footer em { font-style: normal; color: var(--ink-soft); text-transform: none; le
         "Личное планирование: ставить цели уровня X, не закрыв X-1 = саботаж",
         "Продукт: на каком уровне пирамиды твой продукт? Это определяет аудиторию и ценообразование"
       ],
-      "influences": []
+      "influences": [],
+      "readings": [
+        "Abraham Maslow — Motivation and Personality, 1954",
+        "Маслоу — К психологии бытия, 1962"
+      ]
     },
     {
       "id": "peter",
@@ -505,7 +637,11 @@ footer em { font-style: normal; color: var(--ink-soft); text-transform: none; le
       "name": "Принцип Питера",
       "category": "Системное мышление",
       "year": 1969,
-      "tags": ["карьера", "иерархия", "некомпетентность"],
+      "tags": [
+        "карьера",
+        "иерархия",
+        "некомпетентность"
+      ],
       "preview": "Хорошего работника повышают, пока он не окажется на позиции, где он плох.",
       "body": "Лоуренс Питер сформулировал шутливый, но точный наблюдательный закон: в любой иерархии сотрудника повышают, пока он справляется. Как только перестаёт — повышения прекращаются, и он застревает на этой позиции. В пределе любую должность занимает человек, не способный её исполнять. Из этого следует, что прежняя сила (классный программист) — слабый предиктор того, что человек справится с новой ролью (менеджер). Лекарство: горизонтальные карьерные треки, тесты на новой позиции до повышения, легитимный отказ без позора.",
       "source": "Лоуренс Питер, «Принцип Питера», 1969",
@@ -515,7 +651,10 @@ footer em { font-style: normal; color: var(--ink-soft); text-transform: none; le
         "Управление: легитимизируй отказ от повышения и горизонтальные ходы",
         "Карьерный план: переключение профиля каждые 5–7 лет защищает от принципа Питера"
       ],
-      "influences": []
+      "influences": [],
+      "readings": [
+        "Laurence Peter, Raymond Hull — Принцип Питера, 1969"
+      ]
     },
     {
       "id": "hitchens",
@@ -523,7 +662,11 @@ footer em { font-style: normal; color: var(--ink-soft); text-transform: none; le
       "name": "Бритва Хитченса",
       "category": "Эпистемология",
       "year": 2003,
-      "tags": ["доказательства", "критика", "бремя доказывания"],
+      "tags": [
+        "доказательства",
+        "критика",
+        "бремя доказывания"
+      ],
       "preview": "Бремя доказательства лежит на том, кто утверждает, а не на том, кто сомневается.",
       "body": "Кристофер Хитченс афористически зафиксировал то, что в эпистемологии называется бременем доказывания: тот, кто делает утверждение, обязан его обосновать. Если обоснования нет — собеседник не обязан опровергать, он может просто отбросить тезис. Это особенно полезно против заявлений, сформулированных как «общеизвестно», «всем понятно», «это и так очевидно». Не запрет верить во что-то без доказательств — это правило диалога: бремя на утверждающем. В практике мышления: когда ты слышишь сильное утверждение, законно спросить «откуда ты это знаешь?», и если ответа нет — это не твоё дело его опровергать.",
       "source": "Кристофер Хитченс, журналист, формулировка ~2003; вошла в «God Is Not Great», 2007",
@@ -533,7 +676,13 @@ footer em { font-style: normal; color: var(--ink-soft); text-transform: none; le
         "Команда: «все так делают» — не аргумент. Бремя на инициаторе",
         "Свои убеждения: какие из них я держу без оснований? Их и держу честно — как веру"
       ],
-      "influences": ["popper"]
+      "influences": [
+        "popper"
+      ],
+      "readings": [
+        "Christopher Hitchens — Бог не любовь, 2007",
+        "Hitchens — Письма к молодому бунтарю, 2001"
+      ]
     },
     {
       "id": "aristotle-mean",
@@ -541,7 +690,11 @@ footer em { font-style: normal; color: var(--ink-soft); text-transform: none; le
       "name": "Золотая середина",
       "category": "Личная философия",
       "year": -330,
-      "tags": ["умеренность", "добродетель", "баланс"],
+      "tags": [
+        "умеренность",
+        "добродетель",
+        "баланс"
+      ],
       "preview": "Между трусостью и безрассудством — мужество; между скупостью и расточительством — щедрость.",
       "body": "Аристотель в «Никомаховой этике» предложил, что у каждой добродетели есть два соседствующих с ней порока: один — от недостатка, другой — от избытка. Мужество — середина между трусостью и безрассудством. Щедрость — между скупостью и расточительством. Достоинство — между лестью и грубостью. Серединная позиция — не арифметическое среднее: для каждого человека и контекста она своя, и определяется практической мудростью (фронесисом). Принцип противоречит современному «делай больше всего хорошего», ставит вопрос: где у твоей добродетели край, за которым она перестаёт быть добродетелью?",
       "source": "Аристотель, «Никомахова этика», ~330 г. до н.э.",
@@ -551,7 +704,11 @@ footer em { font-style: normal; color: var(--ink-soft); text-transform: none; le
         "Деньги: бережливость — между скупостью и расточительством; найди свой средний",
         "Решения: «всегда больше» — обычно ловушка; ищи правильную меру"
       ],
-      "influences": []
+      "influences": [],
+      "readings": [
+        "Аристотель — Никомахова этика",
+        "Alasdair MacIntyre — After Virtue, 1981"
+      ]
     },
     {
       "id": "ashby",
@@ -559,7 +716,11 @@ footer em { font-style: normal; color: var(--ink-soft); text-transform: none; le
       "name": "Закон необходимого разнообразия",
       "category": "Системное мышление",
       "year": 1956,
-      "tags": ["кибернетика", "управление", "сложность"],
+      "tags": [
+        "кибернетика",
+        "управление",
+        "сложность"
+      ],
       "preview": "Контролёр не может быть проще системы, которую он контролирует.",
       "body": "Уильям Эшби, основоположник кибернетики, доказал: если система имеет N возможных состояний, управляющая ею система должна иметь не менее N стратегий реагирования — иначе обязательно возникнут ситуации, на которые управляющий не сможет адекватно ответить. Применительно к человеку: если хочешь управлять сложной командой, твой собственный репертуар поведения должен быть не уже её. Применительно к продукту: пёстрая аудитория требует продукта с равным разнообразием ответов. Закон Эшби часто становится скрытой причиной провалов в управлении: упрощённая модель не покрывает реальность.",
       "source": "Уильям Росс Эшби, «An Introduction to Cybernetics», 1956",
@@ -569,7 +730,11 @@ footer em { font-style: normal; color: var(--ink-soft); text-transform: none; le
         "Регуляция: простые правила не управляют сложными системами — они их ломают",
         "Личное: при стрессе сужается репертуар реакций — это уязвимость, не норма"
       ],
-      "influences": []
+      "influences": [],
+      "readings": [
+        "W. Ross Ashby — An Introduction to Cybernetics, 1956",
+        "Ashby — Design for a Brain, 1952"
+      ]
     },
     {
       "id": "conway",
@@ -577,7 +742,11 @@ footer em { font-style: normal; color: var(--ink-soft); text-transform: none; le
       "name": "Закон Конвея",
       "category": "Системное мышление",
       "year": 1968,
-      "tags": ["команды", "архитектура", "коммуникация"],
+      "tags": [
+        "команды",
+        "архитектура",
+        "коммуникация"
+      ],
       "preview": "Если у тебя три отдела — ты сделаешь продукт из трёх компонентов, даже если их должно быть два.",
       "body": "Мелвин Конвей опубликовал статью «Как комитеты изобретают?» с наблюдением, ставшим классическим: организации, проектирующие системы, неминуемо производят дизайн, структура которого отражает структуру коммуникации этих организаций. Если у тебя backend-команда и frontend-команда, у тебя получится система с чётким backend/frontend разделением — даже если задача требовала другого. Следствие — обратный манёвр (inverse Conway): хочешь определённую архитектуру? Сначала построй такую же организацию. Многие современные провалы продуктов — это провалы структуры команды, не технологии.",
       "source": "Мелвин Конвей, «How Do Committees Invent?», 1968",
@@ -587,7 +756,11 @@ footer em { font-style: normal; color: var(--ink-soft); text-transform: none; le
         "Реструктуризация: меняешь продукт — меняй команду; не наоборот",
         "Найм: если твой продукт «странный», возможно, твоя структура коммуникации странная"
       ],
-      "influences": []
+      "influences": [],
+      "readings": [
+        "Melvin Conway — How Do Committees Invent?, Datamation, 1968",
+        "Martin Fowler — статья 'Conway's Law' на martinfowler.com"
+      ]
     },
     {
       "id": "amor-fati",
@@ -595,7 +768,11 @@ footer em { font-style: normal; color: var(--ink-soft); text-transform: none; le
       "name": "Amor fati",
       "category": "Личная философия",
       "year": 1882,
-      "tags": ["принятие", "судьба", "утверждение"],
+      "tags": [
+        "принятие",
+        "судьба",
+        "утверждение"
+      ],
       "preview": "Высшая форма свободы — желать того, что и так случилось.",
       "body": "Ницше формулирует принцип в «Весёлой науке»: «Моя формула величия в человеке есть amor fati: не желать ничего иначе, ни вперёд, ни назад, ни в вечности. Не только переносить необходимое, но любить его». Стоики учили принимать неподвластное (см. Дихотомия контроля). Ницше радикализирует: одного принятия мало, нужно полюбить, утвердить. Боль, ошибки, потери — желать их в точности так, как случилось. Это не покорность, а максимально активная позиция: ты не сопротивляешься реальности и не просто принимаешь её, а включаешь в собственное «да».",
       "source": "Фридрих Ницше, «Весёлая наука», §276, 1882",
@@ -605,7 +782,13 @@ footer em { font-style: normal; color: var(--ink-soft); text-transform: none; le
         "Конфликты: трудный человек в твоей жизни — выбранный персонаж, не помеха",
         "Прошлое: «у меня было такое детство» — amor fati делает это активом, не клеймом"
       ],
-      "influences": ["dichotomy"]
+      "influences": [
+        "dichotomy"
+      ],
+      "readings": [
+        "Friedrich Nietzsche — Весёлая наука, §276",
+        "Nietzsche — Ecce Homo"
+      ]
     },
     {
       "id": "dichotomy",
@@ -613,7 +796,11 @@ footer em { font-style: normal; color: var(--ink-soft); text-transform: none; le
       "name": "Дихотомия контроля",
       "category": "Личная философия",
       "year": 125,
-      "tags": ["стоицизм", "контроль", "энергия"],
+      "tags": [
+        "стоицизм",
+        "контроль",
+        "энергия"
+      ],
       "preview": "Не трать энергию на то, что не зависит от тебя; вкладывай только в подвластное.",
       "body": "Эпиктет открывает «Энхиридион» этим разделением: в нашей власти — мнения, стремления, желания, наши действия; не в нашей — тело, имущество, репутация, чужое поведение. Стоическое спокойствие — это не безразличие, а перенос усилия туда, где оно имеет смысл. Все жалобы, тревоги и обиды возникают там, где человек пытается контролировать неподвластное. Весь рост и характер — там, где он работает с подвластным.",
       "source": "Эпиктет, «Энхиридион», ~125 г.",
@@ -623,7 +810,12 @@ footer em { font-style: normal; color: var(--ink-soft); text-transform: none; le
         "Тревога: всегда симптом попытки контролировать неподвластное",
         "Лидерство: давай людям задачу (их область), а не результат (твоя ответственность)"
       ],
-      "influences": []
+      "influences": [],
+      "readings": [
+        "Эпиктет — Энхиридион",
+        "Марк Аврелий — Размышления",
+        "William Irvine — Guide to the Good Life, 2008"
+      ]
     },
     {
       "id": "popper",
@@ -631,7 +823,11 @@ footer em { font-style: normal; color: var(--ink-soft); text-transform: none; le
       "name": "Принцип фальсифицируемости",
       "category": "Эпистемология",
       "year": 1934,
-      "tags": ["наука", "опровержение", "критика"],
+      "tags": [
+        "наука",
+        "опровержение",
+        "критика"
+      ],
       "preview": "Знание измеряется не подтверждениями, а пережитыми попытками опровержения.",
       "body": "Карл Поппер показал, что наука отличается от псевдонауки не тем, что подтверждается фактами (псевдонаука находит подтверждений сколько угодно), а тем, что её утверждения сформулированы так, чтобы их можно было опровергнуть. «Все лебеди белые» — фальсифицируема: один чёрный её убивает. «Бог действует таинственными путями» — нефальсифицируема, любое наблюдение её подтверждает. В практике мышления: ищи, что должно случиться, чтобы твоя гипотеза оказалась неверной — это и есть честная гипотеза.",
       "source": "Карл Поппер, «Логика научного открытия», 1934",
@@ -641,7 +837,14 @@ footer em { font-style: normal; color: var(--ink-soft); text-transform: none; le
         "Свои убеждения: какое наблюдение заставит тебя пересмотреть это? Если никакое — это вера, а не знание",
         "Найм: «при каких условиях вы откажетесь от своего тезиса?» — отличный тест качества мышления"
       ],
-      "influences": ["socratic", "hume"]
+      "influences": [
+        "socratic",
+        "hume"
+      ],
+      "readings": [
+        "Карл Поппер — Логика научного исследования, 1934",
+        "Поппер — Предположения и опровержения, 1963"
+      ]
     },
     {
       "id": "contradictions",
@@ -649,7 +852,11 @@ footer em { font-style: normal; color: var(--ink-soft); text-transform: none; le
       "name": "Принцип противоречий ТРИЗ",
       "category": "ТРИЗ",
       "year": 1948,
-      "tags": ["изобретательство", "противоречия", "разделение"],
+      "tags": [
+        "изобретательство",
+        "противоречия",
+        "разделение"
+      ],
       "preview": "Не ищи компромисс между требованиями — ищи способ выполнить оба.",
       "body": "Альтшуллер заметил: настоящее изобретение возникает там, где система предъявляет два взаимоисключающих требования. Корабль должен быть тяжёлым (устойчивость) и лёгким (скорость). Стекло должно быть прозрачным (видимость) и непрозрачным (приватность). Слабое решение — компромисс посередине. Сильное — разделение противоречия: во времени (тяжёлый в шторм, лёгкий в штиль), в пространстве (тёмное стекло сверху, прозрачное снизу), в структуре «часть/целое», объединение с антисистемой. Принцип превращает тупик в направление работы.",
       "source": "Генрих Альтшуллер, ранние работы ТРИЗ, конец 1940-х",
@@ -659,7 +866,11 @@ footer em { font-style: normal; color: var(--ink-soft); text-transform: none; le
         "Личное: «нужно работать много, отдыхать много» — разделение во времени или объединение (работа, которая восстанавливает)",
         "Переговоры: каждый компромисс — упущенная возможность разделить противоречие"
       ],
-      "influences": []
+      "influences": [],
+      "readings": [
+        "Г. С. Альтшуллер — Творчество как точная наука",
+        "Альтшуллер — И тут появился изобретатель"
+      ]
     },
     {
       "id": "black-swan",
@@ -667,7 +878,11 @@ footer em { font-style: normal; color: var(--ink-soft); text-transform: none; le
       "name": "Чёрный лебедь",
       "category": "Системное мышление",
       "year": 2007,
-      "tags": ["риск", "редкие события", "непредсказуемость"],
+      "tags": [
+        "риск",
+        "редкие события",
+        "непредсказуемость"
+      ],
       "preview": "Будущее формируют не закономерности, а редкие шоки, которых нельзя было предвидеть.",
       "body": "Талеб называет «чёрным лебедем» событие с тремя свойствами: оно за пределами обычных ожиданий, имеет огромные последствия, и задним числом получает рационализацию (как будто его можно было предвидеть). 9/11, доткомы, COVID — всё чёрные лебеди. Опасность в том, что традиционная статистика игнорирует хвосты распределения, где они и живут. Практический вывод: не пытайся предсказать конкретного лебедя — невозможно. Стройся так, чтобы пережить любого: ограниченный риск снизу, открытая возможность сверху, никогда не «оптимизируй» так, чтобы один шок тебя уничтожил.",
       "source": "Нассим Талеб, «Чёрный лебедь», 2007",
@@ -677,7 +892,13 @@ footer em { font-style: normal; color: var(--ink-soft); text-transform: none; le
         "Карьера: оптимизация под текущую отрасль = слабость к её крушению",
         "Личное: «у меня всё стабильно последние 5 лет» — не страховка, а предупреждение"
       ],
-      "influences": ["butterfly"]
+      "influences": [
+        "butterfly"
+      ],
+      "readings": [
+        "Nassim Taleb — Чёрный лебедь, 2007",
+        "Taleb — Fooled by Randomness, 2001"
+      ]
     },
     {
       "id": "lindy",
@@ -685,7 +906,11 @@ footer em { font-style: normal; color: var(--ink-soft); text-transform: none; le
       "name": "Эффект Линди",
       "category": "Системное мышление",
       "year": 1964,
-      "tags": ["время", "устойчивость", "выживание"],
+      "tags": [
+        "время",
+        "устойчивость",
+        "выживание"
+      ],
       "preview": "Возраст нехрупкого — индикатор будущей продолжительности жизни.",
       "body": "Для нехрупких объектов — идей, технологий, книг, ремёсел — ожидаемая будущая жизнь пропорциональна уже прожитой. Книгу, что читают 2000 лет, скорее всего будут читать ещё 2000. Бар, продержавшийся 30 лет, переживёт новый. Это работает только для нерасходующихся: для людей и животных всё наоборот (чем старше, тем меньше осталось). Талеб использует Линди как фильтр выбора: при прочих равных предпочитай старое — оно уже прошло отбор временем.",
       "source": "Альберт Голдман, заметка о баре Линди, 1964; формализация — Нассим Талеб, 2012",
@@ -695,7 +920,11 @@ footer em { font-style: normal; color: var(--ink-soft); text-transform: none; le
         "Привычки: проверенные веками — медитация, прогулка, чтение, ремесло",
         "Карьера: если профессия живёт 200+ лет (врач, учитель, мастеровой), она и через 50 будет"
       ],
-      "influences": []
+      "influences": [],
+      "readings": [
+        "Nassim Taleb — Антихрупкость, 2012, гл. о Линди",
+        "Taleb — Skin in the Game, 2018"
+      ]
     },
     {
       "id": "goodhart",
@@ -703,7 +932,11 @@ footer em { font-style: normal; color: var(--ink-soft); text-transform: none; le
       "name": "Закон Гудхарта",
       "category": "Системное мышление",
       "year": 1975,
-      "tags": ["метрики", "цели", "управление"],
+      "tags": [
+        "метрики",
+        "цели",
+        "управление"
+      ],
       "preview": "Любой показатель, который начинают оптимизировать, теряет связь с реальностью.",
       "body": "Чарльз Гудхарт, экономист Банка Англии, заметил это про монетарную политику: индикаторы, на которые начинают давить, отрываются от того, что они измеряли. В обобщении Мэрилин Стратэрн — «когда мера становится целью, она перестаёт быть мерой». Если KPI команды — починенные баги в неделю, через месяц команда будет порождать и фиксить пустые баги. Если KPI школы — выпускной балл, школа учит сдавать экзамен, а не предмет. Поэтому ценность всегда первична, метрика — вторична и расходуема.",
       "source": "Чарльз Гудхарт, экономист, 1975; обобщение — Мэрилин Стратэрн, 1997",
@@ -713,7 +946,11 @@ footer em { font-style: normal; color: var(--ink-soft); text-transform: none; le
         "Личные цели: «прочитать 50 книг» хуже, чем «понять предмет» — первое легко взломать",
         "Аналитика продукта: метрика выросла, а пользователи злятся — почти всегда Гудхарт"
       ],
-      "influences": []
+      "influences": [],
+      "readings": [
+        "Charles Goodhart — Monetary Relationships: A View from Threadneedle Street, 1975",
+        "Marilyn Strathern — Improving ratings: audit in the British University system, 1997"
+      ]
     },
     {
       "id": "metacognition",
@@ -721,7 +958,11 @@ footer em { font-style: normal; color: var(--ink-soft); text-transform: none; le
       "name": "Метакогниция",
       "category": "Эпистемология",
       "year": 1979,
-      "tags": ["мышление", "рефлексия", "осознанность"],
+      "tags": [
+        "мышление",
+        "рефлексия",
+        "осознанность"
+      ],
       "preview": "Знание о собственных познавательных процессах — отдельная компетенция.",
       "body": "Джон Флавелл ввёл термин для способности отслеживать, оценивать и корректировать собственное мышление. Метакогниция — это не «думать больше», а «знать, как ты думаешь»: какие у тебя слепые зоны, в каких ситуациях ты ошибаешься систематически, когда стоит доверять интуиции, а когда — выйти из неё. Без неё ты заложник своих когнитивных привычек. С ней — можешь их менять. Это фундамент для всего, что называется самоанализом, рефлексией и личной эволюцией.",
       "source": "Джон Флавелл, психолог развития, 1979",
@@ -731,7 +972,13 @@ footer em { font-style: normal; color: var(--ink-soft); text-transform: none; le
         "Споры: «почему мне трудно принять этот аргумент?» — почти всегда что-то про тебя, не про аргумент",
         "Творчество: фиксируй, в каких состояниях приходят идеи, и воспроизводи условия"
       ],
-      "influences": ["socratic"]
+      "influences": [
+        "socratic"
+      ],
+      "readings": [
+        "John Flavell — Metacognition and cognitive monitoring, American Psychologist, 1979",
+        "Daniel Kahneman — Думай медленно… решай быстро, 2011"
+      ]
     },
     {
       "id": "descartes",
@@ -739,7 +986,11 @@ footer em { font-style: normal; color: var(--ink-soft); text-transform: none; le
       "name": "Cogito ergo sum",
       "category": "Эпистемология",
       "year": 1637,
-      "tags": ["сомнение", "сознание", "основания"],
+      "tags": [
+        "сомнение",
+        "сознание",
+        "основания"
+      ],
       "preview": "Любое знание можно подвергнуть сомнению, кроме самого факта, что я сомневаюсь.",
       "body": "Декарт ищет несокрушимое основание для знания: всё, во что мы верим, может оказаться обманом — чувства, авторитеты, даже математика (вдруг злой гений нас обманывает). Но даже усомниться в этом я могу только если я существую как сомневающийся. Cogito — это не «я думаю, значит я умный», это «акт сомнения сам является доказательством существования сомневающегося». Дальше от этой одной точки Декарт строит свою философию. Метод важнее самого тезиса: ищи самое маленькое и самое неоспоримое, и стой только на нём.",
       "source": "Рене Декарт, «Рассуждение о методе», 1637; «Размышления о первой философии», 1641",
@@ -749,7 +1000,11 @@ footer em { font-style: normal; color: var(--ink-soft); text-transform: none; le
         "Аналитика: разбери проблему до неделимых блоков, потом собирай заново",
         "Свои убеждения: какие из них прошли через настоящее сомнение, а какие я унаследовал?"
       ],
-      "influences": []
+      "influences": [],
+      "readings": [
+        "René Descartes — Рассуждение о методе, 1637",
+        "Descartes — Размышления о первой философии, 1641"
+      ]
     },
     {
       "id": "hume",
@@ -757,7 +1012,11 @@ footer em { font-style: normal; color: var(--ink-soft); text-transform: none; le
       "name": "Проблема индукции",
       "category": "Эпистемология",
       "year": 1740,
-      "tags": ["индукция", "опыт", "ограничения знания"],
+      "tags": [
+        "индукция",
+        "опыт",
+        "ограничения знания"
+      ],
       "preview": "Опыт не доказывает будущее — он лишь создаёт привычку ожидания.",
       "body": "Дэвид Юм показал, что вся наука основана на индукции (от частных наблюдений к общим законам), но индукция логически необоснованна. Что солнце восходило 365×N раз, не доказывает, что завтра оно взойдёт — это привычка ожидания, психологический факт, а не логический вывод. Юм не призывает не доверять опыту; он показывает, что у нашего доверия нет логического фундамента. Из этой проблемы выросли разные ответы: Кант (категории мышления), Поппер (наука не подтверждается, а опровергается), а в современной практике — байесовское обновление и Талебовские чёрные лебеди.",
       "source": "Дэвид Юм, «Трактат о человеческой природе», 1739–40",
@@ -767,7 +1026,13 @@ footer em { font-style: normal; color: var(--ink-soft); text-transform: none; le
         "Тело: что работало в 20 — не обязательно работает в 35",
         "Свои убеждения: какие из них держатся только потому, что «так всегда было»?"
       ],
-      "influences": ["socratic"]
+      "influences": [
+        "socratic"
+      ],
+      "readings": [
+        "David Hume — Трактат о человеческой природе, 1739–40",
+        "Hume — Исследование о человеческом разумении, 1748"
+      ]
     },
     {
       "id": "kant",
@@ -775,7 +1040,11 @@ footer em { font-style: normal; color: var(--ink-soft); text-transform: none; le
       "name": "Категорический императив",
       "category": "Личная философия",
       "year": 1785,
-      "tags": ["этика", "универсальность", "автономия"],
+      "tags": [
+        "этика",
+        "универсальность",
+        "автономия"
+      ],
       "preview": "Действие морально, если ты готов, чтобы все поступали так же в той же ситуации.",
       "body": "Кант предлагает тест моральности: возьми правило, по которому собираешься поступить, и спроси — могу ли я хотеть, чтобы это правило стало всеобщим законом? «Можно врать, когда выгодно» — нет, потому что в мире, где все врут по выгоде, обещания перестают существовать. «Помогай другим в беде» — да, такой мир возможен. Императив «категорический» (безусловный) потому, что не зависит от целей — он работает как сама форма этичного поступка. Свобода для Канта = автономия = действовать по собственному разумному закону, а не по влечению.",
       "source": "Иммануил Кант, «Основоположение метафизики нравственности», 1785",
@@ -785,7 +1054,11 @@ footer em { font-style: normal; color: var(--ink-soft); text-transform: none; le
         "Команда: «можно делать исключение для X» — а если для всех? Не выдерживает — не делай и для X",
         "Личное: твои ценности — это правила, которые ты хотел бы видеть универсальными"
       ],
-      "influences": []
+      "influences": [],
+      "readings": [
+        "Иммануил Кант — Основоположение метафизики нравственности, 1785",
+        "Кант — Критика практического разума, 1788"
+      ]
     },
     {
       "id": "shannon",
@@ -793,7 +1066,11 @@ footer em { font-style: normal; color: var(--ink-soft); text-transform: none; le
       "name": "Информационная энтропия",
       "category": "Термодинамика",
       "year": 1948,
-      "tags": ["информация", "неопределённость", "коммуникация"],
+      "tags": [
+        "информация",
+        "неопределённость",
+        "коммуникация"
+      ],
       "preview": "Чем неожиданнее сообщение, тем больше в нём информации.",
       "body": "Клод Шеннон в 1948-м построил математическую теорию связи. Он определил информацию через неожиданность: если ты заранее знаешь, что я скажу — моё сообщение содержит ноль информации. Если каждый возможный исход равновероятен — информации максимум. Формула информационной энтропии Шеннона удивительно похожа на формулу термодинамической энтропии Больцмана — это не совпадение, а глубокая связь между порядком и информацией. Из этого выросли все современные коммуникации, сжатие данных, криптография, и интерпретации в физике и биологии (ДНК как информационная система).",
       "source": "Клод Шеннон, «A Mathematical Theory of Communication», 1948",
@@ -803,7 +1080,13 @@ footer em { font-style: normal; color: var(--ink-soft); text-transform: none; le
         "Разговор: вопросы, на которые ты знаешь ответ, не дают информации — задавай те, исход которых непредсказуем",
         "Знание: то, что просто подтверждает твою картину мира, не учит; учит то, что её ломает"
       ],
-      "influences": ["entropy"]
+      "influences": [
+        "entropy"
+      ],
+      "readings": [
+        "Claude Shannon — A Mathematical Theory of Communication, Bell System Technical Journal, 1948",
+        "James Gleick — The Information, 2011"
+      ]
     },
     {
       "id": "murphy",
@@ -811,7 +1094,11 @@ footer em { font-style: normal; color: var(--ink-soft); text-transform: none; le
       "name": "Закон Мерфи",
       "category": "Системное мышление",
       "year": 1949,
-      "tags": ["ошибки", "проектирование", "надёжность"],
+      "tags": [
+        "ошибки",
+        "проектирование",
+        "надёжность"
+      ],
       "preview": "Закладывайся не на надежду «не сломается», а на сценарий «сломалось».",
       "body": "Назван в честь инженера Эдварда Мёрфи, работавшего в 1949-м над тестами центрифуги для ВВС США. Он сказал нечто вроде «если есть способ сделать неправильно, кто-нибудь обязательно его найдёт». Закон не про пессимизм — про инженерное проектирование. Реальность стохастична: при достаточно большом числе попыток любой возможный сбой рано или поздно случится. Поэтому правильный подход — не «надеяться, что не сломается», а «закладывать поломку в дизайн»: резервирование, fail-safe, graceful degradation. Это анти-оптимистическое мышление, которое экономит миллиарды.",
       "source": "Эдвард Мёрфи, инженер ВВС США, 1949",
@@ -821,7 +1108,11 @@ footer em { font-style: normal; color: var(--ink-soft); text-transform: none; le
         "Договоры: что мы делаем, если контрагент не выполнит обязательство? Пропиши заранее",
         "Жизнь: запасной план — не паранойя, а нормальная инженерная практика"
       ],
-      "influences": []
+      "influences": [],
+      "readings": [
+        "Arthur Bloch — Murphy's Law, 1977",
+        "Henry Petroski — To Engineer is Human, 1985"
+      ]
     },
     {
       "id": "parkinson",
@@ -829,7 +1120,11 @@ footer em { font-style: normal; color: var(--ink-soft); text-transform: none; le
       "name": "Закон Паркинсона",
       "category": "Системное мышление",
       "year": 1955,
-      "tags": ["время", "дедлайны", "бюрократия"],
+      "tags": [
+        "время",
+        "дедлайны",
+        "бюрократия"
+      ],
       "preview": "Дашь месяц на трёхдневную задачу — сделают за месяц. Не из лени, а по природе систем.",
       "body": "Сирил Норткот Паркинсон, британский историк, наблюдал за послевоенной бюрократией: чиновники находили способы растянуть тривиальную работу на любой доступный срок. Закон работает не только в бюро, а везде, где работа измеряется временем, а не результатом. У него есть второе следствие: число подчинённых растёт независимо от количества работы (бюрократия размножается ради размножения). Лекарство — жёсткие искусственные дедлайны, фиксированный time-box, и проверка «сколько РЕАЛЬНО нужно?» вместо «сколько у нас есть».",
       "source": "Сирил Норткот Паркинсон, эссе в The Economist, 1955; книга «Закон Паркинсона», 1958",
@@ -839,7 +1134,10 @@ footer em { font-style: normal; color: var(--ink-soft); text-transform: none; le
         "Свои задачи: помодоро на 25 минут против абстрактного «весь день»",
         "Найм: «нам нужен ещё человек» — сначала спроси, не вырастет ли работа под нового"
       ],
-      "influences": []
+      "influences": [],
+      "readings": [
+        "C. Northcote Parkinson — Parkinson's Law, 1958"
+      ]
     },
     {
       "id": "brandolini",
@@ -847,7 +1145,11 @@ footer em { font-style: normal; color: var(--ink-soft); text-transform: none; le
       "name": "Закон Брандолини",
       "category": "Эпистемология",
       "year": 2013,
-      "tags": ["дезинформация", "дискуссии", "асимметрия"],
+      "tags": [
+        "дезинформация",
+        "дискуссии",
+        "асимметрия"
+      ],
       "preview": "Враньё дёшево, опровержение дорого — поэтому ложь часто побеждает по умолчанию.",
       "body": "Альберто Брандолини, итальянский инженер-программист, в твите 2013-го сформулировал «асимметрию чуши»: количество энергии, необходимое для опровержения чуши, на порядок больше, чем для её производства. Это объясняет, почему в публичной дискуссии правда регулярно проигрывает: пропагандисту достаточно бросить эффектное утверждение, фактчекеру нужны часы, чтобы его разобрать. Практическое следствие — не вступать в каждый спор. Выбирай битвы, где асимметрия не катастрофична: или собеседник готов слушать, или аудитория важна. Иначе тратишь свой главный ресурс на дешёвый мусор.",
       "source": "Альберто Брандолини, инженер-программист, твит от 2013 г.",
@@ -857,7 +1159,11 @@ footer em { font-style: normal; color: var(--ink-soft); text-transform: none; le
         "Свой ум: смотри, где ты тратишь часы на разоблачение чуши, которая того не стоит",
         "Контент: один сильный факт > десяти опровержений; лучше переключить рамку"
       ],
-      "influences": []
+      "influences": [],
+      "readings": [
+        "Alberto Brandolini — оригинальный твит 2013 года",
+        "Hugo Mercier — Not Born Yesterday, 2020"
+      ]
     },
     {
       "id": "veblen",
@@ -865,7 +1171,11 @@ footer em { font-style: normal; color: var(--ink-soft); text-transform: none; le
       "name": "Эффект Веблена",
       "category": "Системное мышление",
       "year": 1899,
-      "tags": ["потребление", "статус", "цена"],
+      "tags": [
+        "потребление",
+        "статус",
+        "цена"
+      ],
       "preview": "Для статусных товаров спрос растёт вместе с ценой — она и есть сигнал.",
       "body": "Торстейн Веблен в «Теории праздного класса» (1899) описал, что для определённых товаров обычный закон спроса инвертируется: чем выше цена, тем выше потребление. Это «демонстративное потребление» — товар покупают не ради функции, а ради сигнала окружающим о своём статусе. Поэтому снизить цену Rolex или Bentley вдвое = убить продажи. Эффект работает в люксе, премиальном алкоголе, искусстве, элитном образовании. Современная экономика построена на смеси нормальных и веблено-товаров. Для предпринимателя это критическая развилка: продаёшь функцию (борьба за дешевле) или сигнал (борьба за дороже).",
       "source": "Торстейн Веблен, «Теория праздного класса», 1899",
@@ -875,7 +1185,11 @@ footer em { font-style: normal; color: var(--ink-soft); text-transform: none; le
         "Свой выбор: какие из моих покупок — за функцию, а какие — за сигнал? Полезно понимать",
         "Бизнес-модель: позиционирование «дешевле, чем у всех» в люксе = провал по эффекту Веблена"
       ],
-      "influences": []
+      "influences": [],
+      "readings": [
+        "Торстейн Веблен — Теория праздного класса, 1899",
+        "Robert Frank — Luxury Fever, 1999"
+      ]
     },
     {
       "id": "ben-franklin",
@@ -883,7 +1197,11 @@ footer em { font-style: normal; color: var(--ink-soft); text-transform: none; le
       "name": "Эффект Бена Франклина",
       "category": "Личная философия",
       "year": 1791,
-      "tags": ["отношения", "психология", "услуги"],
+      "tags": [
+        "отношения",
+        "психология",
+        "услуги"
+      ],
       "preview": "Просьба о помощи — мощнее ответной услуги в построении отношений.",
       "body": "Бенджамин Франклин в автобиографии описал случай: чтобы расположить к себе политического противника, он попросил у того одолжить редкую книгу. Противник одолжил, и с этого момента стал относиться к Франклину тепло, а позже стал другом. Эффект подтвердился экспериментально (Jecker & Landy, 1969): когда мы делаем кому-то одолжение, наш мозг достраивает рационализацию — «значит, он мне симпатичен, иначе зачем бы я ему помог» (когнитивный диссонанс). Парадокс работает обратно интуиции: расположение растёт у того, кто оказывает помощь, а не получает её.",
       "source": "Бенджамин Франклин, «Автобиография», 1791; экспериментальное подтверждение — Джеккер и Лэнди, психологи, 1969",
@@ -893,7 +1211,11 @@ footer em { font-style: normal; color: var(--ink-soft); text-transform: none; le
         "Конфликт: попроси оппонента о небольшой помощи — рамка сдвигается",
         "Отношения: проси о помощи у партнёра, не пытайся всё делать сам — это укрепляет, не ослабляет"
       ],
-      "influences": []
+      "influences": [],
+      "readings": [
+        "Бенджамин Франклин — Автобиография",
+        "Jecker & Landy — Liking a person as a function of doing him a favor, Human Relations, 1969"
+      ]
     },
     {
       "id": "gambler",
@@ -901,7 +1223,11 @@ footer em { font-style: normal; color: var(--ink-soft); text-transform: none; le
       "name": "Ошибка игрока",
       "category": "Эпистемология",
       "year": 1796,
-      "tags": ["вероятность", "случайность", "паттерны"],
+      "tags": [
+        "вероятность",
+        "случайность",
+        "паттерны"
+      ],
       "preview": "Серия неудач не обещает компенсации, серия удач — не обещает падения.",
       "body": "Описана Лапласом в 1796-м: человек, наблюдая серию выпадений «орла» в монете, начинает верить, что «решка» теперь более вероятна — будто природа обязана выровнять. На самом деле каждый бросок независим, и распределение не «помнит» прошлого. Эффект работает не только в азартных играх: люди ждут, что после полосы неудач придёт удача, после серии плохих наймов — хороший, после трёх рыночных лет вверх — год вниз. Мозг повсеместно ищет паттерны в случайности и достраивает их там, где их нет. Особенно опасно в инвестициях, где «возврат к среднему» путается с «прошлая полоса гарантирует разворот».",
       "source": "Пьер-Симон Лаплас, «Опыт философии теории вероятностей», 1796",
@@ -911,7 +1237,13 @@ footer em { font-style: normal; color: var(--ink-soft); text-transform: none; le
         "Спорт: «я промахнулся 10 раз, следующий точно попаду» — нет, нужна тренировка, не вера",
         "Жизнь: серия неудач не обещает компенсации; серия удач не обещает падения"
       ],
-      "influences": ["hume"]
+      "influences": [
+        "hume"
+      ],
+      "readings": [
+        "Pierre-Simon Laplace — Опыт философии теории вероятностей, 1796",
+        "Daniel Kahneman — Думай медленно… решай быстро, гл. о репрезентативности"
+      ]
     },
     {
       "id": "triviality",
@@ -919,7 +1251,11 @@ footer em { font-style: normal; color: var(--ink-soft); text-transform: none; le
       "name": "Закон тривиальности",
       "category": "Системное мышление",
       "year": 1957,
-      "tags": ["совещания", "коллективные решения", "bikeshedding"],
+      "tags": [
+        "совещания",
+        "коллективные решения",
+        "bikeshedding"
+      ],
       "preview": "Атомный реактор утверждают за две минуты, велосипедный навес обсуждают два часа.",
       "body": "Сирил Паркинсон в 1957-м описал заседание комитета по строительству атомной электростанции: проект самой станции (миллионы фунтов, никто содержательно не понимает) утверждается за пару минут, а потом два часа обсуждают строительство велосипедного навеса (несколько фунтов, все могут судить). Чем сложнее тема, тем меньше люди готовы тратить на неё время и репутацию — у них нет инструментов для содержательной дискуссии. Чем проще тема — тем больше каждый имеет мнение. В современной форме называется bikeshedding: команды бесконечно спорят о цвете кнопки и быстро принимают решения о архитектуре.",
       "source": "Сирил Норткот Паркинсон, «Parkinson's Law», 1957",
@@ -929,7 +1265,12 @@ footer em { font-style: normal; color: var(--ink-soft); text-transform: none; le
         "Команда: «обсуждение этого вопроса требует 3+ человек?» — фильтр перед встречей",
         "Свой ум: на что я трачу часы из-за того, что туда легко влезть, а не потому что важно?"
       ],
-      "influences": ["parkinson"]
+      "influences": [
+        "parkinson"
+      ],
+      "readings": [
+        "C. Northcote Parkinson — Parkinson's Law, 1957, глава о законе тривиальности"
+      ]
     },
     {
       "id": "actor-observer",
@@ -937,7 +1278,11 @@ footer em { font-style: normal; color: var(--ink-soft); text-transform: none; le
       "name": "Смещение актёр-наблюдатель",
       "category": "Эпистемология",
       "year": 1971,
-      "tags": ["атрибуция", "конфликты", "интерпретация"],
+      "tags": [
+        "атрибуция",
+        "конфликты",
+        "интерпретация"
+      ],
       "preview": "Я опоздал — пробка. Ты опоздал — ты безответственный.",
       "body": "Сформулировано Эдвардом Джонсом и Ричардом Нисбеттом в 1971-м в социальной психологии: когда я опаздываю, это пробка, дождь, форс-мажор. Когда ты опаздываешь, ты безответственный. Своё поведение мы видим изнутри со всеми обстоятельствами, чужое — снаружи как «факт о человеке». Эффект порождает огромное количество конфликтов: мы недооцениваем контекст другого и переоцениваем свой. Лекарство: при оценке чужих действий — спроси, «какие обстоятельства могли заставить его так поступить?»; при оценке своих — «а если убрать обстоятельства, что останется?».",
       "source": "Эдвард Джонс, Ричард Нисбетт, «The actor and the observer: Divergent perceptions of the causes of behavior», 1971",
@@ -947,7 +1292,13 @@ footer em { font-style: normal; color: var(--ink-soft); text-transform: none; le
         "Самонаблюдение: убери оправдания, посмотри на свои действия как наблюдатель",
         "Отношения: «он холодный» — может быть, у него болит спина"
       ],
-      "influences": ["hanlon"]
+      "influences": [
+        "hanlon"
+      ],
+      "readings": [
+        "Jones & Nisbett — The Actor and the Observer, 1971",
+        "Lee Ross — The Intuitive Psychologist and His Shortcomings, 1977"
+      ]
     },
     {
       "id": "impact-bias",
@@ -955,7 +1306,11 @@ footer em { font-style: normal; color: var(--ink-soft); text-transform: none; le
       "name": "Эффект преувеличенных последствий",
       "category": "Личная философия",
       "year": 1998,
-      "tags": ["прогноз эмоций", "адаптация", "решения"],
+      "tags": [
+        "прогноз эмоций",
+        "адаптация",
+        "решения"
+      ],
       "preview": "Через полгода большинство «эпохальных» событий чувствуются в разы тише, чем казалось.",
       "body": "Дэниел Гилберт и Тимоти Уилсон с 1998-го исследовали «affective forecasting» — предсказание будущих эмоций. Оказалось, что люди систематически переоценивают и интенсивность, и длительность будущих чувств. Лотерейная победа делает счастливым на месяц, потом возвращаешься к baseline. Тяжёлый разрыв — то же. Повышение, увольнение, переезд в другую страну — всё переоценивается. Объясняется «гедонической адаптацией»: мозг быстро привыкает и к хорошему, и к плохому. Практический вывод: при стратегических решениях не верь своему прогнозу эмоций — почти всегда событие через полгода чувствуется в разы менее значимым, чем кажется сейчас.",
       "source": "Дэниел Гилберт, Тимоти Уилсон и др., работы по affective forecasting, с 1998 г.",
@@ -965,7 +1320,11 @@ footer em { font-style: normal; color: var(--ink-soft); text-transform: none; le
         "Эйфория от успеха: тоже переоценена; не дрейфуй после удач",
         "Сожаления: «я бы был счастлив, если бы…» — скорее всего, ты бы адаптировался"
       ],
-      "influences": []
+      "influences": [],
+      "readings": [
+        "Daniel Gilbert — Spotykajas o szczeście (Stumbling on Happiness), 2006",
+        "Gilbert & Wilson — серия работ по affective forecasting"
+      ]
     },
     {
       "id": "nobel-disease",
@@ -973,7 +1332,11 @@ footer em { font-style: normal; color: var(--ink-soft); text-transform: none; le
       "name": "Нобелевский синдром",
       "category": "Эпистемология",
       "year": 1997,
-      "tags": ["авторитет", "экспертиза", "пределы"],
+      "tags": [
+        "авторитет",
+        "экспертиза",
+        "пределы"
+      ],
       "preview": "Нобелевские лауреаты регулярно несут чушь вне своей области — а аудитория слушает.",
       "body": "Нобелевские лауреаты (особенно по физике и химии) с заметной регулярностью к старости начинают делать заявления вне своей области — об экстрасенсорике, расах, гомеопатии, ВИЧ-отрицании. Линус Полинг и витамин C, Уильям Шокли и расовая теория, Кэри Маллис о ВИЧ. Феномен назвали «Нобелевской болезнью». Механизм: высокий авторитет в одной узкой области даёт человеку (и окружающим) ощущение универсальной экспертизы, а собственное несогласие с консенсусом интерпретируется как «я вижу истину, которую слепцы не видят». Перенос: будь осторожен с уверенными заявлениями людей вне их компетенции — и со своими собственными вне твоей.",
       "source": "Термин закрепился в скептической литературе с 1990-х; систематически описано David Gorski, Steven Novella и др.",
@@ -983,7 +1346,13 @@ footer em { font-style: normal; color: var(--ink-soft); text-transform: none; le
         "Свои тезисы: где я говорю с экспертной интонацией, не имея экспертизы?",
         "Команда: ценность сотрудника по экспертизе в его роли, а не по общей умности"
       ],
-      "influences": ["dunning-kruger"]
+      "influences": [
+        "dunning-kruger"
+      ],
+      "readings": [
+        "Candice Basterfield, Scott Lilienfeld — The Nobel Disease, Skeptical Inquirer, 2020",
+        "Steven Novella — публикации Science-Based Medicine"
+      ]
     },
     {
       "id": "google-scholar",
@@ -991,7 +1360,11 @@ footer em { font-style: normal; color: var(--ink-soft); text-transform: none; le
       "name": "Эффект Google Scholar",
       "category": "Эпистемология",
       "year": 2011,
-      "tags": ["память", "знание", "инструменты"],
+      "tags": [
+        "память",
+        "знание",
+        "инструменты"
+      ],
       "preview": "«Я могу нагуглить» — это не «я знаю», а паттерн «помню где, не помню что».",
       "body": "Бетси Спарроу, Дженни Лю и Дэниел Уэгнер (Science, 2011) показали: когда люди знают, что информация будет доступна в интернете, они запоминают её хуже, но лучше помнят, ГДЕ её найти. Мозг работает как руководитель команды: не держит всю информацию в голове, а помнит, кто/что её хранит. Это распределённая когниция и не плохо само по себе — но опасно, когда «я могу нагуглить» принимают за «я знаю». Знание состоит не только из фактов, но из связей между ними; связи нельзя нагуглить, они должны быть в голове.",
       "source": "Бетси Спарроу, Дженни Лю, Дэниел Уэгнер, «Google effects on memory», Science, 2011",
@@ -1001,7 +1374,11 @@ footer em { font-style: normal; color: var(--ink-soft); text-transform: none; le
         "Свой ум: тренируй удержание ключевых концептов — не аутсорси всё в инструмент",
         "Решения: «я где-то это читал» — найди и проверь, иначе это не знание"
       ],
-      "influences": []
+      "influences": [],
+      "readings": [
+        "Sparrow, Liu, Wegner — Google Effects on Memory, Science, 2011",
+        "Nicholas Carr — Поверхностные, 2010"
+      ]
     },
     {
       "id": "solomon",
@@ -1009,7 +1386,11 @@ footer em { font-style: normal; color: var(--ink-soft); text-transform: none; le
       "name": "Парадокс Соломона",
       "category": "Личная философия",
       "year": 2014,
-      "tags": ["рефлексия", "дистанция", "решения"],
+      "tags": [
+        "рефлексия",
+        "дистанция",
+        "решения"
+      ],
       "preview": "Спроси себя: что бы я посоветовал другу в такой же ситуации?",
       "body": "Назван в честь библейского царя Соломона: славился мудростью в суде, но был жадным до жён, властолюбив и неразумен в собственной жизни. Эффект подтверждён исследованиями Игоря Гроссмана и коллег (2014): люди значительно лучше рассуждают о чужих проблемах, чем о своих собственных. В ситуации «другого человека» мы более стратегически мыслим, чувствуем меньше эмоций, видим больше вариантов. В собственной — попадаем в эмоциональную яму, теряем дистанцию. Лекарство: при принятии своих решений посмотри на ситуацию «со стороны» — что бы ты посоветовал другу в той же ситуации.",
       "source": "Игорь Гроссманн, Этан Кросс и др., Psychological Science, 2014",
@@ -1019,7 +1400,13 @@ footer em { font-style: normal; color: var(--ink-soft); text-transform: none; le
         "Терапия / коучинг работает в том числе из-за этого: внешний взгляд экспертен",
         "Письмо: записать своё положение от третьего лица — снимает часть эмоции"
       ],
-      "influences": ["metacognition"]
+      "influences": [
+        "metacognition"
+      ],
+      "readings": [
+        "Игорь Гроссманн и др. — Reasoning about Other Lives in One's Own, Psychological Science, 2014",
+        "Ethan Kross — Chatter: The Voice in Our Head, 2021"
+      ]
     },
     {
       "id": "unanimity",
@@ -1027,7 +1414,11 @@ footer em { font-style: normal; color: var(--ink-soft); text-transform: none; le
       "name": "Парадокс единогласия",
       "category": "Эпистемология",
       "year": 2016,
-      "tags": ["независимость суждений", "статистика", "сговор"],
+      "tags": [
+        "независимость суждений",
+        "статистика",
+        "сговор"
+      ],
       "preview": "100% согласие на сложный вопрос — повод усомниться в самом вопросе.",
       "body": "Исследование 2016 года (Lachlan Gunn и др.) формализовало то, что юристы знали давно: если все свидетели описывают преступление абсолютно одинаково — это подозрительно, скорее всего был сговор или ошибка идентификации. В системах, где есть хоть какой-то шум (зрение, память, мнения), полное согласие статистически маловероятно. В Древнем еврейском суде дело отбрасывали, если все 23 судьи голосовали единогласно за смертную казнь — считали, что подсудимый не получил должной защиты. Перенос на команды и аналитику: 100% согласие на сложный вопрос — повод усомниться в самом вопросе или в независимости голосов.",
       "source": "Lachlan Gunn et al., «Too good to be true», Proc. Royal Society A, 2016; идея древняя (Талмуд, юриспруденция)",
@@ -1037,7 +1428,12 @@ footer em { font-style: normal; color: var(--ink-soft); text-transform: none; le
         "Аналитика: 99% позитива в опросе = проблема инструмента, не реальности",
         "Эксперимент: если результат «слишком чистый» — ищи методологический баг"
       ],
-      "influences": ["popper"]
+      "influences": [
+        "popper"
+      ],
+      "readings": [
+        "Lachlan Gunn et al. — Too good to be true: when overwhelming evidence fails to convince, Proc. Royal Society A, 2016"
+      ]
     },
     {
       "id": "grandstanding",
@@ -1045,7 +1441,11 @@ footer em { font-style: normal; color: var(--ink-soft); text-transform: none; le
       "name": "Спираль праведности",
       "category": "Системное мышление",
       "year": 2019,
-      "tags": ["мораль", "соцсети", "статус"],
+      "tags": [
+        "мораль",
+        "соцсети",
+        "статус"
+      ],
       "preview": "«Правее правого» — это чаще status game, чем убеждение.",
       "body": "Джастин Тоси и Брэндон Уормке в книге «Grandstanding» (2019) описали явление: в публичных моральных дискуссиях каждый участник пытается продемонстрировать, что он на более высоких моральных позициях, чем другие. Это порождает эскалацию — чтобы быть «правее» более правого, нужно занять ещё более экстремальную позицию. В соцсетях процесс ускоряется лайками. Итог — дискурс смещается к радикальностям, а тех, кто пытается быть прагматичным, обвиняют в моральной слабости. Эффект разрушает институты: превращает обсуждение проблем в соревнование добродетели.",
       "source": "Justin Tosi, Brandon Warmke, «Grandstanding: The Use and Abuse of Moral Talk», 2019",
@@ -1055,7 +1455,13 @@ footer em { font-style: normal; color: var(--ink-soft); text-transform: none; le
         "Свой ум: я сейчас занимаю эту позицию ради дела или ради быть-выше-других?",
         "Голосование: радикальные кандидаты часто продукт спирали, не запроса"
       ],
-      "influences": ["brandolini"]
+      "influences": [
+        "brandolini"
+      ],
+      "readings": [
+        "Justin Tosi, Brandon Warmke — Grandstanding: The Use and Abuse of Moral Talk, 2019",
+        "Jonathan Haidt — The Righteous Mind, 2012"
+      ]
     },
     {
       "id": "additive-bias",
@@ -1063,7 +1469,11 @@ footer em { font-style: normal; color: var(--ink-soft); text-transform: none; le
       "name": "Аддитивное смещение",
       "category": "Системное мышление",
       "year": 2021,
-      "tags": ["упрощение", "дизайн", "редукция"],
+      "tags": [
+        "упрощение",
+        "дизайн",
+        "редукция"
+      ],
       "preview": "Системы естественно растут по сложности, потому что добавлять интуитивно, а убирать — требует усилия.",
       "body": "Исследование Лей Адамс, Бенджамина Конверса и коллег (Nature, 2021): когда людей просят улучшить структуру, рисунок, текст или процесс, они в подавляющем большинстве случаев ДОБАВЛЯЮТ элементы — даже когда удаление работает лучше и проще. Авторы провели десятки экспериментов и нашли стойкое когнитивное смещение в сторону «больше». Применительно к продуктам, законодательству, бюрократии: системы естественно растут по сложности, потому что добавлять интуитивно, а убирать требует когнитивного усилия и социального риска. Лекарство: при улучшении сначала спроси «что можно убрать?», а не «что добавить?».",
       "source": "Лей Адамс, Бенджамин Конверс и др., «People systematically overlook subtractive changes», Nature, 2021",
@@ -1073,7 +1483,12 @@ footer em { font-style: normal; color: var(--ink-soft); text-transform: none; le
         "Свой день: убрать одно дело часто продуктивнее, чем добавить технику",
         "Дизайн: «убери, пока не сломается» — Бритва Оккама в действии"
       ],
-      "influences": ["occam"]
+      "influences": [
+        "occam"
+      ],
+      "readings": [
+        "Adams, Converse et al. — People systematically overlook subtractive changes, Nature, 2021"
+      ]
     },
     {
       "id": "spencer-divergence",
@@ -1081,7 +1496,11 @@ footer em { font-style: normal; color: var(--ink-soft); text-transform: none; le
       "name": "Закон расхождения",
       "category": "Системное мышление",
       "year": 1862,
-      "tags": ["эволюция", "специализация", "развитие"],
+      "tags": [
+        "эволюция",
+        "специализация",
+        "развитие"
+      ],
       "preview": "Развитие = специализация: то, что было однородным, неизбежно расходится в разные формы.",
       "body": "Герберт Спенсер в «First Principles» (1862) обобщил наблюдение, ставшее законом: любая развивающаяся система движется от состояния однородности к разнородности. Эмбрион из одинаковых клеток развивается в специализированные органы. Праязык расходится в семейство языков. Стартап «один делает всё» расходится в специализированные роли. Спенсер видел это как универсальный закон эволюции — от космоса до общества. Принцип противоположен идеям равенства и универсальности: естественное состояние развивающейся системы — это нарастающая дифференциация. Иногда называется принципом цепной реакции — однажды начавшись, расхождение разгоняется само.",
       "source": "Герберт Спенсер, «First Principles», 1862",
@@ -1091,7 +1510,11 @@ footer em { font-style: normal; color: var(--ink-soft); text-transform: none; le
         "Бизнес: с ростом рынок расщепляется на сегменты, нельзя обслуживать всех одинаково",
         "Команда: «все делают всё» работает до ~10 человек; дальше — расхождение неизбежно"
       ],
-      "influences": []
+      "influences": [],
+      "readings": [
+        "Herbert Spencer — First Principles, 1862",
+        "Spencer — A System of Synthetic Philosophy"
+      ]
     },
     {
       "id": "bogdanov-minimum",
@@ -1099,7 +1522,11 @@ footer em { font-style: normal; color: var(--ink-soft); text-transform: none; le
       "name": "Закон минимума Богданова",
       "category": "Системное мышление",
       "year": 1913,
-      "tags": ["слабое звено", "устойчивость", "тектология"],
+      "tags": [
+        "слабое звено",
+        "устойчивость",
+        "тектология"
+      ],
       "preview": "Цепь рвётся в самом тонком месте — это закон, не метафора.",
       "body": "Александр Богданов в «Тектологии» (1913–28) сформулировал: устойчивость целого определяется наименьшей из частных устойчивостей его элементов. Цепь рвётся в самом слабом звене, корабль тонет через самую тонкую переборку, команда падает под нагрузкой того, у кого меньше всего ресурса. Закон обобщает наблюдения Либиха (агрохимия, 1840-е), где урожай ограничивался дефицитнейшим элементом питания. Богданов перенёс это на любые системы — от технических до организационных. Усиление сильных частей не повышает прочность целого, пока есть слабое звено: сначала находишь минимум, потом всё остальное. Альтернативное название — «закон наименьших относительных сопротивлений».",
       "source": "Александр Богданов, «Тектология. Всеобщая организационная наука», 1913–28",
@@ -1109,7 +1536,11 @@ footer em { font-style: normal; color: var(--ink-soft); text-transform: none; le
         "Продукт: один плохой шаг в воронке гасит улучшения везде",
         "Безопасность: одна точка отказа = вся система уязвима"
       ],
-      "influences": []
+      "influences": [],
+      "readings": [
+        "А. А. Богданов — Тектология. Всеобщая организационная наука, 1913–28",
+        "John Biggart, Peter Dudley — Bogdanov and His Work, 1998"
+      ]
     },
     {
       "id": "bogdanov-monocentrism",
@@ -1117,7 +1548,11 @@ footer em { font-style: normal; color: var(--ink-soft); text-transform: none; le
       "name": "Принцип моноцентризма",
       "category": "Системное мышление",
       "year": 1913,
-      "tags": ["иерархия", "власть", "координация"],
+      "tags": [
+        "иерархия",
+        "власть",
+        "координация"
+      ],
       "preview": "Две головы у одного тела — не сила, а конфликт, тянущий систему в распад.",
       "body": "Богданов в «Тектологии» наблюдал: устойчивые организованные комплексы всегда имеют один центр — точку, через которую координируются части. Двуцентровая или многоцентровая система внутренне противоречива: части получают конфликтующие сигналы и тратят энергию на разруливание противоречий, а не на работу. Эволюционно моноцентричные системы переигрывают полицентричные. Это не идеология единоначалия — это инженерное наблюдение об устойчивости. На практике: в проекте один владелец решения, в продукте — одна северная звезда метрик, у компании — один CEO. Множественность хороша в дебатах, не в исполнении.",
       "source": "Александр Богданов, «Тектология», 1913–28",
@@ -1127,7 +1562,10 @@ footer em { font-style: normal; color: var(--ink-soft); text-transform: none; le
         "Семья: финансовые решения с одним owner, остальные участвуют, но не голосуют",
         "Стартап: совет директоров вместо CEO = классическая многоцентровая ловушка"
       ],
-      "influences": []
+      "influences": [],
+      "readings": [
+        "А. А. Богданов — Тектология, 1913–28"
+      ]
     },
     {
       "id": "bogdanov-continuity",
@@ -1135,7 +1573,11 @@ footer em { font-style: normal; color: var(--ink-soft); text-transform: none; le
       "name": "Принцип организационной непрерывности",
       "category": "Системное мышление",
       "year": 1913,
-      "tags": ["границы", "связность", "тектология"],
+      "tags": [
+        "границы",
+        "связность",
+        "тектология"
+      ],
       "preview": "Изолированных систем не бывает — есть только разные степени связи.",
       "body": "Богданов утверждал, что граница любой системы — это место её связи со средой, не разрыва. Не бывает абсолютно изолированных систем; всё связано через бесконечные цепочки взаимодействий, через переходные комплексы и промежуточные структуры. Этот принцип объясняет, почему «закрытые» системы рано или поздно дестабилизируются: изоляция — иллюзия, реальные связи накапливаются и в итоге прорываются. Перенос на организации: «независимая» команда внутри компании всё равно зависит от десятков косвенных связей, и игнорировать их — значит делать ошибки.",
       "source": "Александр Богданов, «Тектология», 1913–28",
@@ -1145,7 +1587,10 @@ footer em { font-style: normal; color: var(--ink-soft); text-transform: none; le
         "Личная жизнь: «работа отдельно, дом отдельно» — невозможно, ищи интерфейсы",
         "Геополитика: «изолированная экономика» — мифический объект"
       ],
-      "influences": []
+      "influences": [],
+      "readings": [
+        "А. А. Богданов — Тектология, 1913–28"
+      ]
     },
     {
       "id": "bogdanov-complementarity",
@@ -1153,7 +1598,11 @@ footer em { font-style: normal; color: var(--ink-soft); text-transform: none; le
       "name": "Принцип взаимно-дополнительных соотношений",
       "category": "Системное мышление",
       "year": 1913,
-      "tags": ["баланс", "противоречия", "устойчивость"],
+      "tags": [
+        "баланс",
+        "противоречия",
+        "устойчивость"
+      ],
       "preview": "Без напряжённого баланса противоположностей система или замирает, или взрывается.",
       "body": "Богданов наблюдал: в устойчивых системах есть пары взаимно-противоположных элементов, которые компенсируют друг друга. Жёсткость + гибкость в живых тканях, агрессия + сдерживание в иммунитете, экспансия + консолидация в компании. Не один полюс, не компромисс посередине — а напряжённая структура из обоих, где каждый работает в свою сторону. Если убрать один, второй разрушает систему. Принцип объясняет, почему «оптимизация в одну сторону» (только эффективность, только безопасность, только рост) ломает систему в длительной перспективе.",
       "source": "Александр Богданов, «Тектология», 1913–28",
@@ -1163,7 +1612,10 @@ footer em { font-style: normal; color: var(--ink-soft); text-transform: none; le
         "Решения: за каждым «делать X» должен быть кто-то, кто проверяет на риски X",
         "Личность: твоя сильная сторона требует компенсирующей слабой; не подавляй её полностью"
       ],
-      "influences": []
+      "influences": [],
+      "readings": [
+        "А. А. Богданов — Тектология, 1913–28"
+      ]
     },
     {
       "id": "feedback",
@@ -1171,7 +1623,11 @@ footer em { font-style: normal; color: var(--ink-soft); text-transform: none; le
       "name": "Принцип обратной связи",
       "category": "Системное мышление",
       "year": 1948,
-      "tags": ["управление", "кибернетика", "циклы"],
+      "tags": [
+        "управление",
+        "кибернетика",
+        "циклы"
+      ],
       "preview": "Без петли обратной связи никакая система не учится и не корректируется.",
       "body": "Норберт Винер в «Кибернетике» (1948) показал, что термостат, гомеостаз организма, навигация ракеты, обучение и эволюция — всё это варианты одного механизма: измерение реального результата, сравнение с целевым, корректировка действия. Без обратной связи система движется вслепую, и любое отклонение нарастает. Положительная обратная связь усиливает (микрофон → колонка → микрофон), отрицательная — стабилизирует (термостат). Перенос: организация, продукт, команда без петли обратной связи о результате — это «открытый цикл», и он будет дрейфовать.",
       "source": "Норберт Винер, «Кибернетика, или Управление и связь в животном и машине», 1948",
@@ -1181,7 +1637,11 @@ footer em { font-style: normal; color: var(--ink-soft); text-transform: none; le
         "Свой день: ретроспектива в конце недели — личная петля обратной связи",
         "Воспитание: без обратной связи на действия ребёнок (и взрослый) не учится"
       ],
-      "influences": []
+      "influences": [],
+      "readings": [
+        "Norbert Wiener — Кибернетика, 1948",
+        "W. Ross Ashby — An Introduction to Cybernetics, 1956"
+      ]
     },
     {
       "id": "bertalanffy-segregation",
@@ -1189,7 +1649,11 @@ footer em { font-style: normal; color: var(--ink-soft); text-transform: none; le
       "name": "Принцип прогрессирующей сегрегации",
       "category": "Системное мышление",
       "year": 1950,
-      "tags": ["развитие", "специализация", "автономия"],
+      "tags": [
+        "развитие",
+        "специализация",
+        "автономия"
+      ],
       "preview": "Зрелая система — это не «всё вместе», а множество отдельных модулей с интерфейсами.",
       "body": "Людвиг фон Берталанфи в общей теории систем (1950) описал: развивающиеся системы со временем дифференцируются — части становятся всё более специализированными, всё менее взаимозаменяемыми, всё более автономными. Эмбрион из единой клетки делится на специализированные ткани, ранний стартап из «все делают всё» расходится в отделы, обучающийся человек переходит от широты к глубине. Сегрегация повышает эффективность каждой части, но снижает гибкость целого. Это та цена, которую платит зрелая система за компетентность.",
       "source": "Людвиг фон Берталанфи, «An Outline of General System Theory», 1950",
@@ -1199,7 +1663,12 @@ footer em { font-style: normal; color: var(--ink-soft); text-transform: none; le
         "Продукт: фичи требуют отдельных владельцев по мере роста",
         "Бизнес: разделение функций неизбежно при росте, не сопротивляйся"
       ],
-      "influences": ["spencer-divergence"]
+      "influences": [
+        "spencer-divergence"
+      ],
+      "readings": [
+        "Ludwig von Bertalanffy — General System Theory, 1968"
+      ]
     },
     {
       "id": "bertalanffy-mechanization",
@@ -1207,7 +1676,11 @@ footer em { font-style: normal; color: var(--ink-soft); text-transform: none; le
       "name": "Принцип прогрессирующей механизации",
       "category": "Системное мышление",
       "year": 1950,
-      "tags": ["автоматизация", "регламент", "привычки"],
+      "tags": [
+        "автоматизация",
+        "регламент",
+        "привычки"
+      ],
       "preview": "Зрелая система не думает заново каждый раз — большая часть закодирована в правила.",
       "body": "Параллельный принцип к сегрегации, тоже Берталанфи. В развивающейся системе процессы, которые сначала требуют сознательного управления, постепенно превращаются в автоматизмы: правила, регламенты, рефлексы, привычки. Развитый организм не думает, как переваривать; зрелая компания не обсуждает на каждом совещании, как платить зарплату; опытный шахматист не думает над дебютом. Цена та же — снижение гибкости в обмен на эффективность. И обратная сторона: чем больше регламентов, тем сложнее адаптироваться к новому.",
       "source": "Людвиг фон Берталанфи, «An Outline of General System Theory», 1950",
@@ -1217,7 +1690,10 @@ footer em { font-style: normal; color: var(--ink-soft); text-transform: none; le
         "Продукт: автоматизируй то, что делаешь руками 3+ раза",
         "Опасность: чрезмерная механизация = потеря способности к адаптации; следи за балансом"
       ],
-      "influences": []
+      "influences": [],
+      "readings": [
+        "Ludwig von Bertalanffy — General System Theory, 1968"
+      ]
     },
     {
       "id": "beer-external",
@@ -1225,7 +1701,11 @@ footer em { font-style: normal; color: var(--ink-soft); text-transform: none; le
       "name": "Принцип внешнего дополнения",
       "category": "Системное мышление",
       "year": 1959,
-      "tags": ["управление", "верификация", "независимость"],
+      "tags": [
+        "управление",
+        "верификация",
+        "независимость"
+      ],
       "preview": "Система не может валидировать сама себя — нужен внешний наблюдатель.",
       "body": "Стаффорд Бир, кибернетик, развил эту идею в работах по управлению. Внутри системы есть слепые зоны: она не может оценить себя объективно, потому что использует свои же критерии для оценки. Для управления нужна точка вне системы, дающая внешнее «дополнение» — независимый сигнал. В организме это органы чувств (внешний мир), в фирме — внешний аудит, обратная связь от клиентов, рынок, который не подчиняется внутреннему пиару. Принцип объясняет, почему изолированные системы — тоталитарные режимы, закрытые секты, монопольные корпорации — теряют связь с реальностью и в итоге разрушаются.",
       "source": "Стаффорд Бир, кибернетик; идея развита в его работах конца 1950-х–1970-х",
@@ -1235,7 +1715,12 @@ footer em { font-style: normal; color: var(--ink-soft); text-transform: none; le
         "Стратегия: внешний эксперт раз в полгода ловит то, что изнутри не видно",
         "Принятие решений: спроси кого-то совсем не из твоей среды — он увидит другое"
       ],
-      "influences": ["feedback"]
+      "influences": [
+        "feedback"
+      ],
+      "readings": [
+        "Stafford Beer — Cybernetics and Management, 1959"
+      ]
     },
     {
       "id": "beer-recursive",
@@ -1243,7 +1728,11 @@ footer em { font-style: normal; color: var(--ink-soft); text-transform: none; le
       "name": "Теорема о рекурсивных структурах",
       "category": "Системное мышление",
       "year": 1972,
-      "tags": ["рекурсия", "управление", "VSM"],
+      "tags": [
+        "рекурсия",
+        "управление",
+        "VSM"
+      ],
       "preview": "Жизнеспособная система воспроизводит свою структуру на каждом уровне иерархии.",
       "body": "Стаффорд Бир в «Brain of the Firm» (1972) описал Viable System Model: каждая жизнеспособная система — организм, организация, государство — имеет одну и ту же функциональную структуру, состоящую из операционных единиц, координации между ними, тактического управления, стратегии и идентичности. И главное: каждая операционная единица САМА должна иметь те же пять подсистем внутри. Это рекурсия: правильная структура повторяется на каждом уровне. Если на каком-то уровне одной из пяти функций нет — система там «выпадает» из жизнеспособности.",
       "source": "Стаффорд Бир, «Brain of the Firm», 1972; модель VSM",
@@ -1253,7 +1742,14 @@ footer em { font-style: normal; color: var(--ink-soft); text-transform: none; le
         "Стартап: если нет тактического слоя между «видением» и «делать» — выпадает",
         "Проектное управление: каждый подпроект = «маленький бизнес» со всеми ролями"
       ],
-      "influences": ["feedback", "beer-external"]
+      "influences": [
+        "feedback",
+        "beer-external"
+      ],
+      "readings": [
+        "Stafford Beer — Brain of the Firm, 1972",
+        "Beer — The Heart of Enterprise, 1979"
+      ]
     },
     {
       "id": "sedov-compensation",
@@ -1261,7 +1757,11 @@ footer em { font-style: normal; color: var(--ink-soft); text-transform: none; le
       "name": "Закон иерархических компенсаций",
       "category": "Системное мышление",
       "year": 1993,
-      "tags": ["разнообразие", "регулирование", "иерархия"],
+      "tags": [
+        "разнообразие",
+        "регулирование",
+        "иерархия"
+      ],
       "preview": "Зажимая систему в одном месте, ты заставляешь её бунтовать в другом.",
       "body": "Евгений Седов сформулировал в начале 1990-х: жёсткое регулирование на одном уровне системы порождает рост разнообразия и нерегулируемости на других уровнях. Если в обществе подавляется политическое разнообразие, оно прорывается в культуре, криминале, бытовом поведении. Если в команде формализованы все процессы, люди компенсируют это неформальными договорённостями. Если в семье запрещены некоторые эмоции, они выходят через симптомы. Это развитие закона Эшби о необходимом разнообразии: разнообразие нельзя уничтожить, его можно только переместить.",
       "source": "Евгений Александрович Седов, российский кибернетик, сформулировано в работах 1990-х",
@@ -1271,7 +1771,12 @@ footer em { font-style: normal; color: var(--ink-soft); text-transform: none; le
         "Воспитание: запретное становится более привлекательным — это тоже компенсация",
         "Свои привычки: подавляя одно (тягу к сладкому), готовься, что прорвётся через другое"
       ],
-      "influences": ["ashby"]
+      "influences": [
+        "ashby"
+      ],
+      "readings": [
+        "Е. А. Седов — Эволюция и информация, 1993"
+      ]
     },
     {
       "id": "diminishing-returns",
@@ -1279,7 +1784,11 @@ footer em { font-style: normal; color: var(--ink-soft); text-transform: none; le
       "name": "Закон убывающей отдачи",
       "category": "Системное мышление",
       "year": 1767,
-      "tags": ["оптимум", "эффективность", "вход-выход"],
+      "tags": [
+        "оптимум",
+        "эффективность",
+        "вход-выход"
+      ],
       "preview": "Удвоить вход — почти никогда не значит удвоить результат.",
       "body": "Сформулирован Анном Робером Жаком Тюрго в 1767 году в контексте сельского хозяйства: добавляя удобрение или работников на одно поле, урожай растёт, но с каждым добавочным шагом всё меньше. Дэвид Рикардо (1815) обобщил для экономики. В современной форме: для большинства процессов вход и выход связаны вогнутой кривой — первые единицы усилия дают огромный результат, потом нарастают медленнее, в какой-то точке дополнительный вход даёт нулевую или отрицательную отдачу. Объясняет, почему «работать больше часов» имеет предел, почему «нанять больше людей» не ускоряет проект бесконечно, и почему оптимизация — это нахождение точки максимума, а не максимизация любой ценой.",
       "source": "Анн Робер Жак Тюрго, 1767; обобщение — Дэвид Рикардо, «Принципы политической экономии», 1815",
@@ -1289,7 +1798,11 @@ footer em { font-style: normal; color: var(--ink-soft); text-transform: none; le
         "Бюджеты: «удвой инвестицию = удвой результат» почти никогда не работает",
         "Тренировка: больше нагрузки ≠ больше результата; есть точка перетренированности"
       ],
-      "influences": []
+      "influences": [],
+      "readings": [
+        "A. R. J. Turgot — Réflexions sur la formation et la distribution des richesses, 1767",
+        "Дэвид Рикардо — Принципы политической экономии, 1817"
+      ]
     },
     {
       "id": "le-chatelier",
@@ -1297,7 +1810,11 @@ footer em { font-style: normal; color: var(--ink-soft); text-transform: none; le
       "name": "Принцип Ле Шателье — Брауна",
       "category": "Термодинамика",
       "year": 1884,
-      "tags": ["равновесие", "гомеостаз", "компенсация"],
+      "tags": [
+        "равновесие",
+        "гомеостаз",
+        "компенсация"
+      ],
       "preview": "Любая система, на которую давишь, отвечает обратным давлением — это закон, не реакция персонала.",
       "body": "Анри Ле Шателье и Карл Браун в 1884–1887 годах независимо сформулировали: если на химическую систему в равновесии оказать внешнее воздействие (повысить давление, температуру, концентрацию), система сместит равновесие в направлении, компенсирующем это воздействие. Это термодинамический гомеостаз. Принцип переносится за пределы химии: социальные системы отвечают на давление сопротивлением, рынки на регулирование — обходными путями, экосистемы на возмущения — самовосстановлением. Объясняет, почему «силовые» интервенции в сложные системы редко дают желаемый прямой эффект — система реорганизуется так, чтобы вернуться к чему-то близкому к исходному состоянию.",
       "source": "Анри Ле Шателье, 1884; Карл Браун, 1887",
@@ -1307,7 +1824,13 @@ footer em { font-style: normal; color: var(--ink-soft); text-transform: none; le
         "Команда: жёсткое изменение «сверху» вызывает компенсирующее сопротивление",
         "Терапия: симптом, который убираешь, часто появляется в другом виде"
       ],
-      "influences": ["entropy"]
+      "influences": [
+        "entropy"
+      ],
+      "readings": [
+        "Henri Le Chatelier — Comptes rendus, 1884",
+        "P. W. Atkins — Физическая химия, гл. о равновесии"
+      ]
     },
     {
       "id": "russell-humility",
@@ -1315,7 +1838,11 @@ footer em { font-style: normal; color: var(--ink-soft); text-transform: none; le
       "name": "Эпистемическое смирение",
       "category": "Эпистемология",
       "year": 1912,
-      "tags": ["границы знания", "уверенность", "осторожность"],
+      "tags": [
+        "границы знания",
+        "уверенность",
+        "осторожность"
+      ],
       "preview": "«Я знаю, что я ничего не знаю» — точка отсчёта, не финал.",
       "body": "Восходит к Сократу: «я знаю, что я ничего не знаю». Современная систематическая формулировка — у Бертрана Рассела в «Проблемах философии» (1912) и далее в работах Поппера и Талеба: настоящий мудрец признаёт пределы своего знания, дурак не подозревает о них. Эпистемическое смирение — не пассивность, а активная практика: при каждом высказывании добавлять «по моему текущему пониманию», при каждой уверенности — задавать себе вопрос «откуда это, и могу ли я ошибаться?». Это противоположно Даннинг-Крюгеру: чем больше человек знает, тем больше чувствует пределы своего знания, тем осторожнее делает заявления.",
       "source": "Бертран Рассел, «Проблемы философии», 1912; идея восходит к Сократу",
@@ -1325,7 +1852,14 @@ footer em { font-style: normal; color: var(--ink-soft); text-transform: none; le
         "Чтение: «возможно, я не до конца понял автора» — продуктивная позиция",
         "Команда: лидер, признающий незнание, открывает пространство для команды"
       ],
-      "influences": ["socratic", "dunning-kruger"]
+      "influences": [
+        "socratic",
+        "dunning-kruger"
+      ],
+      "readings": [
+        "Bertrand Russell — Проблемы философии, 1912",
+        "Russell — История западной философии, 1945"
+      ]
     },
     {
       "id": "stanislavsky",
@@ -1333,7 +1867,11 @@ footer em { font-style: normal; color: var(--ink-soft); text-transform: none; le
       "name": "Метод физических действий",
       "category": "Личная философия",
       "year": 1934,
-      "tags": ["действие", "эмоции", "телесность"],
+      "tags": [
+        "действие",
+        "эмоции",
+        "телесность"
+      ],
       "preview": "Не жди правильного настроения для действия — начинай действие, настроение придёт.",
       "body": "Константин Станиславский в позднем периоде (1934 г.) пересмотрел свою же раннюю «систему» и пришёл к парадоксальной идее: вместо того чтобы пытаться вызвать в себе эмоцию (это часто не работает или порождает фальшь), актёр должен сосредоточиться на конкретных физических действиях — как именно я ставлю стакан, как поворачиваю голову, с какой скоростью говорю. Эмоция возникает как побочный продукт точно сделанного действия. Это инверсия привычного «сначала почувствуй, потом сделай». Современная нейропсихология подтверждает: тело и эмоция связаны двусторонне, и сознательное изменение позы, дыхания, темпа меняет внутреннее состояние не хуже, чем медитация.",
       "source": "Константин Станиславский, поздние работы по «методу физических действий», ~1934",
@@ -1343,7 +1881,11 @@ footer em { font-style: normal; color: var(--ink-soft); text-transform: none; le
         "Лидерство: ведёшь себя как уверенный — становишься им (Кадди, power poses — наследник)",
         "Творчество: жди вдохновения = ноль продукта; делай первую плохую версию, появится поток"
       ],
-      "influences": []
+      "influences": [],
+      "readings": [
+        "К. С. Станиславский — Работа актёра над собой, 1938",
+        "Sonia Moore — The Stanislavski System, 1965"
+      ]
     },
     {
       "id": "wittgenstein-ruler",
@@ -1351,7 +1893,11 @@ footer em { font-style: normal; color: var(--ink-soft); text-transform: none; le
       "name": "Линейка Витгенштейна",
       "category": "Эпистемология",
       "year": 1953,
-      "tags": ["измерение", "предвзятость", "проекция"],
+      "tags": [
+        "измерение",
+        "предвзятость",
+        "проекция"
+      ],
       "preview": "Если линейка кривая, она измеряет не стол, а свою кривизну.",
       "body": "Витгенштейн в «Философских исследованиях» (1953) задал метафору, которую Талеб развил в «Чёрном лебеде» (2007): если линейка кривая, она не столько измеряет стол, сколько показывает свою кривизну, проецируя её на стол. Когда инструмент или эксперт неточен, использовать его — значит измерять не реальность, а его собственные искажения. Если ты читаешь биографа с предвзятостью к героизму, его книга — это в большей степени биография биографа, чем героя. Если аналитик систематически ошибается на 20%, его прогноз говорит больше о нём, чем о рынке. Принцип превращает оценку «надёжности инструмента» в первичный вопрос, который надо задать ДО того, как доверять его данным.",
       "source": "Людвиг Витгенштейн, «Философские исследования», 1953; метафора расширена Талебом в «Чёрном лебеде», 2007",
@@ -1361,7 +1907,13 @@ footer em { font-style: normal; color: var(--ink-soft); text-transform: none; le
         "Найм: интервьюер с предвзятостью оценивает скорее свои страхи, чем кандидата",
         "Самонаблюдение: твои оценки других — часто проекция, не наблюдение"
       ],
-      "influences": ["popper"]
+      "influences": [
+        "popper"
+      ],
+      "readings": [
+        "Ludwig Wittgenstein — Философские исследования, 1953",
+        "Nassim Taleb — Чёрный лебедь, 2007, гл. о линейке Витгенштейна"
+      ]
     },
     {
       "id": "i-pencil",
@@ -1369,7 +1921,11 @@ footer em { font-style: normal; color: var(--ink-soft); text-transform: none; le
       "name": "I, Pencil",
       "category": "Системное мышление",
       "year": 1958,
-      "tags": ["распределённое знание", "координация", "рынки"],
+      "tags": [
+        "распределённое знание",
+        "координация",
+        "рынки"
+      ],
       "preview": "Ни один человек на Земле не способен сам сделать карандаш с нуля.",
       "body": "Леонард Рид в эссе «I, Pencil» (1958) показал: карандаш — простейшая вещь, и при этом ни один человек на Земле не способен сам сделать карандаш с нуля. Для него нужен графит из Шри-Ланки, кедр из Орегона, краска из Германии, медь из Чили, восковая полировка из Бразилии. Каждый шаг — отдельные люди, отдельные знания, отдельные традиции. Они не знают друг друга и не знают, что вместе делают карандаш. Эссе — классическое объяснение того, что Хайек называл «расширенным порядком»: сложные результаты возникают через распределённую координацию, без центрального плана. Попытки централизованно понимать «всё» обречены; знание распределено по системе.",
       "source": "Леонард Рид, «I, Pencil», 1958; развивает идеи Адама Смита и Фридриха Хайека",
@@ -1379,7 +1935,13 @@ footer em { font-style: normal; color: var(--ink-soft); text-transform: none; le
         "Личное: эксперт в одной узкой области полезнее «универсала во всём»",
         "Стартап: «не изобретай велосипед» — используй чужую распределённую работу"
       ],
-      "influences": ["spencer-divergence"]
+      "influences": [
+        "spencer-divergence"
+      ],
+      "readings": [
+        "Leonard Read — I, Pencil, 1958 (FEE)",
+        "Friedrich Hayek — The Use of Knowledge in Society, AER, 1945"
+      ]
     },
     {
       "id": "illusion-knowledge",
@@ -1387,7 +1949,11 @@ footer em { font-style: normal; color: var(--ink-soft); text-transform: none; le
       "name": "Иллюзия знания",
       "category": "Эпистемология",
       "year": 1989,
-      "tags": ["самооценка", "избыток информации", "решения"],
+      "tags": [
+        "самооценка",
+        "избыток информации",
+        "решения"
+      ],
       "preview": "Уверенность растёт быстрее точности — это самообман.",
       "body": "Дж. Эдвард Руссо и Пол Шумейкер в книге «Decision Traps» (1989) описали эффект: при получении дополнительной информации о решении люди значительно усиливают свою уверенность в правильности этого решения, но точность их прогнозов почти не растёт. Психологи продемонстрировали это на букмекерах, врачах, инвесторах: дай им больше данных — уверенность взлетит, точность останется прежней. Информации много не = знания много. Знание — это связи, проверка, опровергаемость, навык применения. «Я прочитал десять статей по теме» создаёт иллюзию экспертизы там, где её ещё нет. Лекарство — отделять «насколько я уверен» от «насколько у меня есть основания быть уверенным».",
       "source": "Дж. Эдвард Руссо, Пол Шумейкер, «Decision Traps», 1989",
@@ -1397,7 +1963,14 @@ footer em { font-style: normal; color: var(--ink-soft); text-transform: none; le
         "Найм: «прошёл 5 интервью» = больше уверенности, но не обязательно точность найма",
         "Свой ум: разделяй чувство уверенности и основания для неё"
       ],
-      "influences": ["dunning-kruger", "russell-humility"]
+      "influences": [
+        "dunning-kruger",
+        "russell-humility"
+      ],
+      "readings": [
+        "J. Edward Russo, Paul Schoemaker — Decision Traps, 1989",
+        "Daniel Kahneman — Думай медленно… решай быстро, 2011"
+      ]
     },
     {
       "id": "swimmer-illusion",
@@ -1405,7 +1978,11 @@ footer em { font-style: normal; color: var(--ink-soft); text-transform: none; le
       "name": "Иллюзия тела пловца",
       "category": "Эпистемология",
       "year": 2011,
-      "tags": ["выживание", "отбор", "причинность"],
+      "tags": [
+        "выживание",
+        "отбор",
+        "причинность"
+      ],
       "preview": "Видя результат, мы достраиваем причину — обычно ошибаясь.",
       "body": "Рольф Добелли в «Искусстве ясно мыслить» (2011) описал ловушку: глядя на профессиональных пловцов, мы думаем, что плавание делает тело идеальным. На самом деле — спортивная медицина их выбирала за идеальное от природы тело. Большинство людей, плавающих столько же часов, не получат такого тела. Это частный случай survivorship bias: видя только финал, мы достраиваем причинно-следственную связь, игнорируя отбор. Применительно к успеху: книги «как стать миллионером» от миллионеров игнорируют, что у них могло быть стартовое преимущество, которое и есть настоящая причина.",
       "source": "Рольф Добелли, «Die Kunst des klaren Denkens», 2011; продолжает идеи о survivorship bias",
@@ -1415,7 +1992,13 @@ footer em { font-style: normal; color: var(--ink-soft); text-transform: none; le
         "Карьера: совет от состоявшегося человека учитывает его контекст, не твой",
         "Самооценка: «у меня не получилось как у него» — может, у него были другие условия"
       ],
-      "influences": ["hume"]
+      "influences": [
+        "hume"
+      ],
+      "readings": [
+        "Rolf Dobelli — Искусство ясно мыслить, 2011",
+        "Nassim Taleb — Fooled by Randomness, 2001"
+      ]
     },
     {
       "id": "kuznetsov",
@@ -1423,7 +2006,11 @@ footer em { font-style: normal; color: var(--ink-soft); text-transform: none; le
       "name": "Закон исторического развития (Кузнецова)",
       "category": "Системное мышление",
       "year": 1981,
-      "tags": ["развитие", "энергетика", "цивилизация"],
+      "tags": [
+        "развитие",
+        "энергетика",
+        "цивилизация"
+      ],
       "preview": "Прогресс — это не идеология, а измеримый рост полезной мощности.",
       "body": "Побиск Кузнецов, советский учёный, в работах 1970–80-х предложил физическую меру исторического развития: суммарная полезная мощность (энергия, направленная на достижение целей) на душу населения. Цивилизация растёт, если эта величина растёт; стагнирует, если стоит; деградирует, если падает. В отличие от ВВП, это не финансовая абстракция, а физическая характеристика. Закон обнажает то, что обычно скрыто: благосостояние = умножение полезной работы на голову, и любые социальные изменения нужно мерить через эту меру. Идея остаётся периферийной для мейнстрим-экономики, но среди системщиков и физиков-обществоведов имеет авторитет.",
       "source": "Побиск Кузнецов, советский учёный, работы 1970–80-х; концепция «устойчивого развития» через мощность",
@@ -1433,7 +2020,11 @@ footer em { font-style: normal; color: var(--ink-soft); text-transform: none; le
         "Личное: твой прогресс = выросла полезная работа в единицу времени, не часы",
         "Оценка реформ: «стало лучше» = выросла мощность, а не «настроение в опросе»"
       ],
-      "influences": []
+      "influences": [],
+      "readings": [
+        "П. Г. Кузнецов — Мощность как мера развития цивилизации, работы 1970-х",
+        "Большаков, Кузнецов — Устойчивое развитие, 2000-е"
+      ]
     },
     {
       "id": "emergence",
@@ -1441,7 +2032,11 @@ footer em { font-style: normal; color: var(--ink-soft); text-transform: none; le
       "name": "Эмерджентность",
       "category": "Системное мышление",
       "year": 1925,
-      "tags": ["целое", "новизна", "уровни"],
+      "tags": [
+        "целое",
+        "новизна",
+        "уровни"
+      ],
       "preview": "Вода — это не сумма свойств водорода и кислорода. Сознание — не сумма нейронов.",
       "body": "Термин «emergence» в современном смысле закрепил Конви Ллойд Морган в книге «Emergent Evolution» (1923–25), развивая идеи Дж. Г. Льюиса (1875). Главная мысль: при объединении частей в систему возникают качества, которых не было ни у одной из частей, и которые нельзя предсказать только из их свойств. Вода — мокрая, хотя водород и кислород по отдельности не «мокрые». Сознание — не сумма нейронов. Команда — не сумма людей. Эмерджентность — основа понимания, почему редукционизм («разберём на части и сложим») часто не работает в сложных системах. Системные свойства живут на своём уровне.",
       "source": "Конви Ллойд Морган, «Emergent Evolution», 1923–25; идея ранее у Дж. Г. Льюиса, 1875",
@@ -1451,7 +2046,11 @@ footer em { font-style: normal; color: var(--ink-soft); text-transform: none; le
         "Продукт: пользовательский опыт эмерджентен — нельзя собрать UX из суммы фич",
         "Самопонимание: ты — не сумма своих качеств; ты эмерджентен из них"
       ],
-      "influences": []
+      "influences": [],
+      "readings": [
+        "C. Lloyd Morgan — Emergent Evolution, 1923",
+        "Steven Johnson — Emergence: The Connected Lives of Ants, Brains, Cities, 2001"
+      ]
     },
     {
       "id": "godel",
@@ -1459,7 +2058,11 @@ footer em { font-style: normal; color: var(--ink-soft); text-transform: none; le
       "name": "Теорема Гёделя о неполноте",
       "category": "Эпистемология",
       "year": 1931,
-      "tags": ["формальные системы", "пределы", "доказательство"],
+      "tags": [
+        "формальные системы",
+        "пределы",
+        "доказательство"
+      ],
       "preview": "Нельзя построить непротиворечивую и полную систему — что-то всегда останется недоказуемым.",
       "body": "Курт Гёдель в 1931 году доказал, что любая формальная система, в которой можно сформулировать арифметику, либо неполна (содержит истинные утверждения, недоказуемые внутри), либо противоречива. Это шокировало математиков начала XX века, веривших в проект Гильберта — построить полное основание математики. Перенос за пределы математики: любая система знания, претендующая на полноту, наталкивается на свои внутренние пределы. Любая модель реальности содержит точки, в которых она ничего не может сказать. Это не философский релятивизм — это математически доказанный результат о пределах формального мышления.",
       "source": "Курт Гёдель, «Über formal unentscheidbare Sätze...», 1931",
@@ -1469,7 +2072,14 @@ footer em { font-style: normal; color: var(--ink-soft); text-transform: none; le
         "Стратегия: модель рынка всегда упускает что-то — не путай модель с реальностью",
         "Свой ум: непротиворечивое мировоззрение требует слепых пятен"
       ],
-      "influences": ["socratic"]
+      "influences": [
+        "socratic"
+      ],
+      "readings": [
+        "Курт Гёдель — Über formal unentscheidbare Sätze, 1931",
+        "Ernest Nagel, James Newman — Доказательство Гёделя, 1958",
+        "Douglas Hofstadter — Гёдель, Эшер, Бах, 1979"
+      ]
     },
     {
       "id": "homeostasis",
@@ -1477,7 +2087,11 @@ footer em { font-style: normal; color: var(--ink-soft); text-transform: none; le
       "name": "Гомеостаз",
       "category": "Системное мышление",
       "year": 1932,
-      "tags": ["саморегуляция", "стабильность", "биология"],
+      "tags": [
+        "саморегуляция",
+        "стабильность",
+        "биология"
+      ],
       "preview": "Температура тела, уровень глюкозы, кислотность крови — миллионы петель обратной связи держат норму.",
       "body": "Уолтер Кэннон в «The Wisdom of the Body» (1932) ввёл термин «гомеостаз» — способность живой системы поддерживать постоянство внутренней среды через активные компенсирующие механизмы. Температура тела колеблется в десятых долях градуса, несмотря на жару и холод. Уровень глюкозы, кислотность, осмотическое давление — всё держится в узких границах через сложные обратные связи. Принцип шире биологии: любая жизнеспособная система имеет гомеостатические механизмы для критических параметров. Команда, компания, общество — то же. Когда механизм отказывает, система деградирует или умирает.",
       "source": "Уолтер Кэннон, «The Wisdom of the Body», 1932",
@@ -1487,7 +2101,13 @@ footer em { font-style: normal; color: var(--ink-soft); text-transform: none; le
         "Бизнес: денежный поток как гомеостат — компенсаторные механизмы или их отсутствие",
         "Отношения: каждый возвращается к baseline; нужны системные изменения, не вспышки"
       ],
-      "influences": ["feedback"]
+      "influences": [
+        "feedback"
+      ],
+      "readings": [
+        "Walter Cannon — The Wisdom of the Body, 1932",
+        "Stafford Beer — Brain of the Firm, 1972"
+      ]
     },
     {
       "id": "wiener-rosenblueth",
@@ -1495,7 +2115,11 @@ footer em { font-style: normal; color: var(--ink-soft); text-transform: none; le
       "name": "Принцип Винера-Розенблюэта",
       "category": "Системное мышление",
       "year": 1945,
-      "tags": ["модели", "упрощение", "карта-территория"],
+      "tags": [
+        "модели",
+        "упрощение",
+        "карта-территория"
+      ],
       "preview": "«Лучшая материальная модель кота — это другой, желательно тот же, кот.»",
       "body": "Артуро Розенблюэт и Норберт Винер в статье «The Role of Models in Science» (1945) сформулировали парадокс моделирования: любая модель — это упрощение, и чем сильнее упрощение, тем больше упускается важного. В пределе только сама система полностью описывает себя. На практике мы вынуждены работать с упрощёнными моделями, но должны помнить: модель не равна реальности, и неучтённое в модели — это всегда риск. Принцип противоположен «модель достаточно хороша, чтобы на неё полагаться» — он напоминает, что у любой модели есть пределы применимости.",
       "source": "Артуро Розенблюэт, Норберт Винер, «The Role of Models in Science», Philosophy of Science, 1945",
@@ -1505,7 +2129,13 @@ footer em { font-style: normal; color: var(--ink-soft); text-transform: none; le
         "Команда: организационная диаграмма ≠ реальная сеть отношений",
         "Стратегия: модель рынка — карта, не территория"
       ],
-      "influences": ["popper"]
+      "influences": [
+        "popper"
+      ],
+      "readings": [
+        "Rosenblueth, Wiener — The Role of Models in Science, Philosophy of Science, 1945",
+        "George Box — Robustness in the Strategy of Scientific Model Building, 1979"
+      ]
     },
     {
       "id": "shannon-hartley",
@@ -1513,7 +2143,11 @@ footer em { font-style: normal; color: var(--ink-soft); text-transform: none; le
       "name": "Закон Шеннона-Хартли",
       "category": "Термодинамика",
       "year": 1948,
-      "tags": ["каналы", "шум", "коммуникация"],
+      "tags": [
+        "каналы",
+        "шум",
+        "коммуникация"
+      ],
       "preview": "Через узкий шумный канал больше определённого объёма информации не пройдёт.",
       "body": "Клод Шеннон и Ральф Хартли в 1948 году сформулировали фундаментальный предел: максимальная скорость передачи информации через канал связи равна B·log₂(1+S/N), где B — ширина полосы, S — мощность сигнала, N — мощность шума. Этот предел нельзя превзойти никакой умной кодировкой. Принцип переносится за пределы радиосвязи: в любом канале коммуникации (разговор, переписка, презентация) есть свой предел пропускной способности. Узкий канал + шум = небольшой объём передаваемого смысла. Объясняет, почему сжатые слайды и плохая связь не передают сложное; и почему медиум определяет содержание (как у Маклюэна).",
       "source": "Клод Шеннон, Ральф Хартли, «A Mathematical Theory of Communication», 1948",
@@ -1523,7 +2157,13 @@ footer em { font-style: normal; color: var(--ink-soft); text-transform: none; le
         "Слайды: сжатие хорошо до предела; дальше теряется смысл",
         "Обучение: не пытайся загрузить максимум за час; пропускная ограничена"
       ],
-      "influences": ["shannon"]
+      "influences": [
+        "shannon"
+      ],
+      "readings": [
+        "Claude Shannon — A Mathematical Theory of Communication, 1948",
+        "Marshall McLuhan — Понимание медиа, 1964"
+      ]
     },
     {
       "id": "tacit-knowledge",
@@ -1531,7 +2171,11 @@ footer em { font-style: normal; color: var(--ink-soft); text-transform: none; le
       "name": "Молчаливое знание",
       "category": "Эпистемология",
       "year": 1966,
-      "tags": ["знание", "практика", "мастерство"],
+      "tags": [
+        "знание",
+        "практика",
+        "мастерство"
+      ],
       "preview": "Невозможно записать в книге, как ездить на велосипеде — нужно сесть и ехать.",
       "body": "Майкл Поляньи в «The Tacit Dimension» (1966) сформулировал: значительная часть нашего знания неявная (tacit) — её нельзя выразить словами, формулами, инструкциями. Мы умеем распознавать лица, ездить на велосипеде, чувствовать тональность разговора, проектировать продукт — но не можем точно объяснить как. Это знание передаётся только через прямой контакт, наблюдение, практику. Контраст с явным (explicit) знанием — книгами, схемами, регламентами. Принцип объясняет, почему мастерство передаётся через ученичество, а не через учебники; почему документация никогда не заменит опытного коллегу; почему «уход эксперта» уносит знания, которые компания думала, что задокументирована.",
       "source": "Майкл Поляньи, «The Tacit Dimension», 1966",
@@ -1541,7 +2185,11 @@ footer em { font-style: normal; color: var(--ink-soft); text-transform: none; le
         "Команда: пары / менторинг = главный механизм передачи tacit-знания",
         "Свой ум: что я умею, но не могу объяснить? Это твоё реальное мастерство"
       ],
-      "influences": []
+      "influences": [],
+      "readings": [
+        "Michael Polanyi — The Tacit Dimension, 1966",
+        "Polanyi — Personal Knowledge, 1958"
+      ]
     },
     {
       "id": "conant-ashby",
@@ -1549,7 +2197,11 @@ footer em { font-style: normal; color: var(--ink-soft); text-transform: none; le
       "name": "Теорема Конанта-Эшби о хорошем регуляторе",
       "category": "Системное мышление",
       "year": 1970,
-      "tags": ["управление", "модели", "регуляция"],
+      "tags": [
+        "управление",
+        "модели",
+        "регуляция"
+      ],
       "preview": "Управляющий не может быть проще того, чем он управляет.",
       "body": "Роджер Конант и Уильям Эшби в 1970 году формально доказали: любой эффективный регулятор системы должен содержать модель этой системы. Простой регулятор не управляет сложной системой — он лишь реагирует, и эта реакция всегда отстаёт от изменений. Чтобы предвидеть, нужно моделировать; чтобы моделировать — нужно быть достаточно сложным. Теорема развивает закон необходимого разнообразия Эшби. Перенос: руководитель не может управлять командой, которую не понимает изнутри; врач — пациентом, чью физиологию не знает; политик — обществом, которое не моделирует. Простота управляющего = провал управления.",
       "source": "Роджер Конант, Уильям Эшби, «Every good regulator of a system must be a model of that system», 1970",
@@ -1559,7 +2211,13 @@ footer em { font-style: normal; color: var(--ink-soft); text-transform: none; le
         "Стратегия: твоё представление о рынке = твой потолок управления им",
         "Воспитание: понимание ребёнка > правил воспитания"
       ],
-      "influences": ["ashby", "feedback"]
+      "influences": [
+        "ashby",
+        "feedback"
+      ],
+      "readings": [
+        "Roger Conant, W. Ross Ashby — Every good regulator of a system must be a model of that system, Int. J. of Systems Sci., 1970"
+      ]
     },
     {
       "id": "more-is-different",
@@ -1567,7 +2225,11 @@ footer em { font-style: normal; color: var(--ink-soft); text-transform: none; le
       "name": "«More is different» (Андерсон)",
       "category": "Системное мышление",
       "year": 1972,
-      "tags": ["сложность", "уровни", "редукционизм"],
+      "tags": [
+        "сложность",
+        "уровни",
+        "редукционизм"
+      ],
       "preview": "Зная всё про молекулы, ты не выведешь биологию — нужна новая наука.",
       "body": "Филип Андерсон, нобелевский лауреат по физике, в статье «More is different» (Science, 1972) обозначил: редукционистская мечта свести всё к фундаментальной физике не работает. На каждом уровне сложности — от частиц к атомам, к молекулам, к жизни, к мысли, к обществу — возникают качественно новые законы. Сообщества молекул подчиняются химии, которая не сводится к физике частиц; биология не сводится к химии; сознание не сводится к биологии. Каждый уровень требует собственного языка. Это эпистемологический ответ на редукционизм: «всё — атомы» формально верно, но бесполезно для понимания общества.",
       "source": "Филип Андерсон, «More is different», Science, 1972",
@@ -1577,7 +2239,13 @@ footer em { font-style: normal; color: var(--ink-soft); text-transform: none; le
         "Поведение: «у него такие черты характера» не объясняет действий в команде — другой уровень",
         "Знание: специалист на одном уровне не специалист на другом, даже близком"
       ],
-      "influences": ["emergence"]
+      "influences": [
+        "emergence"
+      ],
+      "readings": [
+        "Philip Anderson — More is different, Science, 1972",
+        "Stuart Kauffman — At Home in the Universe, 1995"
+      ]
     },
     {
       "id": "bifurcation",
@@ -1585,7 +2253,11 @@ footer em { font-style: normal; color: var(--ink-soft); text-transform: none; le
       "name": "Точка бифуркации",
       "category": "Системное мышление",
       "year": 1977,
-      "tags": ["хаос", "выбор", "развитие"],
+      "tags": [
+        "хаос",
+        "выбор",
+        "развитие"
+      ],
       "preview": "Большую часть времени развитие плавно — но в редкие моменты выбора всё решается.",
       "body": "Илья Пригожин (нобелевский лауреат по химии, 1977) развил математику диссипативных структур и точек бифуркации. Нелинейная система с энергообменом движется плавно, пока не достигает точки неустойчивости — там малое возмущение запускает резкий переход в одно из качественно новых состояний. После прохождения бифуркации возврат назад невозможен. Принцип объясняет фазовые переходы в физике, революции в обществе, переломные моменты в карьере и отношениях. Большая часть жизни плавная, но определяется редкими точками бифуркации, где выбор имеет долгосрочные последствия.",
       "source": "Илья Пригожин, «Self-Organization in Non-Equilibrium Systems», 1977",
@@ -1595,7 +2267,13 @@ footer em { font-style: normal; color: var(--ink-soft); text-transform: none; le
         "Команда: моменты найма ключевых людей — часто бифуркации",
         "Личное: один разговор может изменить десятилетие — будь готов"
       ],
-      "influences": ["butterfly"]
+      "influences": [
+        "butterfly"
+      ],
+      "readings": [
+        "Илья Пригожин, Изабелла Стенгерс — Порядок из хаоса, 1984",
+        "Пригожин — Конец определённости, 1996"
+      ]
     },
     {
       "id": "metcalfe",
@@ -1603,7 +2281,11 @@ footer em { font-style: normal; color: var(--ink-soft); text-transform: none; le
       "name": "Закон Меткалфа",
       "category": "Системное мышление",
       "year": 1980,
-      "tags": ["сети", "масштаб", "ценность"],
+      "tags": [
+        "сети",
+        "масштаб",
+        "ценность"
+      ],
       "preview": "Сеть из 100 узлов в 100 раз ценнее сети из 10 — а не в 10 раз.",
       "body": "Роберт Меткалф, изобретатель Ethernet, сформулировал в 1980-м: ценность сети связи растёт как квадрат числа её узлов (n²), потому что число возможных соединений равно n(n-1)/2. Один телефон бесполезен, два — мало, миллион — основа цивилизации. Закон объясняет, почему социальные сети, мессенджеры, маркетплейсы имеют такую мощь: они выигрывают за счёт нелинейного роста ценности. Также объясняет, почему «второй» в категории очень слаб против лидера — у лидера в разы больше связей. Современные уточнения (Бриско, Одлызко) предлагают n·log(n), но базовая интуиция о суперлинейности остаётся.",
       "source": "Роберт Меткалф, формулировка ~1980; формализовано Джорджем Гилдером, 1993",
@@ -1613,7 +2295,11 @@ footer em { font-style: normal; color: var(--ink-soft); text-transform: none; le
         "Свой нетворк: лучше 50 регулярных контактов, чем 500 редких",
         "Стартап: «возьми всё или ничего» в сетевых рынках — переход через N приводит к лавине"
       ],
-      "influences": []
+      "influences": [],
+      "readings": [
+        "George Gilder — Metcalfe's Law and Legacy, Forbes ASAP, 1993",
+        "Nicholas Negroponte — Being Digital, 1995"
+      ]
     }
   ]
 }
@@ -1627,7 +2313,19 @@ const byId = Object.fromEntries(concepts.map(c => [c.id, c]));
 // Chronological numbering: card #1 = oldest, ascending by year
 const sortedChrono = [...concepts].sort((a, b) => a.year - b.year);
 sortedChrono.forEach((c, i) => { c._num = i + 1; });
+// Insertion order — useful for "recently added on top" sort
+concepts.forEach((c, i) => { c._insertOrder = i; });
 const padNum = n => String(n).padStart(2, '0');
+
+// Sort state
+let sortMode = localStorage.getItem('kopilka_sort') || 'recent';
+function getSortedConcepts() {
+  const arr = [...concepts];
+  if (sortMode === 'chrono') return arr.sort((a, b) => a.year - b.year);
+  if (sortMode === 'alpha') return arr.sort((a, b) => a.name.localeCompare(b.name, 'ru'));
+  // 'recent' — reverse of insertion order
+  return arr.sort((a, b) => b._insertOrder - a._insertOrder);
+}
 
 // Category → color
 const CAT_COLORS = {
@@ -1638,11 +2336,11 @@ const CAT_COLORS = {
   "Личная философия": "var(--cat-personal)"
 };
 const CAT_HEX = {
-  "Эпистемология": "#1d3fbf",
-  "Термодинамика": "#c95a1a",
-  "ТРИЗ": "#b07e1a",
-  "Системное мышление": "#1c8260",
-  "Личная философия": "#6535a3"
+  "Эпистемология": "#0a0a0a",
+  "Термодинамика": "#2a2a2a",
+  "ТРИЗ": "#555555",
+  "Системное мышление": "#1a1a1a",
+  "Личная философия": "#3a3a3a"
 };
 const catColor = c => CAT_COLORS[c] || "var(--ink-faint)";
 const catHex = c => CAT_HEX[c] || "#8a8580";
@@ -1654,7 +2352,8 @@ document.getElementById('last-updated').textContent = new Date().toLocaleDateStr
 function renderCards(filter = '') {
   const grid = document.getElementById('grid');
   const q = filter.trim().toLowerCase();
-  const filtered = concepts.filter(c => {
+  const sorted = getSortedConcepts();
+  const filtered = sorted.filter(c => {
     if (!q) return true;
     const hay = [c.principle, c.name, c.category, c.preview, c.body, ...(c.tags || [])].join(' ').toLowerCase();
     return hay.includes(q);
@@ -1711,6 +2410,7 @@ function openDetail(id) {
     <ul class="d-apps">${(c.applications || []).map(a => `<li>${escapeHtml(a)}</li>`).join('')}</ul>
     <h3>Источник</h3>
     <p class="d-source">${escapeHtml(c.source)}</p>
+    ${c.readings && c.readings.length ? `<h3>Что почитать</h3><ul class="d-readings">${c.readings.map(r => `<li>${escapeHtml(r)}</li>`).join('')}</ul>` : ''}
     ${predecessors.length ? `<h3>Откуда</h3><div class="d-related">${predecessors.map(r => `<a href="#" data-id="${r.id}"><span>${escapeHtml(r.name)}</span><span class="r-year">${fmtYear(r.year)}</span></a>`).join('')}</div>` : ''}
     ${descendants.length ? `<h3>Куда</h3><div class="d-related">${descendants.map(r => `<a href="#" data-id="${r.id}"><span>${escapeHtml(r.name)}</span><span class="r-year">${fmtYear(r.year)}</span></a>`).join('')}</div>` : ''}
     ${c.tags && c.tags.length ? `<h3>Теги</h3><div class="d-tags">${c.tags.map(t => `<span class="tag">${escapeHtml(t)}</span>`).join('')}</div>` : ''}
@@ -1731,6 +2431,21 @@ document.addEventListener('keydown', e => { if (e.key === 'Escape') closeDetail(
 
 // Search
 document.getElementById('search').addEventListener('input', e => renderCards(e.target.value));
+
+// Sort toggle
+document.querySelectorAll('#sort-toggle button').forEach(btn => {
+  if (btn.dataset.sort === sortMode) {
+    btn.classList.add('active');
+  } else {
+    btn.classList.remove('active');
+  }
+  btn.addEventListener('click', () => {
+    sortMode = btn.dataset.sort;
+    localStorage.setItem('kopilka_sort', sortMode);
+    document.querySelectorAll('#sort-toggle button').forEach(b => b.classList.toggle('active', b.dataset.sort === sortMode));
+    renderCards(document.getElementById('search').value);
+  });
+});
 
 // View toggle
 const btnCards = document.getElementById('btn-cards');
