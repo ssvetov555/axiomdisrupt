@@ -1,2 +1,7 @@
-# Копилка концептов
-Live: https://axiomdisrupt.pages.dev (after Cloudflare Pages setup)
+# axiomdisrupt
+
+Монорепо для проектов Сергея. Каждый проект — в отдельной папке.
+
+## Проекты
+
+- **`kopilka-konceptov/`** — коллекция фундаментальных концептов с генеалогической хронологией. Live: TBD
