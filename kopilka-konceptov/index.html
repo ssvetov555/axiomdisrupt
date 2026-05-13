@@ -6,158 +6,223 @@
 <title>Копилка концептов</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root {
-  --bg: #f5f1ea;
-  --bg-card: #fbfaf6;
-  --ink: #1a1a1a;
-  --ink-soft: #4a4a4a;
-  --ink-faint: #8a8580;
-  --accent: #8b1e1e;
-  --line: #d9d3c7;
-  --line-soft: #ece6da;
-  --shadow: 0 1px 0 rgba(0,0,0,.02), 0 2px 12px rgba(60,40,20,.05);
-  --shadow-hover: 0 1px 0 rgba(0,0,0,.02), 0 8px 28px rgba(60,40,20,.12);
-  --serif: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
+  --bg: #f4f2ec;
+  --bg-card: #ffffff;
+  --ink: #0e0e0e;
+  --ink-soft: #525252;
+  --ink-faint: #8c8c8c;
+  --line: #e2dfd6;
+  --line-soft: #ece9e0;
+  --accent: #c8230a;
+  --display: 'Space Grotesk', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
   --sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif;
-  /* Category palette: muted earth tones */
-  --cat-epistem: #4a6280;
-  --cat-thermo: #8e4a2e;
-  --cat-triz: #997a2e;
-  --cat-systems: #5a7548;
-  --cat-personal: #7a4a6b;
+  --mono: 'JetBrains Mono', 'SF Mono', 'Menlo', monospace;
+  --cat-epistem: #3d5470;
+  --cat-thermo: #7d3e22;
+  --cat-triz: #836721;
+  --cat-systems: #4a6238;
+  --cat-personal: #6a3b5b;
 }
 * { box-sizing: border-box; }
 html, body { margin: 0; padding: 0; background: var(--bg); color: var(--ink); font-family: var(--sans); font-size: 15px; line-height: 1.55; -webkit-font-smoothing: antialiased; }
-/* subtle paper grain via tiny gradient noise */
-body {
-  background-image:
-    radial-gradient(ellipse at top left, rgba(180,140,90,.04), transparent 60%),
-    radial-gradient(ellipse at bottom right, rgba(120,80,50,.03), transparent 50%);
-  background-attachment: fixed;
-}
 
 header.top {
   position: sticky; top: 0; z-index: 50;
-  background: rgba(245,241,234,.92); backdrop-filter: blur(8px);
+  background: rgba(244,242,236,.94); backdrop-filter: blur(12px);
   border-bottom: 1px solid var(--line);
-  padding: 16px 32px; display: flex; align-items: baseline; gap: 28px;
+  padding: 18px 36px; display: flex; align-items: center; gap: 32px;
 }
-.brand { font-family: var(--serif); font-size: 24px; font-weight: 600; letter-spacing: .01em; }
-.brand em { font-style: italic; color: var(--accent); }
-.brand sup { font-size: 11px; font-family: var(--sans); font-weight: 500; color: var(--ink-faint); margin-left: 6px; letter-spacing: .05em; }
+.brand { font-family: var(--display); font-size: 20px; font-weight: 700; letter-spacing: -.01em; line-height: 1; display: flex; align-items: baseline; gap: 10px; }
+.brand em { font-style: normal; color: var(--accent); }
+.brand sup { font-family: var(--mono); font-size: 11px; font-weight: 400; color: var(--ink-faint); letter-spacing: 0; vertical-align: baseline; }
 .search {
-  flex: 1; max-width: 480px;
-  background: var(--bg-card); border: 1px solid var(--line);
-  padding: 8px 14px; border-radius: 4px;
-  font: inherit; color: var(--ink);
+  flex: 1; max-width: 420px;
+  background: transparent; border: 0; border-bottom: 1px solid var(--line);
+  padding: 8px 0; border-radius: 0;
+  font: inherit; font-size: 14px; color: var(--ink);
   outline: none; transition: border-color .15s;
 }
-.search:focus { border-color: var(--ink-soft); }
-.viewtoggle { display: flex; gap: 2px; background: var(--bg-card); border: 1px solid var(--line); border-radius: 4px; padding: 2px; }
+.search::placeholder { color: var(--ink-faint); }
+.search:focus { border-bottom-color: var(--ink); }
+.viewtoggle { display: flex; gap: 0; align-items: center; font-family: var(--mono); font-size: 11px; letter-spacing: .05em; text-transform: uppercase; }
 .viewtoggle button {
-  background: transparent; border: 0; padding: 6px 14px; font: inherit; font-size: 13px; color: var(--ink-soft); cursor: pointer; border-radius: 3px;
+  background: transparent; border: 0; padding: 6px 0; font: inherit; font-size: 11px; letter-spacing: .05em; text-transform: uppercase; color: var(--ink-faint); cursor: pointer; transition: color .15s;
 }
-.viewtoggle button.active { background: var(--ink); color: var(--bg-card); }
-.count { color: var(--ink-faint); font-size: 13px; font-variant-numeric: tabular-nums; }
+.viewtoggle button:hover { color: var(--ink); }
+.viewtoggle button.active { color: var(--ink); }
+.viewtoggle .sep { color: var(--line); padding: 0 12px; user-select: none; }
 
-main { padding: 40px 32px 80px; max-width: 1400px; margin: 0 auto; }
+main { padding: 56px 36px 96px; max-width: 1440px; margin: 0 auto; }
 
-.intro { font-family: var(--serif); font-style: italic; font-size: 20px; color: var(--ink-soft); margin: 0 0 32px; max-width: 720px; line-height: 1.4; }
+.intro {
+  font-family: var(--display); font-size: 32px; font-weight: 500; color: var(--ink);
+  margin: 0 0 56px; max-width: 780px; line-height: 1.22; letter-spacing: -.015em;
+}
+.intro span.accent { color: var(--accent); }
+.intro .sub {
+  display: block; font-family: var(--sans); font-size: 14px; font-weight: 400;
+  color: var(--ink-soft); margin-top: 18px; line-height: 1.5; letter-spacing: 0;
+}
 
 /* Cards view */
 .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-  gap: 20px;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: 1px;
+  background: var(--line);
+  border: 1px solid var(--line);
 }
 .card {
-  background: var(--bg-card); border: 1px solid var(--line);
-  border-radius: 4px; padding: 24px 24px 20px;
-  box-shadow: var(--shadow);
-  cursor: pointer; transition: box-shadow .18s, transform .18s, border-color .18s;
-  display: flex; flex-direction: column; min-height: 240px;
+  background: var(--bg-card);
+  padding: 28px 28px 24px;
+  cursor: pointer; transition: background .15s;
+  display: flex; flex-direction: column; min-height: 280px;
   position: relative; overflow: hidden;
 }
 .card::before {
   content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px;
-  background: var(--cat); opacity: 0; transition: opacity .18s;
+  background: var(--cat, var(--ink));
 }
-.card:hover { box-shadow: var(--shadow-hover); transform: translateY(-2px); border-color: var(--ink-faint); }
-.card:hover::before { opacity: 1; }
-.card .meta-top { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; margin-bottom: 14px; }
-.card .formal-name { font-family: var(--sans); font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .1em; color: var(--accent); }
-.card .category { font-size: 11px; color: var(--ink-faint); letter-spacing: .04em; display: inline-flex; align-items: center; gap: 6px; }
-.cat-dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: var(--cat, var(--ink-faint)); flex-shrink: 0; }
+.card:hover { background: #fafafa; }
+.card:hover .principle { color: var(--accent); }
+.card .meta-top {
+  display: flex; justify-content: space-between; align-items: baseline; gap: 10px;
+  margin-bottom: 28px;
+}
+.card .number {
+  font-family: var(--mono); font-size: 11px; font-weight: 500;
+  color: var(--ink-faint); letter-spacing: 0;
+}
+.card .category {
+  font-family: var(--mono); font-size: 10px; font-weight: 500;
+  text-transform: uppercase; letter-spacing: .08em;
+  color: var(--cat, var(--ink-soft));
+}
 .card .principle {
-  font-family: var(--serif); font-size: 26px; line-height: 1.18; font-weight: 500; color: var(--ink);
-  margin: 0 0 14px; letter-spacing: -.005em; position: relative;
+  font-family: var(--display); font-size: 24px; line-height: 1.18; font-weight: 500;
+  color: var(--ink); margin: 0 0 16px; letter-spacing: -.018em;
+  transition: color .15s;
 }
-.card .principle::before { content: '«'; color: var(--ink-faint); margin-right: 1px; font-weight: 400; }
-.card .principle::after { content: '»'; color: var(--ink-faint); margin-left: 1px; font-weight: 400; }
-.card .preview { font-size: 14px; color: var(--ink-soft); margin: 0 0 14px; flex: 1; line-height: 1.5; }
-.card .tags { display: flex; flex-wrap: wrap; gap: 6px; }
-.card .tag { font-size: 11px; padding: 3px 8px; background: var(--line-soft); border-radius: 100px; color: var(--ink-soft); }
+.card .preview { font-size: 13.5px; color: var(--ink-soft); margin: 0 0 18px; flex: 1; line-height: 1.55; }
+.card .bottom { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; padding-top: 16px; border-top: 1px solid var(--line-soft); }
+.card .formal-name {
+  font-family: var(--sans); font-size: 12px; font-weight: 600;
+  color: var(--ink); letter-spacing: -.005em;
+}
+.card .year {
+  font-family: var(--mono); font-size: 11px; color: var(--ink-faint);
+  white-space: nowrap;
+}
 
 /* Detail panel */
 .detail-backdrop {
-  position: fixed; inset: 0; background: rgba(20,15,10,.35); z-index: 100;
+  position: fixed; inset: 0; background: rgba(0,0,0,.3); z-index: 100;
   opacity: 0; pointer-events: none; transition: opacity .2s;
 }
 .detail-backdrop.open { opacity: 1; pointer-events: auto; }
 .detail {
-  position: fixed; top: 0; right: 0; bottom: 0; width: min(640px, 92vw);
-  background: var(--bg-card); z-index: 101; box-shadow: -8px 0 32px rgba(40,30,20,.15);
+  position: fixed; top: 0; right: 0; bottom: 0; width: min(680px, 94vw);
+  background: var(--bg-card); z-index: 101; box-shadow: -1px 0 0 var(--line), -16px 0 48px rgba(0,0,0,.06);
   transform: translateX(100%); transition: transform .25s ease-out;
-  overflow-y: auto; padding: 48px 56px 80px;
-  border-left: 4px solid var(--cat, var(--accent));
+  overflow-y: auto; padding: 56px 64px 96px;
+  border-left: 3px solid var(--cat, var(--accent));
 }
 .detail.open { transform: translateX(0); }
-.detail .close { position: absolute; top: 20px; right: 24px; background: none; border: 0; font-size: 28px; color: var(--ink-faint); cursor: pointer; line-height: 1; padding: 4px 8px; }
+.detail .close {
+  position: absolute; top: 24px; right: 28px;
+  background: none; border: 0; font-family: var(--mono); font-size: 14px;
+  color: var(--ink-faint); cursor: pointer; line-height: 1; padding: 8px;
+  transition: color .15s;
+}
 .detail .close:hover { color: var(--ink); }
-.detail .d-formal { font-size: 12px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--accent); margin-bottom: 8px; }
-.detail .d-principle { font-family: var(--serif); font-size: 36px; line-height: 1.12; font-weight: 500; margin: 0 0 24px; letter-spacing: -.01em; }
-.detail .d-principle::before { content: '«'; color: var(--ink-faint); }
-.detail .d-principle::after { content: '»'; color: var(--ink-faint); }
-.detail .d-body { font-size: 16px; line-height: 1.65; color: var(--ink); margin-bottom: 28px; }
-.detail h3 { font-family: var(--sans); font-size: 11px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-faint); margin: 24px 0 10px; }
-.detail .d-source { font-style: italic; color: var(--ink-soft); font-family: var(--serif); font-size: 18px; }
-.detail .d-apps { padding-left: 18px; margin: 0; }
-.detail .d-apps li { margin-bottom: 8px; color: var(--ink-soft); }
-.detail .d-related { display: flex; flex-wrap: wrap; gap: 8px; }
+.detail .d-meta {
+  display: flex; gap: 16px; align-items: baseline;
+  font-family: var(--mono); font-size: 11px; font-weight: 500;
+  text-transform: uppercase; letter-spacing: .08em;
+  margin-bottom: 24px;
+}
+.detail .d-meta .d-num { color: var(--ink-faint); }
+.detail .d-meta .d-cat { color: var(--cat, var(--accent)); }
+.detail .d-meta .d-year { color: var(--ink-faint); margin-left: auto; }
+.detail .d-formal {
+  font-family: var(--sans); font-size: 14px; font-weight: 600;
+  color: var(--ink-soft); margin-bottom: 12px; letter-spacing: -.005em;
+}
+.detail .d-principle {
+  font-family: var(--display); font-size: 38px; line-height: 1.12; font-weight: 500;
+  color: var(--ink); margin: 0 0 32px; letter-spacing: -.022em;
+}
+.detail .d-body { font-size: 15.5px; line-height: 1.68; color: var(--ink); margin-bottom: 36px; }
+.detail h3 {
+  font-family: var(--mono); font-size: 11px; font-weight: 500;
+  letter-spacing: .1em; text-transform: uppercase; color: var(--ink-faint);
+  margin: 32px 0 14px; padding-top: 24px; border-top: 1px solid var(--line);
+}
+.detail h3:first-of-type { padding-top: 0; border-top: 0; margin-top: 0; }
+.detail .d-source {
+  font-family: var(--sans); font-style: normal; color: var(--ink); font-size: 14px;
+  line-height: 1.55;
+}
+.detail .d-apps { padding-left: 0; margin: 0; list-style: none; }
+.detail .d-apps li {
+  margin-bottom: 12px; color: var(--ink); font-size: 14.5px;
+  padding-left: 18px; position: relative; line-height: 1.55;
+}
+.detail .d-apps li::before {
+  content: '→'; position: absolute; left: 0; color: var(--accent);
+  font-family: var(--mono); font-size: 12px;
+}
+.detail .d-related { display: flex; flex-direction: column; gap: 4px; }
 .detail .d-related a {
-  font-size: 13px; padding: 5px 12px; background: var(--line-soft); border-radius: 100px;
-  color: var(--ink); text-decoration: none; transition: background .15s;
+  font-family: var(--sans); font-size: 14px; padding: 10px 14px;
+  background: var(--line-soft);
+  color: var(--ink); text-decoration: none; transition: background .15s, color .15s;
+  display: flex; justify-content: space-between; align-items: baseline; gap: 12px;
 }
 .detail .d-related a:hover { background: var(--ink); color: var(--bg-card); }
+.detail .d-related a .r-year {
+  font-family: var(--mono); font-size: 11px; color: var(--ink-faint);
+  white-space: nowrap;
+}
+.detail .d-related a:hover .r-year { color: var(--bg-card); opacity: .7; }
 .detail .d-tags { display: flex; flex-wrap: wrap; gap: 6px; }
-.detail .d-tags .tag { font-size: 11px; padding: 3px 8px; background: var(--line-soft); border-radius: 100px; color: var(--ink-soft); }
+.detail .d-tags .tag {
+  font-family: var(--mono); font-size: 11px; padding: 4px 10px;
+  background: var(--line-soft); color: var(--ink-soft);
+}
 
 /* Timeline view */
 #graph { display: none; }
 #graph.active { display: block; }
 .cards-view.hidden { display: none; }
-#graph svg { width: 100%; height: calc(100vh - 200px); min-height: 560px; background: var(--bg-card); border: 1px solid var(--line); border-radius: 4px; display: block; }
+#graph svg { width: 100%; height: calc(100vh - 220px); min-height: 600px; background: var(--bg-card); border: 1px solid var(--line); display: block; }
 .tl-axis { stroke: var(--line); stroke-width: 1; }
-.tl-tick { stroke: var(--line); stroke-width: 1; }
-.tl-tick-label { font-family: var(--sans); font-size: 11px; fill: var(--ink-faint); letter-spacing: .04em; }
+.tl-tick { stroke: var(--ink-faint); stroke-width: 1; }
+.tl-tick-label { font-family: var(--mono); font-size: 10px; fill: var(--ink-faint); letter-spacing: 0; }
 .tl-break { stroke: var(--ink-faint); stroke-width: 1; stroke-dasharray: 2 3; }
-.tl-lane-label { font-family: var(--sans); font-size: 10px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; }
+.tl-lane-label { font-family: var(--mono); font-size: 9px; font-weight: 500; letter-spacing: .1em; text-transform: uppercase; }
 .tl-lane-dot { stroke: none; }
 .tl-lane-line { stroke: var(--line-soft); stroke-width: 1; }
-.tl-influence { fill: none; stroke: var(--ink-soft); stroke-width: 1.2; stroke-opacity: .55; }
-.tl-arrow { fill: var(--ink-soft); fill-opacity: .55; }
+.tl-influence { fill: none; stroke: var(--ink-faint); stroke-width: 1; stroke-opacity: .6; }
+.tl-arrow { fill: var(--ink-faint); fill-opacity: .6; }
 .tl-node { cursor: pointer; }
-.tl-node circle { stroke-width: 1.5; transition: r .18s; }
-.tl-node:hover circle { r: 9; }
-.tl-node:hover .tl-name { font-weight: 700; }
-.tl-name { font-family: var(--sans); font-size: 12px; font-weight: 500; fill: var(--ink); pointer-events: none; transition: font-weight .15s; }
-.tl-year { font-family: var(--sans); font-size: 10px; fill: var(--ink-faint); pointer-events: none; letter-spacing: .05em; }
-.tl-hint { font-family: var(--serif); font-style: italic; font-size: 13px; fill: var(--ink-faint); }
+.tl-node circle { stroke-width: 1.5; transition: r .15s; }
+.tl-node:hover circle { r: 8; }
+.tl-node:hover .tl-name { fill: var(--accent); }
+.tl-name { font-family: var(--sans); font-size: 12px; font-weight: 500; fill: var(--ink); pointer-events: none; transition: fill .15s; letter-spacing: -.005em; }
+.tl-year { font-family: var(--mono); font-size: 10px; fill: var(--ink-faint); pointer-events: none; letter-spacing: 0; }
+.tl-hint { font-family: var(--mono); font-size: 10px; text-transform: uppercase; letter-spacing: .08em; fill: var(--ink-faint); }
 
-footer { text-align: center; color: var(--ink-faint); font-size: 12px; padding: 32px; border-top: 1px solid var(--line); margin-top: 60px; }
-footer em { font-style: italic; }
+footer {
+  display: flex; justify-content: space-between; align-items: center;
+  color: var(--ink-faint); font-family: var(--mono); font-size: 11px;
+  padding: 24px 36px; border-top: 1px solid var(--line); margin-top: 80px;
+  letter-spacing: .04em; text-transform: uppercase;
+}
+footer em { font-style: normal; color: var(--ink-soft); text-transform: none; letter-spacing: 0; font-family: var(--sans); font-size: 12px; }
 
 @media (max-width: 600px) {
   header.top { flex-wrap: wrap; padding: 12px 16px; gap: 12px; }
@@ -173,19 +238,19 @@ footer em { font-style: italic; }
 
 <header class="top">
   <div class="brand">Копилка <em>концептов</em><sup id="counter">—</sup></div>
-  <input type="text" id="search" class="search" placeholder="Поиск по концептам, тегам, формулировкам…" />
+  <input type="text" id="search" class="search" placeholder="Поиск по концептам, тегам, формулировкам" />
   <div class="viewtoggle">
     <button id="btn-cards" class="active">Карточки</button>
+    <span class="sep">/</span>
     <button id="btn-graph">Хронология</button>
   </div>
 </header>
 
 <main>
-  <p class="intro">
-    Каждый концепт — это <strong>руководящий принцип</strong> в формулировке-афоризме, и за ним —
-    академическое имя, контекст и связи с другими концептами. Цель — иметь под рукой инструменты мышления,
-    а не словарь определений.
-  </p>
+  <h1 class="intro">
+    Каталог инструментов <span class="accent">мышления</span> — принципы, на которых стоят решения.
+    <span class="sub">Каждый концепт — это руководящий принцип в формулировке-афоризме, академическое имя за ним, контекст применения и линия влияний. Не словарь определений, а рабочий набор.</span>
+  </h1>
 
   <section id="cards" class="cards-view">
     <div class="grid" id="grid"></div>
@@ -203,7 +268,8 @@ footer em { font-style: italic; }
 </aside>
 
 <footer>
-  Копилка концептов · <em>живой документ</em> · последнее обновление: <span id="last-updated">—</span>
+  <span>Копилка концептов · <em>живой документ</em></span>
+  <span>Последнее обновление: <span id="last-updated">—</span></span>
 </footer>
 
 <script type="application/json" id="data">
@@ -740,6 +806,11 @@ const DATA = JSON.parse(document.getElementById('data').textContent);
 const concepts = DATA.concepts;
 const byId = Object.fromEntries(concepts.map(c => [c.id, c]));
 
+// Chronological numbering: card #1 = oldest, ascending by year
+const sortedChrono = [...concepts].sort((a, b) => a.year - b.year);
+sortedChrono.forEach((c, i) => { c._num = i + 1; });
+const padNum = n => String(n).padStart(2, '0');
+
 // Category → color
 const CAT_COLORS = {
   "Эпистемология": "var(--cat-epistem)",
@@ -758,7 +829,7 @@ const CAT_HEX = {
 const catColor = c => CAT_COLORS[c] || "var(--ink-faint)";
 const catHex = c => CAT_HEX[c] || "#8a8580";
 
-document.getElementById('counter').textContent = `№ ${concepts.length}`;
+document.getElementById('counter').textContent = `${padNum(concepts.length)} · v2`;
 document.getElementById('last-updated').textContent = new Date().toLocaleDateString('ru-RU', { year: 'numeric', month: 'long', day: 'numeric' });
 
 // Render cards
@@ -773,12 +844,15 @@ function renderCards(filter = '') {
   grid.innerHTML = filtered.map(c => `
     <article class="card" data-id="${c.id}" style="--cat: ${catColor(c.category)}">
       <div class="meta-top">
-        <span class="formal-name">${c.name}</span>
-        <span class="category"><span class="cat-dot"></span>${c.category}</span>
+        <span class="number">№ ${padNum(c._num)}</span>
+        <span class="category">${escapeHtml(c.category)}</span>
       </div>
       <h2 class="principle">${escapeHtml(c.principle)}</h2>
       <p class="preview">${escapeHtml(c.preview)}</p>
-      <div class="tags">${(c.tags || []).map(t => `<span class="tag">${escapeHtml(t)}</span>`).join('')}</div>
+      <div class="bottom">
+        <span class="formal-name">${escapeHtml(c.name)}</span>
+        <span class="year">${c.year < 0 ? Math.abs(c.year) + ' BC' : c.year}</span>
+      </div>
     </article>
   `).join('');
   grid.querySelectorAll('.card').forEach(el => {
@@ -804,17 +878,23 @@ function openDetail(id) {
   if (!c) return;
   const predecessors = (c.influences || []).map(rid => byId[rid]).filter(Boolean);
   const descendants = (descendantsOf[c.id] || []).map(rid => byId[rid]).filter(Boolean);
+  const fmtYear = y => y < 0 ? Math.abs(y) + ' BC' : String(y);
   document.getElementById('detail').style.setProperty('--cat', catColor(c.category));
   document.getElementById('detail-body').innerHTML = `
-    <div class="d-formal"><span class="cat-dot" style="--cat: ${catColor(c.category)}"></span>${escapeHtml(c.name)} · ${escapeHtml(c.category)} · ${c.year}</div>
+    <div class="d-meta">
+      <span class="d-num">№ ${padNum(c._num)}</span>
+      <span class="d-cat">${escapeHtml(c.category)}</span>
+      <span class="d-year">${fmtYear(c.year)}</span>
+    </div>
+    <div class="d-formal">${escapeHtml(c.name)}</div>
     <h1 class="d-principle">${escapeHtml(c.principle)}</h1>
     <p class="d-body">${escapeHtml(c.body)}</p>
     <h3>Где работает</h3>
     <ul class="d-apps">${(c.applications || []).map(a => `<li>${escapeHtml(a)}</li>`).join('')}</ul>
     <h3>Источник</h3>
     <p class="d-source">${escapeHtml(c.source)}</p>
-    ${predecessors.length ? `<h3>Откуда (на чьих плечах стоит)</h3><div class="d-related">${predecessors.map(r => `<a href="#" data-id="${r.id}">${escapeHtml(r.name)} · ${r.year}</a>`).join('')}</div>` : ''}
-    ${descendants.length ? `<h3>Куда (что выросло дальше)</h3><div class="d-related">${descendants.map(r => `<a href="#" data-id="${r.id}">${escapeHtml(r.name)} · ${r.year}</a>`).join('')}</div>` : ''}
+    ${predecessors.length ? `<h3>Откуда</h3><div class="d-related">${predecessors.map(r => `<a href="#" data-id="${r.id}"><span>${escapeHtml(r.name)}</span><span class="r-year">${fmtYear(r.year)}</span></a>`).join('')}</div>` : ''}
+    ${descendants.length ? `<h3>Куда</h3><div class="d-related">${descendants.map(r => `<a href="#" data-id="${r.id}"><span>${escapeHtml(r.name)}</span><span class="r-year">${fmtYear(r.year)}</span></a>`).join('')}</div>` : ''}
     ${c.tags && c.tags.length ? `<h3>Теги</h3><div class="d-tags">${c.tags.map(t => `<span class="tag">${escapeHtml(t)}</span>`).join('')}</div>` : ''}
   `;
   document.getElementById('detail').classList.add('open');
@@ -938,18 +1018,17 @@ function renderTimeline() {
   const ticksPost = [1800, 1900, 1950, 2000, 2025];
   [...ticksPre, ...ticksPost].forEach(yr => {
     const x = xOf(yr);
+    const lbl = yr < 0 ? Math.abs(yr) + ' BC' : yr;
     html += `<line class="tl-tick" x1="${x}" y1="${axisY - 4}" x2="${x}" y2="${axisY + 4}"/>`;
-    html += `<text class="tl-tick-label" x="${x}" y="${axisY + 18}" text-anchor="middle">${yr}</text>`;
+    html += `<text class="tl-tick-label" x="${x}" y="${axisY + 18}" text-anchor="middle">${lbl}</text>`;
   });
   // Axis break marker
   const brkX = LEFT_PAD + preW + 10;
   html += `<line class="tl-break" x1="${brkX - 4}" y1="${axisY - 6}" x2="${brkX + 4}" y2="${axisY + 6}"/>`;
   html += `<line class="tl-break" x1="${brkX + 4}" y1="${axisY - 6}" x2="${brkX + 12}" y2="${axisY + 6}"/>`;
 
-  // Hint (only if few concepts)
-  if (concepts.length < 12) {
-    html += `<text class="tl-hint" x="${W/2}" y="${TOP_PAD - 18}" text-anchor="middle">генеалогия концептов: кто на чьих плечах стоит</text>`;
-  }
+  // Subtle header text
+  html += `<text class="tl-hint" x="${LEFT_PAD - 18}" y="${TOP_PAD - 20}" text-anchor="end">Эпохи →</text>`;
 
   // Arrowhead def
   html += `<defs><marker id="tl-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
@@ -979,10 +1058,11 @@ function renderTimeline() {
     if (nearLeft && !nearRight) { anchor = 'start'; labelX = p._x; }
     else if (nearRight) { anchor = 'end'; labelX = p._x; }
     const cx = catHex(p.category);
+    const yearLabel = p.year < 0 ? Math.abs(p.year) + ' BC' : p.year;
     html += `<g class="tl-node" data-id="${p.id}">
-      <circle cx="${p._x}" cy="${p._y}" r="6" fill="${cx}" stroke="${cx}"/>
+      <circle cx="${p._x}" cy="${p._y}" r="5" fill="${cx}" stroke="${cx}"/>
       <text class="tl-name" x="${labelX}" y="${p._y - 14}" text-anchor="${anchor}">${escapeHtml(p.name)}</text>
-      <text class="tl-year" x="${labelX}" y="${p._y + 22}" text-anchor="${anchor}">${p.year}</text>
+      <text class="tl-year" x="${labelX}" y="${p._y + 22}" text-anchor="${anchor}">${yearLabel}</text>
       <title>${escapeHtml(p.principle)}</title>
     </g>`;
   });
