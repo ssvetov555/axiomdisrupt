@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0f172a">
+  <title>Тренировки</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+
+<!-- =================== ЭКРАН ВХОДА =================== -->
+<section id="login-screen" class="screen">
+  <div class="login-card">
+    <h1>Тренировки</h1>
+    <p class="muted">Введите код доступа, который выдал тренер.<br>Тренер тоже входит здесь.</p>
+    <form id="login-form">
+      <input type="text" id="login-code" placeholder="Код доступа" autocomplete="off" required minlength="4">
+      <button type="submit">Войти</button>
+    </form>
+    <div id="login-error" class="error" hidden></div>
+  </div>
+</section>
+
+<!-- =================== КАБИНЕТ ТРЕНЕРА =================== -->
+<section id="trainer-screen" class="screen" hidden>
+  <header class="topbar">
+    <div class="topbar-title">
+      <strong id="trainer-name"></strong>
+      <span class="role-pill">тренер</span>
+    </div>
+    <button class="ghost" data-action="logout">Выйти</button>
+  </header>
+
+  <nav class="tabs">
+    <button class="tab active" data-tab="t-clients">Клиенты</button>
+    <button class="tab" data-tab="t-programs">Программы</button>
+    <button class="tab" data-tab="t-assignments">Назначения</button>
+  </nav>
+
+  <!-- Клиенты -->
+  <div id="t-clients" class="tab-panel active">
+    <div class="panel-head">
+      <h2>Клиенты</h2>
+      <button data-action="add-client">+ Клиент</button>
+    </div>
+    <div id="clients-list" class="list"></div>
+  </div>
+
+  <!-- Программы -->
+  <div id="t-programs" class="tab-panel">
+    <div class="panel-head">
+      <h2>Программы</h2>
+      <button data-action="add-program">+ Программа</button>
+    </div>
+    <div id="programs-list" class="list"></div>
+  </div>
+
+  <!-- Назначения -->
+  <div id="t-assignments" class="tab-panel">
+    <div class="panel-head">
+      <h2>Назначения</h2>
+      <button data-action="add-assignment">+ Назначить</button>
+    </div>
+    <div id="assignments-list" class="list"></div>
+  </div>
+</section>
+
+<!-- =================== КАБИНЕТ КЛИЕНТА =================== -->
+<section id="client-screen" class="screen" hidden>
+  <header class="topbar">
+    <div class="topbar-title">
+      <strong id="client-name"></strong>
+      <span class="role-pill">клиент</span>
+    </div>
+    <button class="ghost" data-action="logout">Выйти</button>
+  </header>
+
+  <nav class="tabs">
+    <button class="tab active" data-tab="c-today">Сегодня</button>
+    <button class="tab" data-tab="c-week">Неделя</button>
+    <button class="tab" data-tab="c-history">История</button>
+  </nav>
+
+  <div id="c-today" class="tab-panel active">
+    <div class="panel-head">
+      <h2 id="today-title">Сегодня</h2>
+    </div>
+    <div id="today-list" class="list"></div>
+  </div>
+
+  <div id="c-week" class="tab-panel">
+    <div class="panel-head"><h2>Программа по неделе</h2></div>
+    <div id="week-list" class="list"></div>
+  </div>
+
+  <div id="c-history" class="tab-panel">
+    <div class="panel-head">
+      <h2>История</h2>
+      <select id="history-exercise"></select>
+    </div>
+    <canvas id="history-chart" width="600" height="240"></canvas>
+    <div id="history-table" class="list"></div>
+  </div>
+</section>
+
+<!-- =================== МОДАЛКА (универсальная) =================== -->
+<div id="modal" class="modal" hidden>
+  <div class="modal-card">
+    <div class="modal-head">
+      <h3 id="modal-title"></h3>
+      <button class="ghost" data-action="close-modal">✕</button>
+    </div>
+    <div id="modal-body"></div>
+  </div>
+</div>
+
+<div id="toast" class="toast" hidden></div>
+
+<script src="/app.js" defer></script>
+</body>
+</html>

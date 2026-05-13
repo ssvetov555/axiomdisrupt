@@ -1,0 +1,12 @@
+name = "fitness"
+compatibility_date = "2024-11-01"
+pages_build_output_dir = "public"
+
+# Привязка к D1 — используется и в Pages Functions, и в локальном wrangler dev.
+# database_id подставится после создания базы:
+#   wrangler d1 create fitness-db
+# Дашборд → Pages → fitness → Settings → Bindings → D1
+[[d1_databases]]
+binding = "DB"
+database_name = "fitness-db"
+database_id = "PASTE_DATABASE_ID_HERE"
