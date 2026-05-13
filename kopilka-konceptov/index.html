@@ -9,22 +9,22 @@
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root {
-  --bg: #f4f2ec;
+  --bg: #f1ebde;
   --bg-card: #ffffff;
-  --ink: #0e0e0e;
-  --ink-soft: #525252;
+  --ink: #0a0a0a;
+  --ink-soft: #4a4a4a;
   --ink-faint: #8c8c8c;
-  --line: #e2dfd6;
-  --line-soft: #ece9e0;
+  --line: #ddd6c5;
+  --line-soft: #ebe5d4;
   --accent: #c8230a;
   --display: 'Space Grotesk', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
   --sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif;
   --mono: 'JetBrains Mono', 'SF Mono', 'Menlo', monospace;
-  --cat-epistem: #3d5470;
-  --cat-thermo: #7d3e22;
-  --cat-triz: #836721;
-  --cat-systems: #4a6238;
-  --cat-personal: #6a3b5b;
+  --cat-epistem: #1d3fbf;
+  --cat-thermo: #c95a1a;
+  --cat-triz: #b07e1a;
+  --cat-systems: #1c8260;
+  --cat-personal: #6535a3;
 }
 * { box-sizing: border-box; }
 html, body { margin: 0; padding: 0; background: var(--bg); color: var(--ink); font-family: var(--sans); font-size: 15px; line-height: 1.55; -webkit-font-smoothing: antialiased; }
@@ -77,33 +77,33 @@ main { padding: 56px 36px 96px; max-width: 1440px; margin: 0 auto; }
 }
 .card {
   background: var(--bg-card);
-  padding: 28px 28px 24px;
-  cursor: pointer; transition: background .15s;
+  padding: 30px 28px 24px 34px;
+  cursor: pointer; transition: background .15s, transform .15s;
   display: flex; flex-direction: column; min-height: 280px;
   position: relative; overflow: hidden;
 }
 .card::before {
-  content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px;
+  content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 6px;
   background: var(--cat, var(--ink));
 }
-.card:hover { background: #fafafa; }
+.card:hover { background: #faf6ea; }
 .card:hover .principle { color: var(--accent); }
 .card .meta-top {
   display: flex; justify-content: space-between; align-items: baseline; gap: 10px;
-  margin-bottom: 28px;
+  margin-bottom: 24px;
 }
 .card .number {
   font-family: var(--mono); font-size: 11px; font-weight: 500;
   color: var(--ink-faint); letter-spacing: 0;
 }
 .card .category {
-  font-family: var(--mono); font-size: 10px; font-weight: 500;
-  text-transform: uppercase; letter-spacing: .08em;
+  font-family: var(--mono); font-size: 10px; font-weight: 600;
+  text-transform: uppercase; letter-spacing: .1em;
   color: var(--cat, var(--ink-soft));
 }
 .card .principle {
-  font-family: var(--display); font-size: 24px; line-height: 1.18; font-weight: 500;
-  color: var(--ink); margin: 0 0 16px; letter-spacing: -.018em;
+  font-family: var(--display); font-size: 26px; line-height: 1.16; font-weight: 500;
+  color: var(--cat, var(--ink)); margin: 0 0 18px; letter-spacing: -.02em;
   transition: color .15s;
 }
 .card .preview { font-size: 13.5px; color: var(--ink-soft); margin: 0 0 18px; flex: 1; line-height: 1.55; }
@@ -125,10 +125,10 @@ main { padding: 56px 36px 96px; max-width: 1440px; margin: 0 auto; }
 .detail-backdrop.open { opacity: 1; pointer-events: auto; }
 .detail {
   position: fixed; top: 0; right: 0; bottom: 0; width: min(680px, 94vw);
-  background: var(--bg-card); z-index: 101; box-shadow: -1px 0 0 var(--line), -16px 0 48px rgba(0,0,0,.06);
+  background: var(--bg-card); z-index: 101; box-shadow: -1px 0 0 var(--line), -16px 0 48px rgba(0,0,0,.08);
   transform: translateX(100%); transition: transform .25s ease-out;
   overflow-y: auto; padding: 56px 64px 96px;
-  border-left: 3px solid var(--cat, var(--accent));
+  border-left: 8px solid var(--cat, var(--accent));
 }
 .detail.open { transform: translateX(0); }
 .detail .close {
@@ -152,14 +152,19 @@ main { padding: 56px 36px 96px; max-width: 1440px; margin: 0 auto; }
   color: var(--ink-soft); margin-bottom: 12px; letter-spacing: -.005em;
 }
 .detail .d-principle {
-  font-family: var(--display); font-size: 38px; line-height: 1.12; font-weight: 500;
-  color: var(--ink); margin: 0 0 32px; letter-spacing: -.022em;
+  font-family: var(--display); font-size: 40px; line-height: 1.1; font-weight: 500;
+  color: var(--cat, var(--ink)); margin: 0 0 32px; letter-spacing: -.024em;
 }
 .detail .d-body { font-size: 15.5px; line-height: 1.68; color: var(--ink); margin-bottom: 36px; }
 .detail h3 {
   font-family: var(--mono); font-size: 11px; font-weight: 500;
   letter-spacing: .1em; text-transform: uppercase; color: var(--ink-faint);
   margin: 32px 0 14px; padding-top: 24px; border-top: 1px solid var(--line);
+  display: flex; align-items: center; gap: 10px;
+}
+.detail h3::before {
+  content: ''; display: inline-block; width: 6px; height: 6px;
+  background: var(--cat, var(--accent));
 }
 .detail h3:first-of-type { padding-top: 0; border-top: 0; margin-top: 0; }
 .detail .d-source {
@@ -910,11 +915,11 @@ const CAT_COLORS = {
   "Личная философия": "var(--cat-personal)"
 };
 const CAT_HEX = {
-  "Эпистемология": "#4a6280",
-  "Термодинамика": "#8e4a2e",
-  "ТРИЗ": "#997a2e",
-  "Системное мышление": "#5a7548",
-  "Личная философия": "#7a4a6b"
+  "Эпистемология": "#1d3fbf",
+  "Термодинамика": "#c95a1a",
+  "ТРИЗ": "#b07e1a",
+  "Системное мышление": "#1c8260",
+  "Личная философия": "#6535a3"
 };
 const catColor = c => CAT_COLORS[c] || "var(--ink-faint)";
 const catHex = c => CAT_HEX[c] || "#8a8580";
