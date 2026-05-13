@@ -8,6 +8,8 @@
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 <meta name="apple-mobile-web-app-title" content="Таблетки" />
+<link rel="icon" type="image/svg+xml" href='data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><clipPath id="c"><rect x="8" y="32" width="84" height="36" rx="18"/></clipPath></defs><g clip-path="url(%23c)"><rect x="8" y="32" width="42" height="36" fill="%23FF375F"/><rect x="50" y="32" width="42" height="36" fill="%230AD5E0"/></g><rect x="8" y="32" width="84" height="36" rx="18" fill="none" stroke="%23ffffff" stroke-width="2"/><line x1="50" y1="32" x2="50" y2="68" stroke="%23ffffff" stroke-width="3" stroke-linecap="round"/></svg>' />
+<link rel="apple-touch-icon" href='data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 180"><rect width="180" height="180" rx="40" fill="%23F2F2F7"/><defs><clipPath id="c"><rect x="22" y="68" width="136" height="44" rx="22"/></clipPath></defs><g clip-path="url(%23c)"><rect x="22" y="68" width="68" height="44" fill="%23FF375F"/><rect x="90" y="68" width="68" height="44" fill="%230AD5E0"/></g><rect x="22" y="68" width="136" height="44" rx="22" fill="none" stroke="%23ffffff" stroke-width="3"/><line x1="90" y1="68" x2="90" y2="112" stroke="%23ffffff" stroke-width="4" stroke-linecap="round"/></svg>' />
 <title>Таблетки · Ангелина</title>
 <style>
   :root{
@@ -202,6 +204,40 @@
   .tag{font-size:11px;font-weight:600;letter-spacing:.02em;padding:3px 7px;border-radius:6px;background:var(--fill-3);color:var(--label-2);text-transform:uppercase}
   .tag.red{background:rgba(255,55,95,.13);color:var(--ring-r)}
   .tag.cyan{background:rgba(10,213,224,.15);color:var(--teal)}
+  .chip-row{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+  .time-chip{
+    appearance:none;border:0;cursor:pointer;
+    font:inherit;
+    font-size:13px;font-weight:600;letter-spacing:.01em;
+    color:var(--chip-color, var(--blue));
+    background:color-mix(in srgb, var(--chip-color, var(--blue)) 13%, transparent);
+    padding:5px 10px;border-radius:8px;
+    font-variant-numeric:tabular-nums;
+    display:inline-flex;align-items:center;
+    transition:transform .08s ease, background .15s ease;
+  }
+  .time-chip:active{transform:scale(.94);background:color-mix(in srgb, var(--chip-color, var(--blue)) 24%, transparent)}
+
+  /* Events */
+  .events{display:flex;flex-direction:column;gap:8px}
+  .event-card{display:flex;align-items:center;gap:12px;background:var(--card);border-radius:var(--radius-card);padding:13px 14px;box-shadow:var(--shadow-1)}
+  .event-card .ev-icon{width:42px;height:42px;border-radius:11px;display:flex;align-items:center;justify-content:center;flex:0 0 auto}
+  .event-card .ev-icon.ev-scope{background:color-mix(in srgb, var(--indigo) 16%, transparent);color:var(--indigo)}
+  .event-card .ev-icon.ev-doctor{background:color-mix(in srgb, var(--pink) 16%, transparent);color:var(--pink)}
+  .event-card .ev-icon svg{width:22px;height:22px}
+  .event-card .ev-body{flex:1;min-width:0}
+  .event-card .ev-title{font-size:17px;font-weight:600;letter-spacing:-.01em}
+  .event-card .ev-meta{font-size:13px;color:var(--label-2);margin-top:2px}
+  .event-card .ev-when{text-align:right;font-size:15px;color:var(--label-2);font-variant-numeric:tabular-nums}
+  .event-card .ev-when b{display:block;color:var(--label);font-weight:700;font-size:17px;letter-spacing:-.01em}
+  .event-card.passed{opacity:.5}
+  .event-card.today{outline:1.5px solid var(--blue)}
+
+  .cell.has-event::after{
+    content:"";position:absolute;top:5px;right:5px;width:6px;height:6px;border-radius:99px;background:var(--blue);
+  }
+  .cell.ev-scope::after{background:var(--indigo)}
+  .cell.ev-doctor::after{background:var(--pink)}
 
   /* Calendar */
   .calendar{
@@ -291,8 +327,17 @@
 
   <div class="nav">
     <div class="crumb" id="patient-line">Ангелина · с 14 мая</div>
-    <button class="reset" id="reset-btn">Сброс</button>
+    <div style="display:flex;gap:14px;align-items:center">
+      <button class="reset" id="preview-btn" style="position:relative">Превью</button>
+      <button class="reset" id="reset-btn">Сброс</button>
+    </div>
   </div>
+  <div id="preview-banner" style="display:none;background:rgba(0,122,255,.12);color:var(--blue);border-radius:10px;padding:9px 12px;font-size:14px;font-weight:500;margin:0 4px 10px;display:none;align-items:center;justify-content:space-between;gap:10px">
+    <span id="preview-banner-text">Просмотр от —</span>
+    <button id="preview-exit" style="appearance:none;border:0;background:transparent;color:var(--blue);font-size:14px;font-weight:600;cursor:pointer;padding:2px 4px">Выйти</button>
+  </div>
+  <input type="date" id="preview-date" style="position:absolute;opacity:0;pointer-events:none;width:0;height:0" />
+  <input type="time" id="time-edit-input" style="position:absolute;opacity:0;pointer-events:none;width:0;height:0" />
   <h1 class="large" id="today-title">Сегодня</h1>
 
   <!-- HERO with Activity rings -->
@@ -330,6 +375,10 @@
   <div class="section-head fade d2"><div class="title">Препараты</div><div class="aside">курс</div></div>
   <div id="meds-grid" class="fade d2"></div>
 
+  <!-- EVENTS -->
+  <div class="section-head fade d2"><div class="title">События</div><div class="aside" id="events-aside"></div></div>
+  <div class="events fade d2" id="events-list"></div>
+
   <!-- CALENDAR -->
   <div class="section-head fade d3"><div class="title">Календарь</div><div class="aside" id="cal-range">—</div></div>
   <div class="calendar fade d3">
@@ -354,8 +403,8 @@
   <div class="info-card fade d4">
     <div class="row kv"><div class="body"><span class="k">Диагноз (предв.)</span><span class="v">K29.7 · гастрит</span></div></div>
     <div class="row kv"><div class="body"><span class="k">Диета</span><span class="v">Стол №1</span></div></div>
-    <div class="row kv"><div class="body"><span class="k">ЭГДС</span><span class="v">Натощак, 8–12 ч голода</span></div></div>
-    <div class="row kv"><div class="body"><span class="k">Повторная явка</span><span class="v">16 мая 2026</span></div></div>
+    <div class="row kv"><div class="body"><span class="k">ЭГДС</span><span class="v">22 мая · 11:00 · натощак</span></div></div>
+    <div class="row kv"><div class="body"><span class="k">Повторная явка</span><span class="v">26 мая · 18:30</span></div></div>
     <div class="row kv"><div class="body"><span class="k">Врач</span><span class="v">Подзолкова Н. А.</span></div></div>
   </div>
 
@@ -374,6 +423,14 @@
     <symbol id="i-check" viewBox="0 0 24 24">
       <path fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" d="M5 12.5l4.5 4.5L19 7"/>
     </symbol>
+    <symbol id="i-scope" viewBox="0 0 24 24">
+      <path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+            d="M12 3v3M9 6h6l-1 2.5a3 3 0 0 1-4 0L9 6Zm3 4v4a3 3 0 0 0 3 3h2a3 3 0 0 0 3 3v0a3 3 0 0 1-3 3h-2a6 6 0 0 1-6-6v-7"/>
+    </symbol>
+    <symbol id="i-stethoscope" viewBox="0 0 24 24">
+      <path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+            d="M6 3v6a5 5 0 0 0 10 0V3M8 3h-2M16 3h-2M11 14v3a4 4 0 0 0 8 0v-2M19 13a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3Z"/>
+    </symbol>
   </defs>
 </svg>
 
@@ -385,6 +442,24 @@ const COURSE = {
   startISO: "2026-05-14",  // старт курса
   patient: "Ангелина",
 };
+const EVENTS = [
+  {
+    iso: "2026-05-22",
+    time: "11:00",
+    title: "Гастроскопия (ЭГДС)",
+    note: "Натощак, 8–12 ч голода",
+    cls: "ev-scope",
+    color: "var(--indigo)",
+  },
+  {
+    iso: "2026-05-26",
+    time: "18:30",
+    title: "Повторная явка",
+    note: "Гастроэнтеролог Подзолкова Н. А.",
+    cls: "ev-doctor",
+    color: "var(--pink)",
+  },
+];
 const MEDS = [
   {
     id: "reb",
@@ -437,13 +512,58 @@ function setTaken(medId, isoDate, time, takenAt){
   saveState(state);
 }
 
+// ===== Пользовательские настройки времени приёма =====
+const SETTINGS_KEY = "pill-tracker-settings-v1";
+function loadSettings(){ try { return JSON.parse(localStorage.getItem(SETTINGS_KEY)) || {}; } catch(_) { return {}; } }
+function saveSettings(s){ try { localStorage.setItem(SETTINGS_KEY, JSON.stringify(s)); } catch(_){} }
+let settings = loadSettings();
+function timesFor(medId){
+  const m = MEDS.find(x=>x.id===medId);
+  if (settings.times && Array.isArray(settings.times[medId]) && settings.times[medId].length === m.times.length){
+    return settings.times[medId];
+  }
+  return m.times;
+}
+function setTimeFor(medId, idx, newTime){
+  settings.times = settings.times || {};
+  const arr = (settings.times[medId] || [...MEDS.find(x=>x.id===medId).times]).slice();
+  arr[idx] = newTime;
+  // отсортируем, чтобы порядок был по возрастанию
+  arr.sort((a,b)=>a.localeCompare(b));
+  settings.times[medId] = arr;
+  saveSettings(settings);
+  // отметки старого расписания становятся неактуальны — очистим записи этого препарата,
+  // чтобы галочки соответствовали новому времени
+  Object.keys(state).forEach(k => { if (k.startsWith(medId + "|")) delete state[k]; });
+  saveState(state);
+}
+
+// ===== Виртуальная «сегодня» (режим превью) =====
+const PREVIEW_KEY = "pill-tracker-preview-date";
+function getPreviewISO(){ try { return localStorage.getItem(PREVIEW_KEY) || null; } catch(_) { return null; } }
+function setPreviewISO(iso){
+  try {
+    if (iso) localStorage.setItem(PREVIEW_KEY, iso);
+    else localStorage.removeItem(PREVIEW_KEY);
+  } catch(_){}
+}
+function nowDate(){
+  const iso = getPreviewISO();
+  if (iso){
+    // Виртуальная дата: время оставляем «утро 09:00», чтобы интерфейс выглядел осмысленно
+    const [y,m,d] = iso.split("-").map(Number);
+    return new Date(y, m-1, d, 9, 0, 0);
+  }
+  return new Date();
+}
+
 // ===== Логика =====
 function dosesForDate(isoDate){
   const startIdx = daysBetween(COURSE.startISO, isoDate);
   const list = [];
   for (const m of MEDS){
     if (startIdx < 0 || startIdx >= m.days) continue;
-    for (const t of m.times){
+    for (const t of timesFor(m.id)){
       list.push({ med: m, time: t, isoDate, key: doseKey(m.id, isoDate, t) });
     }
   }
@@ -451,15 +571,16 @@ function dosesForDate(isoDate){
   return list;
 }
 function statsForMed(m){
-  const total = m.days * m.times.length;
+  const times = timesFor(m.id);
+  const total = m.days * times.length;
   let taken = 0, missed = 0;
-  const today = toISO(new Date());
-  const now = new Date();
+  const today = toISO(nowDate());
+  const now = nowDate();
   for (let i=0; i<m.days; i++){
     const iso = toISO(addDays(parseISO(COURSE.startISO), i));
     const isToday = iso === today;
     const isPast = iso < today;
-    for (const t of m.times){
+    for (const t of times){
       if (isTaken(m.id, iso, t)) { taken++; continue; }
       if (isPast) missed++;
       else if (isToday){
@@ -471,16 +592,17 @@ function statsForMed(m){
   return { total, taken, missed };
 }
 function statsForToday(medId){
-  const today = toISO(new Date());
+  const today = toISO(nowDate());
   const m = MEDS.find(x => x.id===medId);
+  const times = timesFor(medId);
   const startIdx = daysBetween(COURSE.startISO, today);
   if (startIdx < 0 || startIdx >= m.days) return { total: 0, taken: 0 };
   let taken = 0;
-  for (const t of m.times) if (isTaken(m.id, today, t)) taken++;
-  return { total: m.times.length, taken };
+  for (const t of times) if (isTaken(m.id, today, t)) taken++;
+  return { total: times.length, taken };
 }
 function courseDay(){
-  const today = toISO(new Date());
+  const today = toISO(nowDate());
   return daysBetween(COURSE.startISO, today) + 1; // 1-based
 }
 function totalCourseDays(){ return Math.max(...MEDS.map(m=>m.days)); }
@@ -492,7 +614,7 @@ function courseEndISO(medId){
 
 // ===== Hero =====
 function renderHero(){
-  const now = new Date();
+  const now = nowDate();
   const todayISO = toISO(now);
   const day = courseDay();
   const total = totalCourseDays();
@@ -533,7 +655,7 @@ function renderHero(){
 function checkIcon(){ return `<svg viewBox="0 0 24 24" width="18" height="18"><use href="#i-check"/></svg>`; }
 
 function renderToday(){
-  const now = new Date();
+  const now = nowDate();
   const todayISO = toISO(now);
   const list = dosesForDate(todayISO);
   const cont = document.getElementById("today-list");
@@ -597,12 +719,20 @@ function renderMeds(){
   grid.innerHTML = "";
   MEDS.forEach((m, i) => {
     const s = statsForMed(m);
+    const times = timesFor(m.id);
     const pct = s.total ? s.taken / s.total : 0;
     const pctTxt = Math.round(pct*100) + "%";
     const C = 2*Math.PI*22; // r=22 в svg 60x60
     const offset = C*(1-pct);
     const endISO = courseEndISO(m.id);
     const end = parseISO(endISO);
+    const chipsHtml = times.map((t, idx) => `
+      <button class="time-chip" data-med="${m.id}" data-idx="${idx}" style="--chip-color:${m.color}">
+        <svg viewBox="0 0 24 24" width="12" height="12" aria-hidden="true" style="vertical-align:-2px;margin-right:4px">
+          <circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.8"/>
+          <path d="M12 7v5l3 2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" fill="none"/>
+        </svg>${t}
+      </button>`).join("");
     const card = document.createElement("div");
     card.className = "med-card";
     card.innerHTML = `
@@ -618,15 +748,78 @@ function renderMeds(){
       <div class="info">
         <div class="title"><span class="pill" style="color:${m.color}"><svg><use href="#i-capsule"/></svg></span>${m.full}</div>
         <div class="sub">${m.sub} · до ${fmtLongDate(end)}</div>
+        <div class="chip-row">${chipsHtml}</div>
         <div class="tag-row">
-          <span class="tag ${m.tag}">${m.times.length} р/д</span>
+          <span class="tag ${m.tag}">${times.length} р/д</span>
           <span class="tag">${m.days} дней</span>
           <span class="tag">${s.taken}/${s.total}</span>
           ${s.missed?`<span class="tag" style="background:rgba(255,149,0,.14);color:var(--orange)">пропуск ${s.missed}</span>`:""}
         </div>
       </div>
     `;
+    // Привязка редактирования времени к каждой чипе
+    card.querySelectorAll(".time-chip").forEach(chip => {
+      chip.addEventListener("click", () => openTimeEditor(chip.dataset.med, +chip.dataset.idx));
+    });
     grid.appendChild(card);
+  });
+}
+
+// Открытие нативного пикера для редактирования времени приёма
+function openTimeEditor(medId, idx){
+  const input = document.getElementById("time-edit-input");
+  const cur = timesFor(medId)[idx];
+  input.value = cur;
+  input.dataset.med = medId;
+  input.dataset.idx = idx;
+  if (typeof input.showPicker === "function"){
+    try { input.showPicker(); } catch(_) { input.focus(); input.click(); }
+  } else {
+    input.focus(); input.click();
+  }
+}
+
+// ===== Events =====
+function eventForDay(iso){ return EVENTS.find(e => e.iso === iso) || null; }
+function renderEvents(){
+  const list = document.getElementById("events-list");
+  const aside = document.getElementById("events-aside");
+  list.innerHTML = "";
+  const todayISO = toISO(nowDate());
+  const upcoming = EVENTS.filter(e => e.iso >= todayISO).length;
+  aside.textContent = upcoming ? `${upcoming} впереди` : "позади";
+  EVENTS.forEach(e => {
+    const d = parseISO(e.iso);
+    const days = daysBetween(todayISO, e.iso);
+    let when;
+    if (days === 0) when = "сегодня";
+    else if (days === 1) when = "завтра";
+    else if (days > 1 && days < 14) when = `через ${days} дн`;
+    else if (days < 0 && days > -7) when = `${-days} дн назад`;
+    else when = `${d.getDate()} ${RU_MONTHS_NOM[d.getMonth()].slice(0,3)}`;
+    const passed = days < 0;
+    const isToday = days === 0;
+    const iconId = e.cls === "ev-scope" ? "#i-scope" : "#i-stethoscope";
+    const card = document.createElement("div");
+    card.className = `event-card${passed?" passed":""}${isToday?" today":""}`;
+    card.innerHTML = `
+      <div class="ev-icon ${e.cls}">
+        <svg><use href="${iconId}"/></svg>
+      </div>
+      <div class="ev-body">
+        <div class="ev-title">${e.title}</div>
+        <div class="ev-meta">${fmtLongDate(d)} · ${RU_WEEK[d.getDay()]} · ${e.note}</div>
+      </div>
+      <div class="ev-when"><b>${e.time}</b>${when}</div>
+    `;
+    card.addEventListener("click", () => {
+      selectedISO = e.iso;
+      document.getElementById("day-detail").open = true;
+      renderCalendar();
+      renderDayDetail();
+      document.getElementById("day-detail").scrollIntoView({behavior:"smooth", block:"center"});
+    });
+    list.appendChild(card);
   });
 }
 
@@ -638,7 +831,7 @@ function renderCalendar(){
   const total = totalCourseDays();
   const startD = parseISO(COURSE.startISO);
   const endD = addDays(startD, total-1);
-  const todayISO = toISO(new Date());
+  const todayISO = toISO(nowDate());
   document.getElementById("cal-range").textContent =
     `${fmtLongDate(startD)} – ${fmtLongDate(endD)}`;
 
@@ -654,13 +847,15 @@ function renderCalendar(){
     else if (iso > todayISO) cell.classList.add("future");
     if (iso === todayISO) cell.classList.add("today");
     if (iso === selectedISO) cell.classList.add("selected");
+    const ev = eventForDay(iso);
+    if (ev){ cell.classList.add("has-event", ev.cls); }
 
     const doses = dosesForDate(iso);
     const dotsHtml = doses.map(d => {
       const taken = isTaken(d.med.id, d.isoDate, d.time);
       const isPast = iso < todayISO || (iso === todayISO && (()=>{
         const [hh,mm] = d.time.split(":").map(Number);
-        const now = new Date();
+        const now = nowDate();
         return hh*60+mm < now.getHours()*60+now.getMinutes() - 30;
       })());
       let cls = d.med.cls;
@@ -692,12 +887,25 @@ function renderDayDetail(){
   const d = parseISO(selectedISO);
   const doses = dosesForDate(selectedISO);
   summary.textContent = `${fmtLongDate(d)}, ${RU_WEEK[d.getDay()]}`;
+  body.innerHTML = "";
+  const ev = eventForDay(selectedISO);
+  if (ev){
+    const iconId = ev.cls === "ev-scope" ? "#i-scope" : "#i-stethoscope";
+    body.insertAdjacentHTML("beforeend", `
+      <div class="event-card" style="margin:0 14px 10px;box-shadow:none;border:1px solid var(--separator)">
+        <div class="ev-icon ${ev.cls}"><svg><use href="${iconId}"/></svg></div>
+        <div class="ev-body">
+          <div class="ev-title">${ev.title}</div>
+          <div class="ev-meta">${ev.note}</div>
+        </div>
+        <div class="ev-when"><b>${ev.time}</b></div>
+      </div>
+    `);
+  }
   if (!doses.length){
-    body.innerHTML = `<div class="empty">Приёмов нет</div>`;
+    body.insertAdjacentHTML("beforeend", `<div class="empty">Приёмов лекарств нет</div>`);
     return;
   }
-  const todayISO = toISO(new Date());
-  body.innerHTML = "";
   doses.forEach(ds => {
     const taken = isTaken(ds.med.id, ds.isoDate, ds.time);
     const row = document.createElement("div");
@@ -711,18 +919,12 @@ function renderDayDetail(){
       <div class="time">${ds.time}</div>
     `;
     const btn = row.querySelector(".icon-tap");
-    const allowToggle = selectedISO <= todayISO;
-    if (!allowToggle){
-      btn.style.opacity = ".35";
-      btn.style.pointerEvents = "none";
-    } else {
-      btn.addEventListener("click", () => {
-        const wasTaken = isTaken(ds.med.id, ds.isoDate, ds.time);
-        if (wasTaken) setTaken(ds.med.id, ds.isoDate, ds.time, null);
-        else setTaken(ds.med.id, ds.isoDate, ds.time, new Date(selectedISO + "T" + ds.time + ":00").toISOString());
-        renderAll();
-      });
-    }
+    btn.addEventListener("click", () => {
+      const wasTaken = isTaken(ds.med.id, ds.isoDate, ds.time);
+      if (wasTaken) setTaken(ds.med.id, ds.isoDate, ds.time, null);
+      else setTaken(ds.med.id, ds.isoDate, ds.time, new Date(selectedISO + "T" + ds.time + ":00").toISOString());
+      renderAll();
+    });
     body.appendChild(row);
   });
 }
@@ -736,11 +938,76 @@ document.getElementById("reset-btn").addEventListener("click", () => {
   }
 });
 
+// ===== Превью даты =====
+const previewBtn = document.getElementById("preview-btn");
+const previewInput = document.getElementById("preview-date");
+const previewBanner = document.getElementById("preview-banner");
+const previewBannerText = document.getElementById("preview-banner-text");
+const previewExit = document.getElementById("preview-exit");
+
+// границы пикера = курс
+previewInput.min = COURSE.startISO;
+previewInput.max = toISO(addDays(parseISO(COURSE.startISO), totalCourseDays() - 1));
+
+previewBtn.addEventListener("click", () => {
+  // дефолт — текущая превью-дата или старт курса
+  previewInput.value = getPreviewISO() || COURSE.startISO;
+  if (typeof previewInput.showPicker === "function") {
+    try { previewInput.showPicker(); }
+    catch(_) { previewInput.focus(); previewInput.click(); }
+  } else {
+    previewInput.focus();
+    previewInput.click();
+  }
+});
+previewInput.addEventListener("change", () => {
+  const v = previewInput.value;
+  if (v){
+    setPreviewISO(v);
+    selectedISO = v;
+    renderAll();
+    refreshPreviewBanner();
+  }
+});
+previewExit.addEventListener("click", () => {
+  setPreviewISO(null);
+  renderAll();
+  refreshPreviewBanner();
+});
+
+// ===== Редактирование времени приёма =====
+const timeEditInput = document.getElementById("time-edit-input");
+timeEditInput.addEventListener("change", () => {
+  const newTime = timeEditInput.value;
+  const medId = timeEditInput.dataset.med;
+  const idx = +timeEditInput.dataset.idx;
+  if (!newTime || !medId || Number.isNaN(idx)) return;
+  setTimeFor(medId, idx, newTime);
+  renderAll();
+});
+
+function refreshPreviewBanner(){
+  const iso = getPreviewISO();
+  if (iso){
+    const d = parseISO(iso);
+    previewBannerText.textContent = `Просмотр от ${fmtLongDate(d)}, ${RU_WEEK[d.getDay()]}`;
+    previewBanner.style.display = "flex";
+    previewBtn.style.color = "var(--orange)";
+    previewBtn.textContent = "Превью ●";
+  } else {
+    previewBanner.style.display = "none";
+    previewBtn.style.color = "";
+    previewBtn.textContent = "Превью";
+  }
+}
+refreshPreviewBanner();
+
 // ===== Render all =====
 function renderAll(){
   renderHero();
   renderToday();
   renderMeds();
+  renderEvents();
   renderCalendar();
   renderDayDetail();
 }
