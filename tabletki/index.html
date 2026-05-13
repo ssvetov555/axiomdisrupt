@@ -204,19 +204,29 @@
   .tag{font-size:11px;font-weight:600;letter-spacing:.02em;padding:3px 7px;border-radius:6px;background:var(--fill-3);color:var(--label-2);text-transform:uppercase}
   .tag.red{background:rgba(255,55,95,.13);color:var(--ring-r)}
   .tag.cyan{background:rgba(10,213,224,.15);color:var(--teal)}
-  .chip-row{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+  .chip-row{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;align-items:center}
+  .chip-label{font-size:12px;color:var(--label-3);margin-right:2px;text-transform:uppercase;letter-spacing:.04em;font-weight:600}
   .time-chip{
-    appearance:none;border:0;cursor:pointer;
+    appearance:none;-webkit-appearance:none;border:0;cursor:pointer;outline:none;
     font:inherit;
-    font-size:13px;font-weight:600;letter-spacing:.01em;
+    font-size:14px;font-weight:600;letter-spacing:.01em;line-height:1;
     color:var(--chip-color, var(--blue));
     background:color-mix(in srgb, var(--chip-color, var(--blue)) 13%, transparent);
-    padding:5px 10px;border-radius:8px;
+    padding:7px 12px;border-radius:9px;
     font-variant-numeric:tabular-nums;
     display:inline-flex;align-items:center;
     transition:transform .08s ease, background .15s ease;
+    min-height:32px;
+    font-family:inherit;
+    text-align:center;
   }
   .time-chip:active{transform:scale(.94);background:color-mix(in srgb, var(--chip-color, var(--blue)) 24%, transparent)}
+  .time-chip:focus{background:color-mix(in srgb, var(--chip-color, var(--blue)) 22%, transparent)}
+  /* Скрываем нативный icon у input[type=time], если он есть */
+  .time-chip::-webkit-calendar-picker-indicator{display:none;-webkit-appearance:none;opacity:0;width:0}
+  .time-chip::-webkit-date-and-time-value{text-align:center}
+  .edit-hint{font-size:12px;color:var(--label-3);margin-top:6px}
+  .edit-hint svg{width:11px;height:11px;vertical-align:-1px;margin-right:3px}
 
   /* Events */
   .events{display:flex;flex-direction:column;gap:8px}
@@ -337,7 +347,6 @@
     <button id="preview-exit" style="appearance:none;border:0;background:transparent;color:var(--blue);font-size:14px;font-weight:600;cursor:pointer;padding:2px 4px">Выйти</button>
   </div>
   <input type="date" id="preview-date" style="position:absolute;opacity:0;pointer-events:none;width:0;height:0" />
-  <input type="time" id="time-edit-input" style="position:absolute;opacity:0;pointer-events:none;width:0;height:0" />
   <h1 class="large" id="today-title">Сегодня</h1>
 
   <!-- HERO with Activity rings -->
@@ -726,13 +735,9 @@ function renderMeds(){
     const offset = C*(1-pct);
     const endISO = courseEndISO(m.id);
     const end = parseISO(endISO);
-    const chipsHtml = times.map((t, idx) => `
-      <button class="time-chip" data-med="${m.id}" data-idx="${idx}" style="--chip-color:${m.color}">
-        <svg viewBox="0 0 24 24" width="12" height="12" aria-hidden="true" style="vertical-align:-2px;margin-right:4px">
-          <circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.8"/>
-          <path d="M12 7v5l3 2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" fill="none"/>
-        </svg>${t}
-      </button>`).join("");
+    const chipsHtml = `<span class="chip-label">Время:</span>` + times.map((t, idx) => `
+      <input type="time" class="time-chip" value="${t}" data-med="${m.id}" data-idx="${idx}" style="--chip-color:${m.color}" aria-label="Время приёма ${idx+1}" />
+    `).join("");
     const card = document.createElement("div");
     card.className = "med-card";
     card.innerHTML = `
@@ -757,26 +762,19 @@ function renderMeds(){
         </div>
       </div>
     `;
-    // Привязка редактирования времени к каждой чипе
+    // Привязка редактирования времени: change на input[type=time]
     card.querySelectorAll(".time-chip").forEach(chip => {
-      chip.addEventListener("click", () => openTimeEditor(chip.dataset.med, +chip.dataset.idx));
+      chip.addEventListener("change", () => {
+        const newTime = chip.value;
+        if (!newTime) return;
+        const medId = chip.dataset.med;
+        const idx = +chip.dataset.idx;
+        setTimeFor(medId, idx, newTime);
+        renderAll();
+      });
     });
     grid.appendChild(card);
   });
-}
-
-// Открытие нативного пикера для редактирования времени приёма
-function openTimeEditor(medId, idx){
-  const input = document.getElementById("time-edit-input");
-  const cur = timesFor(medId)[idx];
-  input.value = cur;
-  input.dataset.med = medId;
-  input.dataset.idx = idx;
-  if (typeof input.showPicker === "function"){
-    try { input.showPicker(); } catch(_) { input.focus(); input.click(); }
-  } else {
-    input.focus(); input.click();
-  }
 }
 
 // ===== Events =====
@@ -975,16 +973,6 @@ previewExit.addEventListener("click", () => {
   refreshPreviewBanner();
 });
 
-// ===== Редактирование времени приёма =====
-const timeEditInput = document.getElementById("time-edit-input");
-timeEditInput.addEventListener("change", () => {
-  const newTime = timeEditInput.value;
-  const medId = timeEditInput.dataset.med;
-  const idx = +timeEditInput.dataset.idx;
-  if (!newTime || !medId || Number.isNaN(idx)) return;
-  setTimeFor(medId, idx, newTime);
-  renderAll();
-});
 
 function refreshPreviewBanner(){
   const iso = getPreviewISO();
