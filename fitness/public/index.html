@@ -1,115 +1,147 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#0f172a">
-  <title>Тренировки</title>
-  <link rel="stylesheet" href="/styles.css">
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="theme-color" content="#f8fafc" media="(prefers-color-scheme: light)" />
+<meta name="theme-color" content="#0a0b10" media="(prefers-color-scheme: dark)" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="default" />
+<meta name="apple-mobile-web-app-title" content="Тренировки" />
+<link rel="icon" type="image/svg+xml" href='data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 180"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0%25" stop-color="%23fbbf24"/><stop offset="55%25" stop-color="%23ef4444"/><stop offset="100%25" stop-color="%23991b1b"/></linearGradient></defs><rect width="180" height="180" rx="40" fill="url(%23g)"/><path d="M50 90h80M64 64v52M116 64v52" stroke="white" stroke-width="14" stroke-linecap="round"/></svg>' />
+<link rel="apple-touch-icon" href='data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 180"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0%25" stop-color="%23fbbf24"/><stop offset="55%25" stop-color="%23ef4444"/><stop offset="100%25" stop-color="%23991b1b"/></linearGradient></defs><rect width="180" height="180" rx="40" fill="url(%23g)"/><path d="M50 90h80M64 64v52M116 64v52" stroke="white" stroke-width="14" stroke-linecap="round"/></svg>' />
+<title>Тренировки</title>
+<link rel="stylesheet" href="/styles.css">
 </head>
 <body>
 
 <!-- =================== ЭКРАН ВХОДА =================== -->
-<section id="login-screen" class="screen">
-  <div class="login-card">
-    <h1>Тренировки</h1>
-    <p class="muted">Введите код доступа, который выдал тренер.<br>Тренер тоже входит здесь.</p>
-    <form id="login-form">
-      <input type="text" id="login-code" placeholder="Код доступа" autocomplete="off" required minlength="4">
-      <button type="submit">Войти</button>
-    </form>
+<section id="login-screen" class="screen login-screen">
+  <div class="login-wrap">
+    <div class="hero-brand">
+      <span class="hero-brand-dot"></span>
+      Fitness · программа тренировок
+    </div>
+    <h1 class="large"><span class="hero-title-grad">Тренировки</span></h1>
+    <p class="hero-sub">Введите код доступа, который выдал тренер.<br>Тренер тоже входит здесь.</p>
+    <div class="login-card">
+      <form id="login-form" class="login-form">
+        <input type="text" id="login-code" placeholder="Код доступа" autocomplete="off" inputmode="text" required minlength="4">
+        <button type="submit">Войти</button>
+      </form>
+    </div>
     <div id="login-error" class="error" hidden></div>
   </div>
 </section>
 
 <!-- =================== КАБИНЕТ ТРЕНЕРА =================== -->
 <section id="trainer-screen" class="screen" hidden>
-  <header class="topbar">
-    <div class="topbar-title">
-      <strong id="trainer-name"></strong>
-      <span class="role-pill">тренер</span>
+  <div class="hero">
+    <div class="hero-brand">
+      <span class="hero-brand-dot"></span>
+      Кабинет тренера
     </div>
-    <button class="ghost" data-action="logout">Выйти</button>
-  </header>
-
-  <nav class="tabs">
-    <button class="tab active" data-tab="t-clients">Клиенты</button>
-    <button class="tab" data-tab="t-programs">Программы</button>
-    <button class="tab" data-tab="t-assignments">Назначения</button>
-  </nav>
-
-  <!-- Клиенты -->
-  <div id="t-clients" class="tab-panel active">
-    <div class="panel-head">
-      <h2>Клиенты</h2>
-      <button data-action="add-client">+ Клиент</button>
+    <div class="topbar-row">
+      <div>
+        <div class="hero-eyebrow">Тренер</div>
+        <h1 class="large"><span class="hero-title-grad" id="trainer-name"></span></h1>
+      </div>
+      <button class="logout-btn" data-action="logout">Выйти</button>
     </div>
-    <div id="clients-list" class="list"></div>
   </div>
 
-  <!-- Программы -->
-  <div id="t-programs" class="tab-panel">
-    <div class="panel-head">
-      <h2>Программы</h2>
-      <button data-action="add-program">+ Программа</button>
-    </div>
-    <div id="programs-list" class="list"></div>
-  </div>
+  <div class="wrap">
+    <nav class="tabs">
+      <button class="tab active" data-tab="t-clients">Клиенты</button>
+      <button class="tab" data-tab="t-programs">Программы</button>
+      <button class="tab" data-tab="t-assignments">Назначения</button>
+    </nav>
 
-  <!-- Назначения -->
-  <div id="t-assignments" class="tab-panel">
-    <div class="panel-head">
-      <h2>Назначения</h2>
-      <button data-action="add-assignment">+ Назначить</button>
+    <!-- Клиенты -->
+    <div id="t-clients" class="tab-panel active">
+      <div class="section-head">
+        <span class="title">Клиенты</span>
+        <button class="link-btn" data-action="add-client">+ Добавить</button>
+      </div>
+      <div id="clients-list" class="group-list"></div>
     </div>
-    <div id="assignments-list" class="list"></div>
+
+    <!-- Программы -->
+    <div id="t-programs" class="tab-panel">
+      <div class="section-head">
+        <span class="title">Программы</span>
+        <button class="link-btn" data-action="add-program">+ Добавить</button>
+      </div>
+      <div id="programs-list" class="group-list"></div>
+    </div>
+
+    <!-- Назначения -->
+    <div id="t-assignments" class="tab-panel">
+      <div class="section-head">
+        <span class="title">Назначения</span>
+        <button class="link-btn" data-action="add-assignment">+ Назначить</button>
+      </div>
+      <div id="assignments-list" class="group-list"></div>
+    </div>
   </div>
 </section>
 
 <!-- =================== КАБИНЕТ КЛИЕНТА =================== -->
 <section id="client-screen" class="screen" hidden>
-  <header class="topbar">
-    <div class="topbar-title">
-      <strong id="client-name"></strong>
-      <span class="role-pill">клиент</span>
+  <div class="hero">
+    <div class="hero-brand">
+      <span class="hero-brand-dot"></span>
+      Личный кабинет
     </div>
-    <button class="ghost" data-action="logout">Выйти</button>
-  </header>
-
-  <nav class="tabs">
-    <button class="tab active" data-tab="c-today">Сегодня</button>
-    <button class="tab" data-tab="c-week">Неделя</button>
-    <button class="tab" data-tab="c-history">История</button>
-  </nav>
-
-  <div id="c-today" class="tab-panel active">
-    <div class="panel-head">
-      <h2 id="today-title">Сегодня</h2>
+    <div class="topbar-row">
+      <div>
+        <div class="hero-eyebrow">Клиент</div>
+        <h1 class="large"><span class="hero-title-grad" id="client-name"></span></h1>
+      </div>
+      <button class="logout-btn" data-action="logout">Выйти</button>
     </div>
-    <div id="today-list" class="list"></div>
   </div>
 
-  <div id="c-week" class="tab-panel">
-    <div class="panel-head"><h2>Программа по неделе</h2></div>
-    <div id="week-list" class="list"></div>
-  </div>
+  <div class="wrap">
+    <nav class="tabs">
+      <button class="tab active" data-tab="c-today">Сегодня</button>
+      <button class="tab" data-tab="c-week">Неделя</button>
+      <button class="tab" data-tab="c-history">История</button>
+    </nav>
 
-  <div id="c-history" class="tab-panel">
-    <div class="panel-head">
-      <h2>История</h2>
-      <select id="history-exercise"></select>
+    <div id="c-today" class="tab-panel active">
+      <div class="section-head">
+        <span class="title" id="today-title">Сегодня</span>
+      </div>
+      <div id="today-list" class="group-list"></div>
     </div>
-    <canvas id="history-chart" width="600" height="240"></canvas>
-    <div id="history-table" class="list"></div>
+
+    <div id="c-week" class="tab-panel">
+      <div class="section-head"><span class="title">Программа по неделе</span></div>
+      <div id="week-list" class="group-list"></div>
+    </div>
+
+    <div id="c-history" class="tab-panel">
+      <div class="section-head">
+        <span class="title">Динамика</span>
+      </div>
+      <div class="card">
+        <select id="history-exercise" class="ios-select"></select>
+        <canvas id="history-chart" width="600" height="240"></canvas>
+      </div>
+      <div class="section-head"><span class="title">Записи</span></div>
+      <div id="history-table" class="group-list"></div>
+    </div>
   </div>
 </section>
 
-<!-- =================== МОДАЛКА (универсальная) =================== -->
+<!-- =================== МОДАЛКА =================== -->
 <div id="modal" class="modal" hidden>
   <div class="modal-card">
+    <div class="modal-grabber"></div>
     <div class="modal-head">
       <h3 id="modal-title"></h3>
-      <button class="ghost" data-action="close-modal">✕</button>
+      <button class="link-btn" data-action="close-modal">Готово</button>
     </div>
     <div id="modal-body"></div>
   </div>
