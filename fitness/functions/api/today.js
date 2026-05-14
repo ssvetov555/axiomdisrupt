@@ -1,5 +1,6 @@
-// GET /api/today  — упражнения клиента на сегодня (по активным назначениям и дню недели).
-// Используется в кабинете клиента как "Программа на сегодня".
+// GET /api/today  — упражнения клиента на сегодня.
+// Возвращает также last_log (предыдущая запись по упражнению) для prefill,
+// и rest_day если день отмечен как выходной.
 
 import { handle, requireUser, json, error } from "../_lib.js";
 
@@ -8,13 +9,15 @@ export const onRequestGet = handle(async ({ request, env }) => {
   if (user.role !== "client") return error(403, "only client");
 
   const url = new URL(request.url);
-  const dateParam = url.searchParams.get("date"); // YYYY-MM-DD
+  const dateParam = url.searchParams.get("date");
 
-  // вычисляем день недели 1..7 (Пн..Вс)
   const d = dateParam ? new Date(dateParam + "T00:00:00Z") : new Date();
-  // getUTCDay: 0=Sun..6=Sat. Приведём к 1..7 где 1=Mon.
   const dow = ((d.getUTCDay() + 6) % 7) + 1;
   const today = (dateParam || d.toISOString().slice(0, 10));
+
+  const rest = await env.DB.prepare(
+    "SELECT log_date, reason FROM rest_days WHERE client_id=?1 AND log_date=?2"
+  ).bind(user.id, today).first();
 
   const { results } = await env.DB.prepare(
     `SELECT e.id AS exercise_id, e.name, e.description, e.video_url,
@@ -31,16 +34,24 @@ export const onRequestGet = handle(async ({ request, env }) => {
                       'created_at', w.created_at)
                FROM workout_logs w
               WHERE w.exercise_id = e.id AND w.client_id = a.client_id AND w.log_date = ?2
-              ORDER BY w.created_at DESC LIMIT 1) AS today_log
+              ORDER BY w.created_at DESC LIMIT 1) AS today_log,
+            (SELECT json_object(
+                      'done_sets', w.done_sets,
+                      'done_reps', w.done_reps,
+                      'done_weight', w.done_weight,
+                      'log_date', w.log_date)
+               FROM workout_logs w
+              WHERE w.exercise_id = e.id AND w.client_id = a.client_id AND w.log_date < ?2
+              ORDER BY w.log_date DESC LIMIT 1) AS last_log,
+            (SELECT MAX(done_weight) FROM workout_logs w
+              WHERE w.exercise_id = e.id AND w.client_id = a.client_id) AS pr_weight
        FROM assignments a
        JOIN programs p ON p.id = a.program_id
        JOIN exercises e ON e.program_id = p.id
       WHERE a.client_id = ?1 AND a.is_active = 1
         AND (e.day_of_week = ?3 OR e.day_of_week IS NULL)
       ORDER BY p.name, e.order_index, e.id`
-  )
-    .bind(user.id, today, dow)
-    .all();
+  ).bind(user.id, today, dow).all();
 
-  return json({ date: today, day_of_week: dow, items: results });
+  return json({ date: today, day_of_week: dow, rest_day: rest || null, items: results });
 });

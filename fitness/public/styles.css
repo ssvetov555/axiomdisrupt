@@ -525,3 +525,234 @@ hr { border: none; border-top: 1px solid var(--border); margin: 14px 0; }
 
 /* ensure native buttons inside forms also use our pill style */
 form button[type="submit"] { width: 100%; }
+
+/* =============== Dashboard grid =============== */
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 8px;
+  margin: 0 16px 4px;
+  padding: 0 6px;
+}
+.stat-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 12px;
+  box-shadow: var(--shadow-1);
+}
+.stat-card .stat-label {
+  font-size: 10px; font-weight: 700; color: var(--subdued);
+  letter-spacing: .12em; text-transform: uppercase;
+}
+.stat-card .stat-value {
+  font-size: 26px; font-weight: 800; letter-spacing: -.02em;
+  margin-top: 2px; font-variant-numeric: tabular-nums;
+  color: var(--text); line-height: 1;
+}
+.stat-card .stat-value small {
+  font-size: 12px; font-weight: 600; color: var(--subdued); margin-left: 4px;
+}
+.stat-card.accent .stat-value { background: var(--accent4-grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
+
+/* =============== Search row =============== */
+.search-row {
+  display: flex; gap: 8px; align-items: center;
+  margin: 8px 0 12px;
+}
+.search-row input[type="search"] {
+  flex: 1;
+  padding: 9px 14px; font-size: 14px;
+  background: var(--card); border: 1px solid var(--border); border-radius: var(--radius-pill);
+}
+.search-row .ios-select {
+  flex: 0 0 auto; width: auto; padding: 9px 32px 9px 14px; font-size: 14px;
+  border-radius: var(--radius-pill);
+}
+.checkbox-inline {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 13px; color: var(--text-2); cursor: pointer;
+  background: var(--card); border: 1px solid var(--border);
+  padding: 7px 12px; border-radius: var(--radius-pill);
+}
+.checkbox-inline input { width: auto; }
+
+/* =============== Password reveal =============== */
+.password-wrap { position: relative; }
+.password-wrap input { padding-right: 44px; }
+.reveal-btn {
+  position: absolute; right: 6px; top: 50%; transform: translateY(-50%);
+  width: 32px; height: 32px; border-radius: 8px;
+  background: transparent; border: 0; color: var(--text-2); cursor: pointer;
+  padding: 0; box-shadow: none;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M1 12s4-8 11-8 11 8 11 8-4 8-11 8S1 12 1 12z'/><circle cx='12' cy='12' r='3'/></svg>");
+  background-repeat: no-repeat; background-position: center; background-size: 20px 20px;
+}
+.password-wrap.revealed .reveal-btn {
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M17.94 17.94A10 10 0 0 1 12 20c-7 0-11-8-11-8a18 18 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18 18 0 0 1-2.16 3.19M1 1l22 22'/></svg>");
+}
+
+/* =============== Rating stars =============== */
+.stars { display: inline-flex; gap: 2px; vertical-align: middle; }
+.star {
+  font-size: 14px; color: var(--border-2); line-height: 1; cursor: default;
+}
+.star.filled { color: var(--accent2); }
+.stars.interactive .star { cursor: pointer; font-size: 28px; transition: transform .08s ease; }
+.stars.interactive .star:active { transform: scale(.85); }
+.rating-row {
+  display: inline-flex; align-items: center; gap: 6px; color: var(--text-2); font-size: 13px;
+}
+
+/* =============== Heatmap =============== */
+.heatmap-wrap { overflow-x: auto; padding: 10px 14px; }
+.heatmap {
+  display: grid;
+  grid-template-rows: repeat(7, 12px);
+  grid-auto-flow: column;
+  gap: 3px;
+  min-width: max-content;
+}
+.heatmap .cell {
+  width: 12px; height: 12px; border-radius: 3px;
+  background: var(--card-2);
+  border: 1px solid var(--border);
+}
+.heatmap .cell.l1 { background: rgba(34,197,94,.25); border-color: rgba(34,197,94,.4); }
+.heatmap .cell.l2 { background: rgba(34,197,94,.5); border-color: rgba(34,197,94,.65); }
+.heatmap .cell.l3 { background: rgba(34,197,94,.85); border-color: rgba(34,197,94,.95); }
+.heatmap .cell.rest { background: rgba(217,119,6,.3); border-color: rgba(217,119,6,.5); }
+.heatmap .month-label {
+  grid-row: span 7; font-size: 10px; color: var(--subdued);
+  align-self: end; padding-right: 4px; font-weight: 600;
+}
+
+/* =============== Rest timer (sticky bottom card) =============== */
+.rest-timer {
+  position: fixed; left: 16px; right: 16px; bottom: 16px; z-index: 25;
+  display: flex; justify-content: center; pointer-events: none;
+}
+.rest-timer-inner {
+  pointer-events: auto;
+  background: rgba(15, 23, 42, .94); color: #fff;
+  border-radius: 18px; padding: 14px 18px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, .35);
+  display: flex; align-items: center; gap: 14px;
+  backdrop-filter: blur(20px);
+  min-width: 260px;
+}
+.rest-timer-label { font-size: 11px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; opacity: .7; }
+.rest-timer-time {
+  font-size: 28px; font-weight: 800; font-variant-numeric: tabular-nums; letter-spacing: -.03em;
+  flex: 1;
+}
+.rest-timer-actions { display: flex; gap: 8px; }
+.rest-timer-actions button {
+  background: rgba(255,255,255,.15); color: #fff; padding: 8px 12px; font-size: 13px;
+  border: 0; box-shadow: none; border-radius: 8px;
+}
+
+/* =============== Catalog cards =============== */
+.catalog-card {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 16px; box-shadow: var(--shadow-1);
+}
+.catalog-card .header {
+  display: flex; align-items: flex-start; justify-content: space-between; gap: 12px;
+}
+.catalog-card h3 { margin: 0 0 4px; font-size: 18px; font-weight: 700; letter-spacing: -.015em; }
+.catalog-card .description { font-size: 14px; color: var(--text-2); line-height: 1.5; margin: 4px 0 10px; }
+.catalog-card .meta { display: flex; gap: 12px; flex-wrap: wrap; font-size: 12px; color: var(--subdued); font-variant-numeric: tabular-nums; margin-bottom: 12px; font-weight: 600; }
+.catalog-card .meta strong { color: var(--text); font-weight: 700; }
+.catalog-card .tags-row { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 10px; }
+
+.difficulty-pill { font-size: 10px; padding: 3px 9px; border-radius: var(--radius-pill); font-weight: 700; letter-spacing: .06em; text-transform: uppercase; }
+.difficulty-pill.beginner { background: var(--check-soft); color: var(--check); }
+.difficulty-pill.intermediate { background: var(--accent2-soft); color: var(--accent2); }
+.difficulty-pill.advanced { background: var(--danger-soft); color: var(--danger); }
+
+/* =============== Confirm modal =============== */
+.confirm-card { max-width: 380px; text-align: center; padding-bottom: 20px; }
+.confirm-card h3 { margin: 12px 0 8px; }
+
+/* =============== Inline editable =============== */
+.inline-edit {
+  background: transparent; border: 1px dashed transparent;
+  padding: 2px 6px; border-radius: 6px; cursor: text;
+  transition: background .15s ease, border-color .15s ease;
+}
+.inline-edit:hover { background: var(--card-2); border-color: var(--border); }
+.inline-edit:focus { outline: 0; background: var(--card); border-color: var(--accent4); border-style: solid; }
+
+/* =============== Empty states =============== */
+.empty {
+  text-align: center; padding: 30px 20px;
+  color: var(--text-2); font-size: 14px; line-height: 1.5;
+  background: var(--card); border: 1px dashed var(--border);
+  border-radius: var(--radius);
+}
+.empty .emoji { font-size: 36px; margin-bottom: 8px; display: block; }
+.empty h4 { margin: 0 0 4px; font-size: 16px; font-weight: 700; color: var(--text); }
+
+/* =============== Loading skeleton =============== */
+.skeleton {
+  background: linear-gradient(90deg, var(--card-2) 25%, var(--card) 50%, var(--card-2) 75%);
+  background-size: 200% 100%;
+  animation: skel 1.4s linear infinite;
+  border-radius: 8px;
+  color: transparent !important;
+}
+@keyframes skel { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+.skeleton-card { height: 88px; border-radius: var(--radius); background: var(--card-2); animation: skel 1.4s linear infinite; background-size: 200% 100%; background-image: linear-gradient(90deg, var(--card-2) 25%, var(--card) 50%, var(--card-2) 75%); }
+
+/* =============== Rest day banner =============== */
+.rest-day-banner {
+  background: linear-gradient(135deg, var(--accent2) 0%, #fbbf24 100%);
+  color: #422006;
+  padding: 18px; border-radius: var(--radius);
+  font-weight: 600;
+  display: flex; align-items: center; gap: 14px;
+}
+.rest-day-banner .icon { font-size: 28px; }
+
+/* =============== Tags chip =============== */
+.tag-chip {
+  font-size: 11px; padding: 3px 8px; border-radius: 6px;
+  background: var(--accent1-soft); color: var(--accent1);
+  font-weight: 700; letter-spacing: .04em;
+}
+
+/* =============== PR badge =============== */
+.pr-badge {
+  display: inline-flex; align-items: center; gap: 4px;
+  font-size: 10px; padding: 3px 8px; border-radius: var(--radius-pill);
+  background: var(--accent2-grad); color: #fff;
+  font-weight: 800; letter-spacing: .08em; text-transform: uppercase;
+  box-shadow: 0 2px 6px rgba(217, 119, 6, .35);
+}
+.streak-flame { display: inline-block; }
+
+/* Exercise autocomplete suggestions */
+.ex-suggest {
+  display: flex; flex-direction: column; gap: 4px;
+  margin: 6px 2px 0;
+}
+.suggest-item {
+  appearance: none; border: 1px solid var(--border); background: var(--card);
+  color: var(--text); padding: 8px 12px; border-radius: 8px; text-align: left;
+  font: inherit; font-size: 14px; cursor: pointer; box-shadow: none; font-weight: 500;
+}
+.suggest-item:active { background: var(--card-2); }
+
+/* archived card visual */
+.card.archived { opacity: 0.6; }
+
+/* tabs scroll for many tabs */
+.tabs { overflow-x: auto; scrollbar-width: none; }
+.tabs::-webkit-scrollbar { display: none; }
+.tab { white-space: nowrap; flex: 0 0 auto; }
+@media (max-width: 480px) {
+  .tabs { padding: 4px 4px; }
+  .tab { font-size: 13px; padding: 8px 12px; }
+}
+

@@ -8,8 +8,9 @@
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-status-bar-style" content="default" />
 <meta name="apple-mobile-web-app-title" content="Тренировки" />
-<link rel="icon" type="image/svg+xml" href='data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 180"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0%25" stop-color="%23fbbf24"/><stop offset="55%25" stop-color="%23ef4444"/><stop offset="100%25" stop-color="%23991b1b"/></linearGradient></defs><rect width="180" height="180" rx="40" fill="url(%23g)"/><path d="M50 90h80M64 64v52M116 64v52" stroke="white" stroke-width="14" stroke-linecap="round"/></svg>' />
-<link rel="apple-touch-icon" href='data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 180"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0%25" stop-color="%23fbbf24"/><stop offset="55%25" stop-color="%23ef4444"/><stop offset="100%25" stop-color="%23991b1b"/></linearGradient></defs><rect width="180" height="180" rx="40" fill="url(%23g)"/><path d="M50 90h80M64 64v52M116 64v52" stroke="white" stroke-width="14" stroke-linecap="round"/></svg>' />
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="icon" type="image/svg+xml" href="/icon-192.svg" />
+<link rel="apple-touch-icon" href="/icon-192.svg" />
 <title>Тренировки</title>
 <link rel="stylesheet" href="/styles.css">
 </head>
@@ -26,7 +27,10 @@
     <p class="hero-sub">Введите код доступа, который выдал тренер.<br>Тренер тоже входит здесь.</p>
     <div class="login-card">
       <form id="login-form" class="login-form">
-        <input type="text" id="login-code" placeholder="Код доступа" autocomplete="off" inputmode="text" required minlength="4">
+        <div class="password-wrap">
+          <input type="password" id="login-code" placeholder="Код доступа" autocomplete="off" inputmode="text" required minlength="4">
+          <button type="button" class="reveal-btn" data-action="toggle-reveal" aria-label="Показать"></button>
+        </div>
         <button type="submit">Войти</button>
       </form>
     </div>
@@ -51,6 +55,9 @@
   </div>
 
   <div class="wrap">
+    <!-- Mini-dashboard -->
+    <div id="trainer-dashboard" class="dashboard-grid"></div>
+
     <nav class="tabs">
       <button class="tab active" data-tab="t-clients">Клиенты</button>
       <button class="tab" data-tab="t-programs">Программы</button>
@@ -71,6 +78,12 @@
       <div class="section-head">
         <span class="title">Программы</span>
         <button class="link-btn" data-action="add-program">+ Добавить</button>
+      </div>
+      <div class="search-row">
+        <input type="search" id="programs-search" placeholder="Поиск по названию…">
+        <label class="checkbox-inline">
+          <input type="checkbox" id="programs-include-archived"> архив
+        </label>
       </div>
       <div id="programs-list" class="group-list"></div>
     </div>
@@ -100,27 +113,52 @@
       </div>
       <button class="logout-btn" data-action="logout">Выйти</button>
     </div>
+
+    <!-- Streak + stats -->
+    <div id="client-stats" class="dashboard-grid"></div>
   </div>
 
   <div class="wrap">
     <nav class="tabs">
       <button class="tab active" data-tab="c-today">Сегодня</button>
+      <button class="tab" data-tab="c-catalog">Каталог</button>
       <button class="tab" data-tab="c-week">Неделя</button>
       <button class="tab" data-tab="c-history">История</button>
+      <button class="tab" data-tab="c-body">Замеры</button>
     </nav>
 
+    <!-- Сегодня -->
     <div id="c-today" class="tab-panel active">
       <div class="section-head">
         <span class="title" id="today-title">Сегодня</span>
+        <button class="link-btn" data-action="toggle-rest-day">День отдыха</button>
       </div>
       <div id="today-list" class="group-list"></div>
     </div>
 
+    <!-- Каталог -->
+    <div id="c-catalog" class="tab-panel">
+      <div class="section-head">
+        <span class="title">Каталог программ</span>
+      </div>
+      <div class="search-row">
+        <input type="search" id="catalog-search" placeholder="Поиск…">
+        <select id="catalog-sort" class="ios-select">
+          <option value="rating">По рейтингу</option>
+          <option value="popular">По популярности</option>
+          <option value="new">Сначала новые</option>
+        </select>
+      </div>
+      <div id="catalog-list" class="group-list"></div>
+    </div>
+
+    <!-- Неделя -->
     <div id="c-week" class="tab-panel">
       <div class="section-head"><span class="title">Программа по неделе</span></div>
       <div id="week-list" class="group-list"></div>
     </div>
 
+    <!-- История -->
     <div id="c-history" class="tab-panel">
       <div class="section-head">
         <span class="title">Динамика</span>
@@ -129,8 +167,26 @@
         <select id="history-exercise" class="ios-select"></select>
         <canvas id="history-chart" width="600" height="240"></canvas>
       </div>
+
+      <div class="section-head"><span class="title">Карта тренировок</span></div>
+      <div class="card heatmap-wrap">
+        <div id="heatmap" class="heatmap"></div>
+      </div>
+
       <div class="section-head"><span class="title">Записи</span></div>
       <div id="history-table" class="group-list"></div>
+    </div>
+
+    <!-- Замеры -->
+    <div id="c-body" class="tab-panel">
+      <div class="section-head">
+        <span class="title">Замеры тела</span>
+        <button class="link-btn" data-action="add-bodylog">+ Замер</button>
+      </div>
+      <div class="card">
+        <canvas id="bodyweight-chart" width="600" height="200"></canvas>
+      </div>
+      <div id="body-list" class="group-list"></div>
     </div>
   </div>
 </section>
@@ -144,6 +200,31 @@
       <button class="link-btn" data-action="close-modal">Готово</button>
     </div>
     <div id="modal-body"></div>
+  </div>
+</div>
+
+<!-- =================== CONFIRM МОДАЛКА =================== -->
+<div id="confirm" class="modal" hidden>
+  <div class="modal-card confirm-card">
+    <div class="modal-grabber"></div>
+    <h3 id="confirm-title">Уверены?</h3>
+    <p id="confirm-text" class="muted small"></p>
+    <div class="form-actions">
+      <button class="ghost" data-action="confirm-cancel">Отмена</button>
+      <button class="danger" data-action="confirm-ok">Удалить</button>
+    </div>
+  </div>
+</div>
+
+<!-- =================== ТАЙМЕР ОТДЫХА =================== -->
+<div id="rest-timer" class="rest-timer" hidden>
+  <div class="rest-timer-inner">
+    <div class="rest-timer-label">Отдых</div>
+    <div class="rest-timer-time" id="rest-timer-time">01:30</div>
+    <div class="rest-timer-actions">
+      <button class="ghost" data-action="rest-cancel">Стоп</button>
+      <button class="ghost" data-action="rest-add">+30с</button>
+    </div>
   </div>
 </div>
 
