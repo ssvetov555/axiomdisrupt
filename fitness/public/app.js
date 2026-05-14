@@ -215,6 +215,8 @@ document.addEventListener("click", async (e) => {
   if (a === "add-bodylog") addBodyLogModal();
   if (a === "open-1rm") oneRMCalcModal();
   if (a === "open-rest-timer") startRestTimer(+t.dataset.seconds || 90);
+  if (a === "open-recovery") recoveryModal();
+  if (a === "set-recovery") setRecoveryRating(t.dataset.field, +t.dataset.value);
 });
 
 // =================== Tabs ===================
@@ -233,6 +235,7 @@ document.addEventListener("click", (e) => {
   if (tab === "c-catalog") renderCatalog();
   if (tab === "c-body") renderBody();
   if (tab === "c-goals") renderGoals();
+  if (tab === "c-achievements") renderAchievements();
 });
 
 // ====================================================
@@ -810,6 +813,39 @@ async function renderToday() {
   }
   list.innerHTML = data.items.map(todayItemHtml).join("");
   data.items.forEach((it) => loadComments(it.exercise_id));
+  renderTodayProgress(data.items);
+}
+
+function parseRepsNum(reps) {
+  if (!reps) return 0;
+  const m = String(reps).match(/(\d+)/);
+  return m ? +m[1] : 0;
+}
+
+function renderTodayProgress(items) {
+  const wrap = $("#today-progress");
+  if (!items.length) { wrap.hidden = true; return; }
+  let done = 0;
+  let volume = 0;
+  items.forEach((it) => {
+    const log = it.today_log ? JSON.parse(it.today_log) : null;
+    if (log?.completed) {
+      done += 1;
+      const sets = +log.done_sets || 0;
+      const reps = parseRepsNum(log.done_reps);
+      const w = +log.done_weight || 0;
+      volume += sets * reps * w;
+    }
+  });
+  wrap.hidden = false;
+  const pct = items.length ? Math.round((done / items.length) * 100) : 0;
+  wrap.innerHTML = `
+    <div class="top">
+      <div class="ratio">${done}<small> / ${items.length} готово</small></div>
+      <div class="meta-row">${volume > 0 ? `объём ${Math.round(volume)} кг` : ""}</div>
+    </div>
+    <div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div>
+  `;
 }
 
 function todayItemHtml(it) {
@@ -817,6 +853,12 @@ function todayItemHtml(it) {
   const last = it.last_log ? JSON.parse(it.last_log) : null;
   const done = !!(log && log.completed);
   const isPR = log && log.done_weight != null && it.pr_weight != null && +log.done_weight >= +it.pr_weight;
+  // Авто-прогрессия: если в прошлый раз всё успешно — рекомендуем +2.5кг
+  let suggest = "";
+  if (last && last.done_weight != null && it.target_sets && +last.done_sets >= it.target_sets) {
+    const next = +last.done_weight + 2.5;
+    suggest = `<span class="suggest-hint">попробуй ${next} кг</span>`;
+  }
   return `
     <div class="exercise ${done ? "done" : ""}" data-ex="${it.exercise_id}" data-asg="${it.assignment_id}">
       <h3>
@@ -824,6 +866,7 @@ function todayItemHtml(it) {
         ${escape(it.name)}
         ${done ? `<span class="tagline ok">✓</span>` : ""}
         ${isPR ? `<span class="pr-badge">PR</span>` : ""}
+        ${suggest}
       </h3>
       <div class="target">
         ${it.target_sets ? `${it.target_sets}×` : ""}${escape(it.target_reps || "")}${it.target_weight ? ` · ${escape(it.target_weight)}` : ""}${it.rest_seconds ? ` · отдых ${it.rest_seconds}с` : ""}
@@ -1631,6 +1674,55 @@ applyTheme(localStorage.getItem(THEME_KEY) || "auto");
 function exportProgramModal(programId) {
   const url = `/api/programs/${programId}/export?format=`;
   window.open(url + "csv", "_blank");
+}
+
+// =================== Achievements (бейджи) ===================
+async function renderAchievements() {
+  const el = $("#achievements-list");
+  el.innerHTML = skeletonList(2);
+  try {
+    const { badges, stats } = await api("/api/achievements");
+    el.innerHTML = `
+      <div class="card" style="grid-column: 1 / -1;">
+        <div class="meta">Всего: <strong>${stats.sessions}</strong> ${pluralize(stats.sessions, ["тренировка", "тренировки", "тренировок"])} · объём <strong>${stats.total_volume_kg.toLocaleString("ru-RU")} кг</strong> · ${stats.prs} ${pluralize(stats.prs, ["рекорд", "рекорда", "рекордов"])} · макс. серия ${stats.max_streak} ${pluralize(stats.max_streak, ["день", "дня", "дней"])}</div>
+      </div>` + badges.map((b) => `
+      <div class="badge ${b.unlocked ? "" : "locked"}">
+        <span class="emoji">${b.emoji}</span>
+        <div class="title">${escape(b.title)}</div>
+        <div class="desc">${escape(b.desc)}</div>
+        ${b.awarded_at ? `<div class="date">получено ${b.awarded_at.slice(0, 10)}</div>` : ""}
+      </div>`).join("");
+  } catch (e) { el.innerHTML = `<div class="empty muted">${e.message}</div>`; }
+}
+
+// =================== Recovery (чек-ин самочувствия) ===================
+let recoveryDraft = { sleep_hours: null, energy: null, soreness: null, mood: null };
+function recoveryModal() {
+  recoveryDraft = { sleep_hours: null, energy: null, soreness: null, mood: null };
+  openModal("Самочувствие", `
+    <p class="muted small">Отметь, как себя ощущаешь сегодня. Помогает тренеру корректировать нагрузку.</p>
+    <label>Сон, часов</label><input type="number" step="0.5" id="rec-sleep" placeholder="7.5">
+    <label>Энергия</label><div class="rate-row">${[1,2,3,4,5].map((n) => `<button type="button" class="rate-btn" data-action="set-recovery" data-field="energy" data-value="${n}">${n}</button>`).join("")}</div>
+    <label>Болит ли что-то</label><div class="rate-row">${[1,2,3,4,5].map((n) => `<button type="button" class="rate-btn" data-action="set-recovery" data-field="soreness" data-value="${n}">${n}</button>`).join("")}</div>
+    <label>Настроение</label><div class="rate-row">${[1,2,3,4,5].map((n) => `<button type="button" class="rate-btn" data-action="set-recovery" data-field="mood" data-value="${n}">${n}</button>`).join("")}</div>
+    <label>Заметка</label><textarea id="rec-note" rows="2"></textarea>
+    <div class="form-actions">
+      <button class="ghost" type="button" data-action="close-modal">Отмена</button>
+      <button id="rec-save">Сохранить</button>
+    </div>`);
+  $("#rec-save").addEventListener("click", async () => {
+    recoveryDraft.sleep_hours = +$("#rec-sleep").value || null;
+    recoveryDraft.note = $("#rec-note").value.trim() || null;
+    try {
+      await api("/api/recovery", { method: "POST", body: recoveryDraft });
+      closeModal(); toast("Сохранено");
+    } catch (e) { toast(e.message); }
+  });
+}
+function setRecoveryRating(field, value) {
+  recoveryDraft[field] = value;
+  // подсветим выбранную кнопку
+  $$(`.rate-btn[data-field="${field}"]`).forEach((b) => b.classList.toggle("active", +b.dataset.value === value));
 }
 
 // =================== SW registration ===================

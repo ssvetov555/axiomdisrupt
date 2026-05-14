@@ -152,14 +152,19 @@
       <button class="tab" data-tab="c-week">Неделя</button>
       <button class="tab" data-tab="c-history">История</button>
       <button class="tab" data-tab="c-body">Замеры</button>
+      <button class="tab" data-tab="c-achievements">Награды</button>
     </nav>
 
     <!-- Сегодня -->
     <div id="c-today" class="tab-panel active">
       <div class="section-head">
         <span class="title" id="today-title">Сегодня</span>
-        <button class="link-btn" data-action="toggle-rest-day">День отдыха</button>
+        <div style="display:flex; gap:6px;">
+          <button class="link-btn" data-action="open-recovery">Самочувствие</button>
+          <button class="link-btn" data-action="toggle-rest-day">День отдыха</button>
+        </div>
       </div>
+      <div id="today-progress" class="today-progress" hidden></div>
       <div id="today-list" class="group-list"></div>
     </div>
 
@@ -211,6 +216,12 @@
         <button class="link-btn" data-action="add-goal">+ Цель</button>
       </div>
       <div id="goals-list" class="group-list"></div>
+    </div>
+
+    <!-- Достижения -->
+    <div id="c-achievements" class="tab-panel">
+      <div class="section-head"><span class="title">Достижения</span></div>
+      <div id="achievements-list" class="badge-grid"></div>
     </div>
 
     <!-- Замеры -->
