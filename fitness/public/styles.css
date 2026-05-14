@@ -747,6 +747,51 @@ form button[type="submit"] { width: 100%; }
 /* archived card visual */
 .card.archived { opacity: 0.6; }
 
+/* progress bar */
+.progress-bar { height: 8px; background: var(--card-2); border: 1px solid var(--border); border-radius: 99px; margin: 8px 0 4px; overflow: hidden; }
+.progress-fill { height: 100%; background: linear-gradient(90deg, #16a34a 0%, #22c55e 100%); transition: width .3s ease; box-shadow: 0 0 6px rgba(34,197,94,.35); }
+.goal-card.done { opacity: 0.7; background: linear-gradient(180deg, var(--check-soft) 0%, var(--card) 70%); border-color: var(--check); }
+
+/* feed card */
+.feed-card.feed-new { border-left: 3px solid var(--accent4); }
+
+/* bulk checkboxes */
+.bulk-clients { display: flex; flex-direction: column; gap: 4px; max-height: 280px; overflow-y: auto; background: var(--card-2); border: 1px solid var(--border); border-radius: 10px; padding: 10px; }
+.checkbox-row {
+  display: flex; align-items: center; gap: 8px; font-size: 15px; color: var(--text);
+  padding: 6px 0; cursor: pointer;
+}
+.checkbox-row input { width: auto; margin: 0; }
+
+/* plate visualization */
+.plates-row { display: flex; align-items: center; justify-content: center; gap: 1px; margin-top: 10px; }
+.plate { display: inline-block; border-radius: 3px; box-shadow: inset 0 0 0 1px rgba(0,0,0,0.18); }
+.bar { display: inline-block; background: #94a3b8; width: 36px; height: 4px; border-radius: 1px; }
+
+/* theme override via data attribute */
+html[data-theme="light"] { color-scheme: light; }
+html[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #0a0b10;
+  --bg-grad-a: #0e1018;
+  --bg-grad-b: #07080d;
+  --card: #14161e;
+  --card-2: #1a1d27;
+  --card-glass: rgba(20, 22, 30, 0.72);
+  --text: #f1f3f8;
+  --text-2: #b4b9c5;
+  --subdued: #6f7585;
+  --border: #232631;
+  --border-2: #2c303d;
+  --accent1: #6c8df0; --accent1-soft: rgba(108,141,240,.15);
+  --accent2: #f59e0b; --accent2-soft: rgba(245,158,11,.15);
+  --accent3: #fb923c; --accent3-soft: rgba(251,146,60,.15);
+  --accent4: #f87171; --accent4-soft: rgba(248,113,113,.15);
+  --check: #4ade80; --check-soft: rgba(74,222,128,.15);
+  --warn: #fbbf24; --warn-soft: rgba(251,191,36,.15);
+  --danger: #f87171; --danger-soft: rgba(248,113,113,.15);
+}
+
 /* tabs scroll for many tabs */
 .tabs { overflow-x: auto; scrollbar-width: none; }
 .tabs::-webkit-scrollbar { display: none; }

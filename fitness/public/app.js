@@ -147,6 +147,26 @@ document.addEventListener("click", async (e) => {
   }
   if (a === "rest-cancel") stopRestTimer();
   if (a === "rest-add") addRestTime(30);
+  if (a === "toggle-theme") toggleTheme();
+  if (a === "open-plate-calc") plateCalcModal();
+  if (a === "add-goal") addGoalModal();
+  if (a === "complete-goal") completeGoal(+t.dataset.id);
+  if (a === "delete-goal") deleteGoal(+t.dataset.id);
+  if (a === "bulk-assign") bulkAssignModal();
+  if (a === "export-program") exportProgramModal(+t.dataset.id);
+  if (a === "edit-profile") editProfileModal();
+  if (a === "open-rate") rateProgramModal(+t.dataset.id);
+  if (a === "reply-comment") {
+    // тренер отвечает прямо из ленты
+    const clientId = +t.dataset.clientId;
+    const exerciseId = +t.dataset.ex;
+    const text = prompt("Ответ:");
+    if (!text) return;
+    try {
+      await api("/api/comments", { method: "POST", body: { exercise_id: exerciseId, client_id: clientId, body: text } });
+      toast("Отправлено"); renderTrainerFeed();
+    } catch (e) { toast(e.message); }
+  }
 
   // --- Trainer actions ---
   if (a === "add-client") addClientModal();
@@ -206,10 +226,13 @@ document.addEventListener("click", (e) => {
   $$(".tab-panel", root).forEach((p) => p.classList.toggle("active", p.id === tab));
   if (tab === "t-programs") renderPrograms();
   if (tab === "t-assignments") renderAssignments();
+  if (tab === "t-feed") renderTrainerFeed();
+  if (tab === "t-profile") renderTrainerProfile();
   if (tab === "c-week") renderWeek();
   if (tab === "c-history") renderHistory();
   if (tab === "c-catalog") renderCatalog();
   if (tab === "c-body") renderBody();
+  if (tab === "c-goals") renderGoals();
 });
 
 // ====================================================
@@ -1302,7 +1325,320 @@ function updateRestTimer() {
   $("#rest-timer-time").textContent = `${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
 }
 
+// =================== Goals (Цели клиента) ===================
+async function renderGoals() {
+  const list = $("#goals-list");
+  list.innerHTML = skeletonList(2);
+  const { goals } = await api("/api/goals");
+  state.cache.goals = goals;
+  if (!goals.length) {
+    list.innerHTML = `<div class="empty"><span class="emoji">🎯</span><h4>Целей пока нет</h4>Поставь конкретную цель — «Жим 100 кг к 1 декабря», «Минус 5 кг к лету».</div>`;
+    return;
+  }
+  list.innerHTML = goals.map(goalCardHtml).join("");
+}
+
+function goalCardHtml(g) {
+  const current = currentGoalValue(g);
+  const start = g.start_value;
+  const target = g.target_value;
+  let progress = null;
+  if (target != null && start != null && current != null) {
+    const total = target - start;
+    const done = current - start;
+    progress = total === 0 ? 0 : Math.max(0, Math.min(100, (done / total) * 100));
+  }
+  const isDone = !!g.achieved_at;
+  return `
+    <div class="card goal-card ${isDone ? "done" : ""}">
+      <div class="card-row">
+        <div style="flex:1; min-width:0;">
+          <h3>${isDone ? "✓ " : "🎯 "}${escape(g.title)}</h3>
+          <div class="meta">
+            ${g.kind === "exercise_1rm" || g.kind === "exercise_weight" ? `${escape(g.exercise_name || "")} · ` : ""}
+            ${start != null ? `с <strong>${start}${g.unit || ""}</strong>` : ""}
+            ${target != null ? ` → <strong>${target}${g.unit || ""}</strong>` : ""}
+            ${current != null ? ` · сейчас <strong>${current}${g.unit || ""}</strong>` : ""}
+            ${g.target_date ? ` · до ${g.target_date}` : ""}
+          </div>
+          ${progress != null ? `<div class="progress-bar"><div class="progress-fill" style="width:${progress}%"></div></div><div class="meta">${Math.round(progress)}%</div>` : ""}
+          ${g.note ? `<p>${escape(g.note)}</p>` : ""}
+        </div>
+        <div class="actions-col">
+          ${!isDone ? `<button class="small primary" data-action="complete-goal" data-id="${g.id}">Достиг</button>` : ""}
+          <button class="icon-btn danger" data-action="delete-goal" data-id="${g.id}">×</button>
+        </div>
+      </div>
+    </div>`;
+}
+
+function currentGoalValue(g) {
+  if (g.kind === "body_weight") return g.current_body_weight ?? null;
+  if (g.kind === "exercise_weight" || g.kind === "exercise_1rm") return g.current_max_weight ?? null;
+  return null;
+}
+
+async function addGoalModal() {
+  // нужны упражнения из активных программ
+  const { assignments } = await api("/api/assignments");
+  const active = assignments.filter((a) => a.is_active);
+  const programs = active.length ? await Promise.all(active.map((a) => api(`/api/programs/${a.program_id}`))) : [];
+  const exs = [];
+  programs.forEach((p) => p.exercises.forEach((e) => exs.push({ id: e.id, name: e.name })));
+
+  openModal("Новая цель", `
+    <form id="form-goal">
+      <label>Тип цели</label>
+      <select name="kind" class="ios-select" id="goal-kind">
+        <option value="exercise_weight">Поднять вес в упражнении</option>
+        <option value="body_weight">Достичь веса тела</option>
+        <option value="custom">Произвольная цель</option>
+      </select>
+      <div id="goal-ex-wrap">
+        <label>Упражнение</label>
+        <select name="exercise_id" class="ios-select">
+          ${exs.map((e) => `<option value="${e.id}">${escape(e.name)}</option>`).join("") || `<option value="">— нет активных программ —</option>`}
+        </select>
+      </div>
+      <label>Название</label>
+      <input name="title" required placeholder="Жим 100 кг">
+      <div class="row-inputs">
+        <div><label>Начальное</label><input type="number" step="0.5" name="start_value" placeholder="80"></div>
+        <div><label>Целевое</label><input type="number" step="0.5" name="target_value" placeholder="100"></div>
+      </div>
+      <div class="row-inputs">
+        <div><label>Единица</label><input name="unit" value="кг"></div>
+        <div><label>Дата</label><input type="date" name="target_date"></div>
+      </div>
+      <label>Заметка</label><textarea name="note" rows="2"></textarea>
+      <div class="form-actions">
+        <button class="ghost" type="button" data-action="close-modal">Отмена</button>
+        <button type="submit">Создать</button>
+      </div>
+    </form>`);
+  $("#goal-kind").addEventListener("change", (e) => {
+    $("#goal-ex-wrap").hidden = e.target.value !== "exercise_weight" && e.target.value !== "exercise_1rm";
+  });
+  $("#form-goal").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const fd = new FormData(e.target);
+    const body = {};
+    for (const [k, v] of fd.entries()) body[k] = v || null;
+    ["start_value", "target_value"].forEach((k) => { if (body[k] != null) body[k] = +body[k]; });
+    if (body.exercise_id) body.exercise_id = +body.exercise_id;
+    if (body.kind !== "exercise_weight" && body.kind !== "exercise_1rm") delete body.exercise_id;
+    try {
+      await api("/api/goals", { method: "POST", body });
+      closeModal(); toast("Цель поставлена 🎯"); renderGoals();
+    } catch (e) { toast(e.message); }
+  });
+}
+
+async function completeGoal(id) {
+  await api(`/api/goals/${id}`, { method: "PATCH", body: { achieved_at: new Date().toISOString() } });
+  toast("🎉 Поздравляю!"); renderGoals();
+}
+
+async function deleteGoal(id) {
+  if (!(await confirmDlg("Удалить цель?"))) return;
+  await api(`/api/goals/${id}`, { method: "DELETE" });
+  toast("Удалено"); renderGoals();
+}
+
+// =================== Trainer feed (лента активности) ===================
+async function renderTrainerFeed() {
+  const list = $("#feed-list");
+  list.innerHTML = skeletonList(3);
+  const { comments, workouts } = await api("/api/trainer-feed");
+  const events = [];
+  comments.forEach((c) => events.push({ type: "comment", t: c.created_at, data: c }));
+  workouts.forEach((w) => events.push({ type: "workout", t: w.created_at, data: w }));
+  events.sort((a, b) => (a.t < b.t ? 1 : -1));
+  if (!events.length) {
+    list.innerHTML = `<div class="empty"><span class="emoji">📰</span><h4>Активности нет</h4>Когда клиенты начнут тренироваться и писать — появится здесь.</div>`;
+    return;
+  }
+  list.innerHTML = events.slice(0, 60).map((e) => {
+    if (e.type === "comment") {
+      const c = e.data;
+      const fromClient = c.author_role === "client";
+      return `<div class="card feed-card ${fromClient ? "feed-new" : ""}">
+        <div class="meta"><strong>${escape(c.client_name)}</strong> · ${escape(c.exercise_name)} · ${formatTime(c.created_at)}</div>
+        <p style="margin:6px 0;">${escape(c.body)}</p>
+        ${fromClient ? `<button class="small" data-action="reply-comment" data-client-id="${c.client_id}" data-ex="${c.exercise_id}">Ответить</button>` : `<div class="meta">ответ от ${escape(c.author_name)}</div>`}
+      </div>`;
+    }
+    const w = e.data;
+    return `<div class="card">
+      <div class="meta"><strong>${escape(w.client_name)}</strong> · ${escape(w.exercise_name)} · ${formatTime(w.created_at)}</div>
+      <div style="margin-top:4px;">${w.done_sets ?? "?"}×${w.done_reps ?? "?"} ${w.done_weight ? `· ${w.done_weight} кг` : ""}</div>
+      ${w.client_note ? `<div class="meta">📝 ${escape(w.client_note)}</div>` : ""}
+    </div>`;
+  }).join("");
+}
+
+function formatTime(iso) {
+  if (!iso) return "—";
+  const d = new Date(iso.replace(" ", "T") + "Z");
+  const today = new Date();
+  const sameDay = d.toDateString() === today.toDateString();
+  if (sameDay) return `сегодня ${String(d.getHours()).padStart(2, "0")}:${String(d.getMinutes()).padStart(2, "0")}`;
+  return d.toISOString().slice(0, 16).replace("T", " ");
+}
+
+// =================== Trainer profile ===================
+async function renderTrainerProfile() {
+  const el = $("#profile-block");
+  const me = await api("/api/me");
+  const u = me.user;
+  el.innerHTML = `
+    <div class="card">
+      <h3>${escape(u.name)}</h3>
+      <p class="muted">${escape(u.bio || "Расскажи о себе — клиенты увидят в каталоге.")}</p>
+      ${u.avatar_url ? `<img src="${escape(u.avatar_url)}" alt="" style="max-width:120px;border-radius:50%;margin-top:10px;">` : ""}
+      <div class="actions" style="margin-top:14px;">
+        <button data-action="edit-profile">Изменить</button>
+      </div>
+    </div>`;
+}
+
+function editProfileModal() {
+  api("/api/me").then(({ user: u }) => {
+    openModal("Профиль", `
+      <form id="form-profile">
+        <label>Имя</label><input name="name" value="${escape(u.name)}" required>
+        <label>Био</label><textarea name="bio" rows="4">${escape(u.bio || "")}</textarea>
+        <label>Аватар (URL)</label><input name="avatar_url" value="${escape(u.avatar_url || "")}" placeholder="https://...">
+        <div class="form-actions">
+          <button class="ghost" type="button" data-action="close-modal">Отмена</button>
+          <button type="submit">Сохранить</button>
+        </div>
+      </form>`);
+    $("#form-profile").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      try {
+        await api("/api/me-profile", { method: "PATCH", body: Object.fromEntries(new FormData(e.target)) });
+        closeModal(); toast("Сохранено"); renderTrainerProfile();
+      } catch (e) { toast(e.message); }
+    });
+  });
+}
+
+// =================== Bulk-assign ===================
+async function bulkAssignModal() {
+  const [{ programs }, { clients }] = await Promise.all([api("/api/programs"), api("/api/clients")]);
+  if (!programs.length || !clients.length) return toast("Нужны хотя бы одна программа и один клиент");
+  openModal("Назначить нескольким клиентам", `
+    <form id="form-bulk">
+      <label>Программа</label>
+      <select name="program_id" class="ios-select" required>${programs.filter((p) => !p.is_archived).map((p) => `<option value="${p.id}">${escape(p.name)}</option>`).join("")}</select>
+      <label>Клиенты (можно несколько)</label>
+      <div class="bulk-clients">
+        ${clients.map((c) => `<label class="checkbox-row"><input type="checkbox" name="client" value="${c.id}"> ${escape(c.name)}</label>`).join("")}
+      </div>
+      <label>Дата начала</label>
+      <input type="date" name="start_date">
+      <div class="form-actions">
+        <button class="ghost" type="button" data-action="close-modal">Отмена</button>
+        <button type="submit">Назначить всем</button>
+      </div>
+    </form>`);
+  $("#form-bulk").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const fd = new FormData(e.target);
+    const body = {
+      program_id: +fd.get("program_id"),
+      client_ids: fd.getAll("client").map(Number),
+      start_date: fd.get("start_date") || undefined,
+    };
+    if (!body.client_ids.length) return toast("Выбери хотя бы одного клиента");
+    try {
+      const r = await api("/api/assignments/bulk", { method: "POST", body });
+      closeModal(); toast(`Назначено ${r.created}`); renderAssignments();
+    } catch (e) { toast(e.message); }
+  });
+}
+
+// =================== Plate calculator ===================
+function plateCalcModal() {
+  openModal("Блины на штангу", `
+    <p class="muted small">Сколько блинов навешать на штангу. Стандартные диски: 20, 15, 10, 5, 2.5, 1.25, 0.5 кг.</p>
+    <div class="row-inputs">
+      <div><label>Целевой вес</label><input type="number" id="plate-target" step="0.5" placeholder="80"></div>
+      <div><label>Гриф, кг</label><input type="number" id="plate-bar" value="20"></div>
+    </div>
+    <div id="plate-result" class="card" style="margin-top:14px; text-align:center;"></div>`);
+  const calc = () => {
+    const target = +$("#plate-target").value;
+    const bar = +$("#plate-bar").value || 20;
+    if (!target) { $("#plate-result").innerHTML = ""; return; }
+    const perSide = (target - bar) / 2;
+    if (perSide < 0) { $("#plate-result").innerHTML = `<p class="muted">Целевой вес меньше грифа.</p>`; return; }
+    const plates = [25, 20, 15, 10, 5, 2.5, 1.25, 0.5];
+    let remain = perSide;
+    const usage = {};
+    plates.forEach((p) => {
+      const n = Math.floor(remain / p);
+      if (n) usage[p] = n;
+      remain = +(remain - n * p).toFixed(2);
+    });
+    const list = Object.entries(usage).map(([p, n]) => `${n} × <strong>${p} кг</strong>`).join(" + ") || "—";
+    const total = bar + 2 * (perSide - remain);
+    $("#plate-result").innerHTML = `
+      <div class="hero-eyebrow">На каждую сторону</div>
+      <div class="stat-value" style="font-size:30px; margin:6px 0;">${list}</div>
+      ${remain > 0 ? `<p class="muted small">Не хватает ${remain} кг — таких дисков нет.</p>` : `<p class="muted small">Итого: ${total} кг на штанге.</p>`}
+      <div class="plate-vis">${plateVis(usage)}</div>`;
+  };
+  $("#plate-target").addEventListener("input", calc);
+  $("#plate-bar").addEventListener("input", calc);
+}
+
+function plateVis(usage) {
+  const colors = { 25: "#ef4444", 20: "#2563eb", 15: "#fbbf24", 10: "#16a34a", 5: "#fff", 2.5: "#0ea5e9", 1.25: "#a3a3a3", 0.5: "#6b7280" };
+  const sizes = { 25: 56, 20: 50, 15: 44, 10: 38, 5: 30, 2.5: 26, 1.25: 22, 0.5: 18 };
+  let html = `<div class="plates-row">`;
+  // mirror layout: outer to inner
+  const order = [25, 20, 15, 10, 5, 2.5, 1.25, 0.5];
+  const left = [];
+  for (const p of order.slice().reverse()) {
+    if (usage[p]) for (let i = 0; i < usage[p]; i++) left.push(p);
+  }
+  html += left.map((p) => `<span class="plate" style="background:${colors[p]};width:14px;height:${sizes[p]}px;"></span>`).join("");
+  html += `<span class="bar"></span>`;
+  // right mirrored
+  html += left.slice().reverse().map((p) => `<span class="plate" style="background:${colors[p]};width:14px;height:${sizes[p]}px;"></span>`).join("");
+  html += `</div>`;
+  return html;
+}
+
+// =================== Theme toggle ===================
+const THEME_KEY = "fit-theme";
+function applyTheme(t) {
+  document.documentElement.dataset.theme = t === "auto" ? "" : t;
+  document.documentElement.style.colorScheme = t === "auto" ? "light dark" : t;
+}
+function toggleTheme() {
+  const cur = localStorage.getItem(THEME_KEY) || "auto";
+  const next = cur === "auto" ? "light" : cur === "light" ? "dark" : "auto";
+  localStorage.setItem(THEME_KEY, next);
+  applyTheme(next);
+  toast(next === "auto" ? "Системная тема" : next === "light" ? "Светлая" : "Тёмная");
+}
+applyTheme(localStorage.getItem(THEME_KEY) || "auto");
+
+// =================== Export program ===================
+function exportProgramModal(programId) {
+  const url = `/api/programs/${programId}/export?format=`;
+  window.open(url + "csv", "_blank");
+}
+
+// =================== SW registration ===================
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("/sw.js").catch(() => {});
+  });
+}
+
 // =================== Boot ===================
 bootstrap();
-
-// Регистрация SW для PWA — пропускаем, можно добавить отдельно.

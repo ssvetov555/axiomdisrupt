@@ -62,6 +62,8 @@
       <button class="tab active" data-tab="t-clients">Клиенты</button>
       <button class="tab" data-tab="t-programs">Программы</button>
       <button class="tab" data-tab="t-assignments">Назначения</button>
+      <button class="tab" data-tab="t-feed">Лента</button>
+      <button class="tab" data-tab="t-profile">Профиль</button>
     </nav>
 
     <!-- Клиенты -->
@@ -92,9 +94,28 @@
     <div id="t-assignments" class="tab-panel">
       <div class="section-head">
         <span class="title">Назначения</span>
-        <button class="link-btn" data-action="add-assignment">+ Назначить</button>
+        <div style="display:flex; gap:6px;">
+          <button class="link-btn" data-action="bulk-assign">+ Массово</button>
+          <button class="link-btn" data-action="add-assignment">+ Назначить</button>
+        </div>
       </div>
       <div id="assignments-list" class="group-list"></div>
+    </div>
+
+    <!-- Лента -->
+    <div id="t-feed" class="tab-panel">
+      <div class="section-head">
+        <span class="title">Активность клиентов</span>
+      </div>
+      <div id="feed-list" class="group-list"></div>
+    </div>
+
+    <!-- Профиль тренера -->
+    <div id="t-profile" class="tab-panel">
+      <div class="section-head">
+        <span class="title">Профиль тренера</span>
+      </div>
+      <div id="profile-block"></div>
     </div>
   </div>
 </section>
@@ -111,7 +132,12 @@
         <div class="hero-eyebrow">Клиент</div>
         <h1 class="large"><span class="hero-title-grad" id="client-name"></span></h1>
       </div>
-      <button class="logout-btn" data-action="logout">Выйти</button>
+      <div style="display:flex; gap:6px;">
+        <button class="icon-btn" data-action="open-1rm" title="Калькулятор 1ПМ">📏</button>
+        <button class="icon-btn" data-action="open-plate-calc" title="Калькулятор блинов">🥞</button>
+        <button class="icon-btn" data-action="toggle-theme" title="Тема">🌓</button>
+        <button class="logout-btn" data-action="logout">Выйти</button>
+      </div>
     </div>
 
     <!-- Streak + stats -->
@@ -122,6 +148,7 @@
     <nav class="tabs">
       <button class="tab active" data-tab="c-today">Сегодня</button>
       <button class="tab" data-tab="c-catalog">Каталог</button>
+      <button class="tab" data-tab="c-goals">Цели</button>
       <button class="tab" data-tab="c-week">Неделя</button>
       <button class="tab" data-tab="c-history">История</button>
       <button class="tab" data-tab="c-body">Замеры</button>
@@ -175,6 +202,15 @@
 
       <div class="section-head"><span class="title">Записи</span></div>
       <div id="history-table" class="group-list"></div>
+    </div>
+
+    <!-- Цели -->
+    <div id="c-goals" class="tab-panel">
+      <div class="section-head">
+        <span class="title">Мои цели</span>
+        <button class="link-btn" data-action="add-goal">+ Цель</button>
+      </div>
+      <div id="goals-list" class="group-list"></div>
     </div>
 
     <!-- Замеры -->
