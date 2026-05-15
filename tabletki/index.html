@@ -418,9 +418,12 @@
   </div>
 
   <div class="foot fade d5">
-    Отметки хранятся в этом браузере (localStorage).<br>
+    <span id="sync-badge" style="display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:99px;background:var(--fill-3);color:var(--label-2);font-size:12px;font-weight:600">
+      <span id="sync-dot" style="width:7px;height:7px;border-radius:99px;background:var(--gray)"></span>
+      <span id="sync-text">Подключение…</span>
+    </span><br>
     «Поделиться → На экран „Домой“» — будет как приложение.<br>
-    <span style="opacity:.6">v3.2 · сборка 2026-05-15 · <a href="#" id="hard-reset" style="color:var(--blue);text-decoration:none">всё починить</a></span>
+    <span style="opacity:.6">v4.0 · сборка 2026-05-15 · <a href="#" id="hard-reset" style="color:var(--blue);text-decoration:none">всё починить</a></span>
   </div>
   <div id="err-toast" style="display:none;position:fixed;left:14px;right:14px;bottom:20px;background:var(--red);color:#fff;padding:12px 14px;border-radius:12px;font-size:13px;z-index:99;box-shadow:0 8px 30px rgba(0,0,0,.3)"></div>
 </div>
@@ -513,7 +516,10 @@ const STORAGE_KEY = "pill-tracker-v1";
 function loadState(){
   try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; } catch(_) { return {}; }
 }
-function saveState(s){ try { localStorage.setItem(STORAGE_KEY, JSON.stringify(s)); } catch(_){} }
+function saveState(s){
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(s)); } catch(_){}
+  schedulePush();
+}
 let state = loadState();
 function doseKey(medId, isoDate, time){ return `${medId}|${isoDate}|${time}`; }
 function isTaken(medId, isoDate, time){ return !!state[doseKey(medId, isoDate, time)]; }
@@ -526,7 +532,10 @@ function setTaken(medId, isoDate, time, takenAt){
 // ===== Пользовательские настройки времени приёма =====
 const SETTINGS_KEY = "pill-tracker-settings-v1";
 function loadSettings(){ try { return JSON.parse(localStorage.getItem(SETTINGS_KEY)) || {}; } catch(_) { return {}; } }
-function saveSettings(s){ try { localStorage.setItem(SETTINGS_KEY, JSON.stringify(s)); } catch(_){} }
+function saveSettings(s){
+  try { localStorage.setItem(SETTINGS_KEY, JSON.stringify(s)); } catch(_){}
+  schedulePush();
+}
 let settings = loadSettings();
 function timesFor(medId){
   const m = MEDS.find(x=>x.id===medId);
@@ -1007,6 +1016,145 @@ function renderAll(){
   }
 }
 
+// ============== СИНХРОНИЗАЦИЯ С СЕРВЕРОМ ==============
+const SYNC_URL = "/api/state";
+let lastServerUpdated = 0;
+let pushTimer = null;
+let pushInFlight = null;
+let syncEnabled = true;  // выключается, если сервер вернул "не привязан"
+
+function setSyncStatus(kind){
+  const dot = document.getElementById("sync-dot");
+  const text = document.getElementById("sync-text");
+  if (!dot || !text) return;
+  const map = {
+    syncing: { color: "var(--orange)", label: "Синхронизация…" },
+    synced:  { color: "var(--green)",  label: "Сохранено в облаке" },
+    offline: { color: "var(--gray)",   label: "Офлайн (только это устройство)" },
+    pending: { color: "var(--gray)",   label: "Подключение…" },
+  };
+  const s = map[kind] || map.pending;
+  dot.style.background = s.color;
+  text.textContent = s.label;
+}
+
+async function pullFromServer(){
+  if (!syncEnabled) return { ok: false };
+  try {
+    const r = await fetch(SYNC_URL, { cache: "no-store" });
+    if (!r.ok){ return { ok: false, status: r.status }; }
+    const data = await r.json();
+    if (data && data._bound === false){
+      // KV ещё не привязан в проекте — больше не дёргаем
+      syncEnabled = false;
+      setSyncStatus("offline");
+      return { ok: false, bound: false };
+    }
+    const updated = +data._updated || 0;
+    return { ok: true, data, updated };
+  } catch(_){
+    return { ok: false, error: true };
+  }
+}
+
+function schedulePush(){
+  if (!syncEnabled) return;
+  clearTimeout(pushTimer);
+  pushTimer = setTimeout(pushToServer, 350);
+}
+
+async function pushToServer(){
+  if (!syncEnabled) return;
+  // если уже идёт запись — подождём её
+  if (pushInFlight){ try { await pushInFlight; } catch(_){} }
+  setSyncStatus("syncing");
+  const body = JSON.stringify({ taken: state, settings: settings });
+  pushInFlight = (async () => {
+    try {
+      const r = await fetch(SYNC_URL, {
+        method: "PUT",
+        headers: { "content-type": "application/json" },
+        body,
+      });
+      if (r.status === 503){
+        // KV не привязан — навсегда уходим в офлайн
+        syncEnabled = false;
+        setSyncStatus("offline");
+        return;
+      }
+      if (!r.ok){ setSyncStatus("offline"); return; }
+      const resp = await r.json();
+      if (resp && resp._updated) lastServerUpdated = resp._updated;
+      setSyncStatus("synced");
+    } catch(_){
+      setSyncStatus("offline");
+    } finally {
+      pushInFlight = null;
+    }
+  })();
+  return pushInFlight;
+}
+
+async function initialSync(){
+  setSyncStatus("syncing");
+  const res = await pullFromServer();
+  if (!res.ok){
+    if (res.bound === false){
+      // сервер живой, но KV ещё не подключён — работаем локально
+      setSyncStatus("offline");
+    } else {
+      setSyncStatus("offline");
+    }
+    return;
+  }
+  const srv = res.data;
+  const serverHasData = res.updated > 0 ||
+                        (srv.taken && Object.keys(srv.taken).length) ||
+                        (srv.settings && Object.keys(srv.settings.times || {}).length);
+  if (serverHasData){
+    // Сервер — источник истины. Перезаписываем локальное.
+    state = (srv.taken && typeof srv.taken === "object") ? srv.taken : {};
+    settings = (srv.settings && typeof srv.settings === "object") ? srv.settings : {};
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings));
+    } catch(_){}
+    lastServerUpdated = res.updated;
+    setSyncStatus("synced");
+    renderAll();
+  } else {
+    // Сервер пуст — если на устройстве что-то есть, пушим (миграция).
+    const localHas = Object.keys(state).length || Object.keys(settings.times || {}).length;
+    if (localHas){
+      await pushToServer();
+    } else {
+      setSyncStatus("synced");
+    }
+  }
+}
+
+// Опрос изменений с других устройств — раз в 20 сек, пока вкладка активна.
+async function pollIfChanged(){
+  if (!syncEnabled) return;
+  if (document.hidden) return;
+  if (pushInFlight) return;          // не дёргаем pull, пока идёт push
+  const res = await pullFromServer();
+  if (!res.ok) return;
+  if ((res.updated || 0) > lastServerUpdated){
+    state = (res.data.taken && typeof res.data.taken === "object") ? res.data.taken : {};
+    settings = (res.data.settings && typeof res.data.settings === "object") ? res.data.settings : {};
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings));
+    } catch(_){}
+    lastServerUpdated = res.updated;
+    setSyncStatus("synced");
+    renderAll();
+  }
+}
+setInterval(pollIfChanged, 20000);
+document.addEventListener("visibilitychange", () => { if (!document.hidden) pollIfChanged(); });
+
 function showError(msg){
   const t = document.getElementById("err-toast");
   if (!t) return;
@@ -1035,6 +1183,9 @@ renderAll();
 
 setInterval(renderToday, 60000);
 document.addEventListener("visibilitychange", () => { if (!document.hidden) renderAll(); });
+
+// Старт синхронизации с сервером (после первого локального рендера)
+initialSync();
 </script>
 </body>
 </html>
