@@ -419,8 +419,10 @@
 
   <div class="foot fade d5">
     Отметки хранятся в этом браузере (localStorage).<br>
-    «Поделиться → На экран „Домой“» — будет как приложение.
+    «Поделиться → На экран „Домой“» — будет как приложение.<br>
+    <span style="opacity:.6">v3.2 · сборка 2026-05-15 · <a href="#" id="hard-reset" style="color:var(--blue);text-decoration:none">всё починить</a></span>
   </div>
+  <div id="err-toast" style="display:none;position:fixed;left:14px;right:14px;bottom:20px;background:var(--red);color:#fff;padding:12px 14px;border-radius:12px;font-size:13px;z-index:99;box-shadow:0 8px 30px rgba(0,0,0,.3)"></div>
 </div>
 
 <!-- SVG sprite (capsule icon, check icon) -->
@@ -992,13 +994,43 @@ refreshPreviewBanner();
 
 // ===== Render all =====
 function renderAll(){
-  renderHero();
-  renderToday();
-  renderMeds();
-  renderEvents();
-  renderCalendar();
-  renderDayDetail();
+  try {
+    renderHero();
+    renderToday();
+    renderMeds();
+    renderEvents();
+    renderCalendar();
+    renderDayDetail();
+  } catch(err){
+    showError("Ошибка рендера: " + (err && err.message || err));
+    console.error(err);
+  }
 }
+
+function showError(msg){
+  const t = document.getElementById("err-toast");
+  if (!t) return;
+  t.textContent = msg + " — нажми «всё починить» внизу";
+  t.style.display = "block";
+  setTimeout(()=>{ t.style.display = "none"; }, 8000);
+}
+
+window.addEventListener("error", (e) => {
+  showError(e.message || "JS error");
+});
+
+document.getElementById("hard-reset").addEventListener("click", (e) => {
+  e.preventDefault();
+  if (confirm("Полный сброс: будут стёрты все отметки приёма, изменения времени и режим превью. Продолжить?")){
+    try {
+      localStorage.removeItem(STORAGE_KEY);
+      localStorage.removeItem(SETTINGS_KEY);
+      localStorage.removeItem(PREVIEW_KEY);
+    } catch(_){}
+    location.reload();
+  }
+});
+
 renderAll();
 
 setInterval(renderToday, 60000);
