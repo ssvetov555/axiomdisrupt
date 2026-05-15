@@ -324,6 +324,57 @@ main { padding: 56px 36px 96px; max-width: 1440px; margin: 0 auto; }
   font-family: var(--mono); font-size: 11px; text-transform: uppercase; letter-spacing: .1em;
 }
 
+/* Books / Sources view */
+#books { display: none; }
+#books.active { display: block; max-width: 980px; margin: 0 auto; }
+.books-head {
+  font-family: var(--mono); font-size: 10px; text-transform: uppercase; letter-spacing: .14em;
+  color: var(--ink-faint); padding: 14px 4px 20px;
+  border-bottom: 1px solid var(--line); margin-bottom: 8px;
+  display: flex; gap: 18px; flex-wrap: wrap; align-items: baseline;
+}
+.books-head .b-count { color: var(--ink); font-weight: 600; }
+.books-head .b-toggle { margin-left: auto; display: flex; gap: 8px; }
+.books-head .b-toggle button {
+  background: transparent; border: 1px solid var(--line); padding: 5px 10px;
+  font-family: var(--mono); font-size: 10px; font-weight: 500; text-transform: uppercase;
+  letter-spacing: .06em; color: var(--ink-soft); cursor: pointer; transition: all .12s;
+}
+.books-head .b-toggle button:hover { color: var(--ink); border-color: var(--ink-faint); }
+.books-head .b-toggle button.active { background: var(--ink); color: var(--bg-card); border-color: var(--ink); }
+.books-decade {
+  font-family: var(--mono); font-size: 11px; text-transform: uppercase;
+  letter-spacing: .14em; color: var(--ink-faint);
+  margin: 36px 0 12px; padding-top: 24px; border-top: 1px solid var(--line);
+  display: flex; gap: 14px; align-items: baseline;
+}
+.books-decade:first-of-type { margin-top: 12px; padding-top: 0; border-top: 0; }
+.books-decade .b-d-label { color: var(--ink); font-weight: 600; }
+.books-decade .b-d-count { color: var(--ink-faint); margin-left: auto; }
+.book-row {
+  display: grid; grid-template-columns: 80px 1fr; gap: 20px;
+  padding: 12px 0 14px; border-bottom: 1px solid var(--line-soft);
+  align-items: baseline;
+}
+.book-row-year {
+  font-family: var(--mono); font-size: 12px; font-weight: 500; color: var(--ink);
+  padding-top: 2px;
+}
+.book-row-body { min-width: 0; }
+.book-row-author { font-family: var(--display); font-size: 16px; font-weight: 500; color: var(--ink); line-height: 1.25; margin-bottom: 4px; }
+.book-row-title  { font-size: 14px; color: var(--ink-soft); line-height: 1.45; margin-bottom: 6px; }
+.book-row-note   { font-size: 13px; color: var(--ink-faint); line-height: 1.5; margin-bottom: 6px; font-style: italic; }
+.book-row-from {
+  font-family: var(--mono); font-size: 10px; letter-spacing: .04em;
+  color: var(--ink-faint);
+}
+.book-row-from a {
+  color: var(--ink-soft); text-decoration: none; border-bottom: 1px dotted var(--line);
+  cursor: pointer; transition: color .12s, border-color .12s;
+}
+.book-row-from a:hover { color: var(--ink); border-bottom-color: var(--ink); }
+.book-row-from .b-sep { color: var(--line); padding: 0 4px; }
+
 footer {
   display: flex; justify-content: space-between; align-items: center;
   color: var(--ink-faint); font-family: var(--mono); font-size: 11px;
@@ -367,6 +418,8 @@ footer em { font-style: normal; color: var(--ink-soft); text-transform: none; le
     <button id="btn-cards" class="active">Карточки</button>
     <span class="sep">/</span>
     <button id="btn-graph">Лента времени</button>
+    <span class="sep">/</span>
+    <button id="btn-books">Источники</button>
   </div>
 </header>
 
@@ -383,6 +436,11 @@ footer em { font-style: normal; color: var(--ink-soft); text-transform: none; le
   <section id="graph">
     <div class="tl-filter" id="tl-filter"></div>
     <div id="tl-list"></div>
+  </section>
+
+  <section id="books">
+    <div class="books-head" id="books-head"></div>
+    <div id="books-list"></div>
   </section>
 </main>
 
@@ -4975,6 +5033,236 @@ footer em { font-style: normal; color: var(--ink-soft); text-transform: none; le
         "Peter Atkins — Physical Chemistry — 2017",
         "Илья Пригожин — Введение в термодинамику необратимых процессов — 1968"
       ]
+    },
+    {
+      "id": "pyrrho-epoche",
+      "principle": "Воздержись от суждения там, где истина непознаваема",
+      "name": "Эпохэ (приостановка суждения, Пиррон)",
+      "category": "Эпистемология",
+      "year": -300,
+      "tags": ["скептицизм", "пиррон", "суждение", "неопределённость"],
+      "preview": "Спокойствие приходит не из ответов на спорные вопросы, а из отказа их фиксировать.",
+      "body": "Пиррон, основатель древнегреческого скептицизма, предложил радикальный приём: на любой вопрос, где есть веские аргументы за обе стороны, не закрепляй мнение. Не «я не знаю» как драматическое признание, а как технический жест — «здесь нет ресурсов для уверенного суждения, я приостанавливаю». Состояние, к которому это ведёт, называется атараксия — отсутствие тревоги не от знания, а от прекращения принудительного выбора. В прикладной форме — противоядие к давлению «у тебя должно быть мнение по любому поводу»: на 80% вопросов рабочее мнение не требуется, и его удержание стоит дороже.",
+      "source": "Пиррон из Элиды (~ −360 — −270); зафиксировано Секстом Эмпириком, «Пирроновы положения», II в.",
+      "applications": [
+        "Менеджмент: на половине совещаний не нужно занимать сторону — отсутствие мнения часто полезнее быстрого",
+        "Инвестиции: ровно по тем компаниям, где две стороны спора одинаково сильны, — не входи; ищи асимметрию",
+        "Информационная гигиена: на новостях, не влияющих на твои решения, держи эпохэ, иначе мнения накапливаются как мусор",
+        "Споры в команде: «я воздержусь и послушаю» — допустимая позиция, особенно когда у тебя нет skin in the game"
+      ],
+      "influences": ["socratic"],
+      "readings": [
+        "Sextus Empiricus — Outlines of Pyrrhonism, II в.",
+        "Diogenes Laertius — Жизни философов, кн. IX",
+        "Pierre Hadot — Philosophy as a Way of Life, 1995"
+      ]
+    },
+    {
+      "id": "epicurus-tetrapharmakos",
+      "principle": "Бога не страшись, смерть не тревожит, благо доступно, страдание терпимо",
+      "name": "Тетрафармакон (четверолекарствие Эпикура)",
+      "category": "Личная философия",
+      "year": -290,
+      "tags": ["эпикур", "счастье", "страх", "тревога"],
+      "preview": "Четыре установки, отсекающие источники тревоги, на которых вырастает большая часть личного несчастья.",
+      "body": "Эпикур сжал свою этику до четырёх тезисов: богов не бойся, смерть не страшна, благо легко достижимо, страдание легко переносимо. Не сентиментальный совет, а структурный анализ источников несчастья: религиозный страх, страх смерти, недостижимость воображаемого блага, преувеличение боли. Снять все четыре — и остаётся естественная радость. Применимо как чек-лист собственных тревог: какая из четырёх категорий питает текущий стресс? Часто выясняется, что — третья: требуется недостижимое, тогда как достижимого хватало бы.",
+      "source": "Эпикур (~ −341 — −270); реконструкция по фрагментам и письмам, Diogenes Laertius, кн. X",
+      "applications": [
+        "Самоанализ: текущая тревога — про метафизику, смерть, недостижимое или физическую боль? Четыре разных рецепта",
+        "Профессиональные цели: пересмотр уровня дохода/статуса, который ты считаешь достаточным, обычно открывает свободу действий",
+        "Родительство: страх за ребёнка часто принадлежит к категории «преувеличение боли»; перепроверка пропорций важнее любого решения",
+        "Карьера: переоценка «недостижимого» уровня (CEO, IPO, статус) — самая частая причина выгорания у амбициозных"
+      ],
+      "influences": [],
+      "readings": [
+        "Diogenes Laertius — Жизни философов, кн. X (Эпикур)",
+        "Lucretius — De rerum natura, ~ −55",
+        "Catherine Wilson — How to Be an Epicurean, 2019"
+      ]
+    },
+    {
+      "id": "boethius-wheel",
+      "principle": "Фортуна вращает колесо: то, что вознесла, обязательно опустит",
+      "name": "Колесо Фортуны (Боэций)",
+      "category": "Личная философия",
+      "year": 524,
+      "tags": ["фортуна", "превратности", "стоицизм", "боэций"],
+      "preview": "Внешние блага по определению не твои — они одолжены. Привязка к ним делает падение неизбежной катастрофой.",
+      "body": "Боэций написал «Утешение философии» в тюрьме, ожидая казни. Образ Фортуны с колесом, на котором она поднимает и низвергает людей, — его основной инструмент: то, чем владеешь по милости случая (статус, богатство, влияние), не является твоим — это одалживается на время. Скорбеть о потере одолженного — ошибка категории; ничего своего ты не лишился. Применимо как профилактика: периодически отделяй, что твоё (характер, отношения, опыт) от того, что у тебя гостит (должность, репутация на текущей роли, материальный достаток). Колесо вращается у всех.",
+      "source": "Боэций — Утешение философии, 524 г. н.э.",
+      "applications": [
+        "Карьера: должность — не идентичность; готовность к её потере — главное условие свободы принимать решения",
+        "Менеджмент успеха: после ярких побед особенно важно помнить, что колесо движется в обе стороны",
+        "Финансовая подушка: формула «можешь ли ты прожить год без работы» — это про колесо Фортуны, не про оптимизацию",
+        "Воспитание детей: учить отделять «кто я» от «что у меня есть» — единственная страховка от падений Фортуны"
+      ],
+      "influences": ["dichotomy"],
+      "readings": [
+        "Boethius — Consolatio Philosophiae, 524",
+        "Pierre Hadot — Philosophy as a Way of Life, 1995",
+        "C. S. Lewis — The Discarded Image, 1964, гл. 4 — место Боэция в средневековой картине мира"
+      ]
+    },
+    {
+      "id": "avicenna-essence",
+      "principle": "Существование вещи не вытекает из её сущности",
+      "name": "Различие сущности и существования (Авиценна)",
+      "category": "Эпистемология",
+      "year": 1027,
+      "tags": ["онтология", "авиценна", "сущность", "контингентность"],
+      "preview": "Можно знать, что такое единорог, ничего не зная о том, существует ли он. Эти два вопроса разные.",
+      "body": "Ибн Сина (Авиценна) сделал различение, которое позже структурно усвоила схоластическая и современная метафизика: ответ на «что это?» (essentia) логически независим от ответа на «существует ли это?» (existentia). Из этого вытекает практически вся последующая теология контингентного бытия и, шире, привычка не путать концептуальную возможность с эмпирической реальностью. В прикладной форме — это лучший фильтр от красивых стратегий, которые отлично работают на бумаге, но не существуют в эмпирически возможном мире.",
+      "source": "Ибн Сина (Авиценна), «Книга исцеления» (Kitab al-Shifa), ок. 1027",
+      "applications": [
+        "Стратегия: «рынок, на котором мы могли бы быть лидером» ≠ «рынок, который существует» — обязан различать каждый раз",
+        "Найм: компетентная модель идеального кандидата — не доказательство того, что такие люди эмпирически встречаются",
+        "Продукт: концепт демо ≠ концепт, который выживет в продакшне; разные онтологические категории",
+        "Финансы: модель и реальность — два разных вопроса; первый верифицируется логикой, второй — только данными"
+      ],
+      "influences": [],
+      "readings": [
+        "Avicenna — Metaphysics of the Healing, перев. Marmura, 2005",
+        "Lenn E. Goodman — Avicenna, 2006",
+        "Этьен Жильсон — Бытие и сущность, 1948"
+      ]
+    },
+    {
+      "id": "abelard-sic-et-non",
+      "principle": "Поставь авторитетные источники друг против друга и заставь их работать",
+      "name": "Sic et Non (метод Абеляра)",
+      "category": "Эпистемология",
+      "year": 1122,
+      "tags": ["диалектика", "источники", "авторитет", "сомнение"],
+      "preview": "Не примирять противоречия в источниках, а делать их видимыми — единственный способ сдвинуть знание дальше.",
+      "body": "Пьер Абеляр составил труд «Sic et Non» — «Да и Нет»: 158 теологических вопросов, по каждому — цитаты отцов церкви, противоречащие друг другу. Без авторских разрешений; задача — заставить читателя видеть противоречие и работать над ним. Метод заложил основу схоластической диалектики и, позже, академического исследования: знание двигается не уплощением источников, а удержанием их в напряжении. Применимо как личная методология: на любом важном вопросе собери лучших защитников противоположных позиций и не пытайся быстро примирить — пусть конфликт работает в голове.",
+      "source": "Pierre Abélard — Sic et Non, ок. 1122",
+      "applications": [
+        "Решения с высокой ставкой: запиши лучшие аргументы за и против отдельно, не разбавляя; синтез — потом",
+        "Команда: пара «advocate / steelman» в дискуссии работает по этому принципу — назначь людей защищать противоположные позиции",
+        "Чтение: читай противоположные интерпретации одного события прежде, чем формировать своё",
+        "Исследование: матрица «что говорят источники / в чём они расходятся» как обязательный шаг до выводов"
+      ],
+      "influences": ["hegel-dialectic"],
+      "readings": [
+        "Pierre Abélard — Sic et Non (Yes and No), critical ed. Boyer & McKeon, 1976",
+        "John Marenbon — The Philosophy of Peter Abelard, 1997",
+        "Charles Homer Haskins — The Renaissance of the Twelfth Century, 1927"
+      ]
+    },
+    {
+      "id": "buridans-ass",
+      "principle": "При полном равенстве альтернатив выбор не делается сам — нужен внешний сдвиг",
+      "name": "Буриданов осёл",
+      "category": "Эпистемология",
+      "year": 1340,
+      "tags": ["выбор", "решения", "симметрия", "паралич"],
+      "preview": "Между двумя одинаково хорошими вариантами осёл умирает от голода — потому что чистая рациональность бесцельна без асимметрии.",
+      "body": "Парадокс, традиционно приписываемый Жану Буридану (хотя точный пример с ослом — позднейший): между двумя равно привлекательными охапками сена осёл, действующий чисто рационально, не может предпочесть одну другой и умирает от голода. Реальные операторы не похожи на буриданова осла именно потому, что используют не-рациональные тай-брейкеры: вкус, привычку, монетку, эвристику «то, что под рукой». Знание о парадоксе даёт практический навык: когда два варианта кажутся равными — не пытайся вычислить разницу дальше; брось монетку. Время, потраченное на ложную точность, всегда дороже мнимой ошибки выбора.",
+      "source": "Парадокс приписан Жану Буридану (~ 1300–1360); классическая формулировка появилась позже, у Спинозы и в схоластических комментариях",
+      "applications": [
+        "Решения: правило «5 минут на сравнение — потом монетка»; всё, что не различается за 5 минут, не различается",
+        "Найм между двумя сильными кандидатами: дальнейшие интервью обычно ухудшают, а не улучшают решение — переходи к offer",
+        "Продукт: при двух равных решениях A/B-тест дешевле теоретического спора",
+        "Личное: «идеального выбора» между двумя одинаково хорошими опциями не существует — он создаётся актом выбора"
+      ],
+      "influences": [],
+      "readings": [
+        "Aristotle — De Caelo, 295b — корневой пример",
+        "Spinoza — Ethics, II, prop. 49, scholium — обсуждение «осла Буридана»",
+        "Daniel Kahneman, Olivier Sibony, Cass Sunstein — Noise, 2021 — про вычислительный паралич"
+      ]
+    },
+    {
+      "id": "machiavelli-virtu-fortuna",
+      "principle": "Удачу не призывают — её хватают за гриву подготовленной рукой",
+      "name": "Virtù и Fortuna (Макиавелли)",
+      "category": "Личная философия",
+      "year": 1513,
+      "tags": ["удача", "подготовка", "характер", "макиавелли"],
+      "preview": "Половина дел в нашей власти, половина — у Фортуны. Virtù — это готовность не упустить вторую половину.",
+      "body": "Макиавелли в «Государе» вводит две взаимодействующие силы: Fortuna — внешние обстоятельства, удачные и неудачные стечения; и virtù — оперативная доблесть, способность действовать решительно, когда возможность открывается. Фортуну он сравнивает с рекой: можно строить дамбы заранее (когда тиха) или разруха неизбежна, когда разольётся. Применимо к карьере, продукту, инвестициям: половина результата — это что ты сделал заранее, до того как возможность появилась. «Подготовиться, когда станет очевидно, что нужно» — слишком поздно почти всегда.",
+      "source": "Niccolò Machiavelli — Il Principe, 1513 (особ. гл. XXV)",
+      "applications": [
+        "Карьера: связи, репутация, навыки выстраиваются ДО того, как открывается окно; разово их не накопить",
+        "Стартап: capital, network, reputation — три дамбы против разлива Фортуны; готовить в спокойные времена",
+        "Личное: брак, родительство, переезд — virtù подразумевает, что ты в форме раньше, чем понадобится",
+        "Кризис-менеджмент: команда, обученная заранее, действует; необученная — анализирует, пока возможность закрывается"
+      ],
+      "influences": [],
+      "readings": [
+        "Niccolò Machiavelli — Il Principe, 1513",
+        "Quentin Skinner — Machiavelli: A Very Short Introduction, 2000",
+        "Robert D. Putnam — Making Democracy Work, 1993 — современная переработка virtù как civic capacity"
+      ]
+    },
+    {
+      "id": "montaigne-que-sais-je",
+      "principle": "Что я знаю?",
+      "name": "Que sais-je? (Монтень)",
+      "category": "Эпистемология",
+      "year": 1580,
+      "tags": ["скептицизм", "монтень", "самосознание", "эссе"],
+      "preview": "Девиз, не предполагающий ответа: постоянная проверка своих убеждений на основания, на которые они опираются.",
+      "body": "Мишель де Монтень выгравировал на медали для себя «Que sais-je?» — «Что я знаю?» — и сделал этот вопрос принципом своих «Опытов». Не как декларацию невежества, а как рабочую методологию: на каждое утверждение спрашивай, на каком основании ты его держишь. Источник? Проверка? Конкуренция альтернатив? У большинства привычных мнений основание оказывается слабее, чем уверенность. Применимо как ежедневная гигиена мышления: один пункт в дневнике — утверждение, которое ты держал по инерции, и что ты о нём знаешь на самом деле.",
+      "source": "Michel de Montaigne — Essais, 1580 (особ. «Apologie de Raimond Sebond»)",
+      "applications": [
+        "Самонаблюдение: периодический инвентарь убеждений — на какие у тебя реально есть основания, а какие держатся социально",
+        "Команда: культура «давай разберём, что мы здесь действительно знаем» как противовес уверенным менеджерским ритуалам",
+        "Инвестирование: пре-мортем по тезису — «откуда я это знаю?» — снижает долю ошибок убеждённости",
+        "Воспитание: учить ребёнка отвечать на «откуда ты знаешь?» — навык, переживающий любую программу"
+      ],
+      "influences": ["socratic"],
+      "readings": [
+        "Michel de Montaigne — Essais, 1580",
+        "Sarah Bakewell — How to Live: A Life of Montaigne, 2010",
+        "Stephen Toulmin — Cosmopolis, 1990 — Монтень как поворотная фигура"
+      ]
+    },
+    {
+      "id": "bacon-idola",
+      "principle": "Разум искажают четыре класса идолов: племени, пещеры, рынка, театра",
+      "name": "Идолы разума (Бэкон)",
+      "category": "Эпистемология",
+      "year": 1620,
+      "tags": ["когнитивные ошибки", "бэкон", "наука", "идолы"],
+      "preview": "Не «избавься от предубеждений», а «изучи их по классам и работай против каждого отдельно».",
+      "body": "Френсис Бэкон в «Новом Органоне» классифицировал систематические искажения разума на четыре категории: idola tribus — общие для всех людей (склонность видеть закономерности там, где их нет); idola specus — индивидуальные «пещерные» (личный опыт, воспитание, фиксации); idola fori — рыночные (искажения из-за языка и общих слов); idola theatri — театральные (заимствованные из догматических систем). Это первая в истории таксономия когнитивных искажений и до сих пор полезная: к каждой группе нужен свой контр-приём (статистика против идолов племени, биография собственного мышления против пещерных, тщательный язык против рыночных, методологический скепсис против театральных).",
+      "source": "Francis Bacon — Novum Organum, 1620",
+      "applications": [
+        "Самоанализ: на ошибочное решение посмотри, какой класс идола сработал — лекарство зависит от ответа",
+        "Бизнес-аналитика: «идолы рынка» — большая часть искажений в KPI: слово «engagement» прячет три разных явления",
+        "Дискуссия: распознавай «театральных идолов» — заимствованные из управленческой моды концепции, не выдерживающие проверки",
+        "Найм: проверяй «пещерных» — кандидат экстраполирует свой прошлый контекст или владеет собственным опытом критически?"
+      ],
+      "influences": ["socratic"],
+      "readings": [
+        "Francis Bacon — Novum Organum, 1620, кн. I, афоризмы XXXIX–LXII",
+        "Daniel Kahneman — Thinking, Fast and Slow, 2011 — современная переработка",
+        "Hugh G. Dick (ed.) — Selected Writings of Francis Bacon, 1955"
+      ]
+    },
+    {
+      "id": "leibniz-best-of-worlds",
+      "principle": "Из всех возможных миров реализовался тот, в котором максимум добра при минимуме зла",
+      "name": "Лучший из возможных миров (Лейбниц)",
+      "category": "Эпистемология",
+      "year": 1710,
+      "tags": ["оптимизация", "ограничения", "лейбниц", "теодицея"],
+      "preview": "Не оправдание зла, а тезис: любое улучшение в одной точке имеет цену в другой — мир оптимизирован под ограничения.",
+      "body": "Готфрид Лейбниц в «Теодицее» аргументировал: Бог, выбирая, какой мир создать, выбрал не идеальный (логически невозможный — слишком много несовместимых требований), а оптимальный среди возможных. Тезис часто высмеивают (Вольтер, «Кандид»), но он содержит важную методологическую идею: реальность — это решение оптимизационной задачи с ограничениями, и любое локальное улучшение тянет за собой компенсирующее ухудшение где-то ещё. Похоже на закон сохранения энергии в этическом измерении. Применимо: если ты видишь «очевидно лучший дизайн», проверь, какие ограничения он игнорирует — обычно их больше, чем кажется.",
+      "source": "Gottfried Leibniz — Essais de Théodicée, 1710",
+      "applications": [
+        "Реформа институтов: «зачем терпеть эту глупость?» — обычно потому что её отсутствие даёт ещё худший набор последствий",
+        "Дизайн продуктов: «обвиняй ограничения, а не дизайнеров» — большинство сомнительных решений оптимизированы под невидимые тебе constraints",
+        "Карьера: «почему так много плохих компаний?» — потому что они работают в местном оптимуме среди ограничений рынка",
+        "Перфекционизм: понимание, что идеал не доступен в принципе, — лекарство от хронической неудовлетворённости результатом"
+      ],
+      "influences": [],
+      "readings": [
+        "Gottfried Leibniz — Essais de Théodicée, 1710",
+        "Voltaire — Candide, 1759 — самая известная критика",
+        "Nicholas Rescher — Leibniz: An Introduction to His Philosophy, 1979"
+      ]
     }
   ]
 }
@@ -5152,18 +5440,26 @@ document.querySelectorAll('#sort-toggle button').forEach(btn => {
 // View toggle
 const btnCards = document.getElementById('btn-cards');
 const btnGraph = document.getElementById('btn-graph');
+const btnBooks = document.getElementById('btn-books');
 btnCards.addEventListener('click', () => switchView('cards'));
 btnGraph.addEventListener('click', () => switchView('graph'));
+btnBooks.addEventListener('click', () => switchView('books'));
 function switchView(v) {
+  [btnCards, btnGraph, btnBooks].forEach(b => b.classList.remove('active'));
+  document.getElementById('cards').classList.add('hidden');
+  document.getElementById('graph').classList.remove('active');
+  document.getElementById('books').classList.remove('active');
   if (v === 'cards') {
-    btnCards.classList.add('active'); btnGraph.classList.remove('active');
+    btnCards.classList.add('active');
     document.getElementById('cards').classList.remove('hidden');
-    document.getElementById('graph').classList.remove('active');
-  } else {
-    btnGraph.classList.add('active'); btnCards.classList.remove('active');
-    document.getElementById('cards').classList.add('hidden');
+  } else if (v === 'graph') {
+    btnGraph.classList.add('active');
     document.getElementById('graph').classList.add('active');
     renderTimeline();
+  } else if (v === 'books') {
+    btnBooks.classList.add('active');
+    document.getElementById('books').classList.add('active');
+    renderBooks();
   }
 }
 
@@ -5292,6 +5588,217 @@ function renderTimelineList() {
 function renderTimeline() {
   renderTimelineFilter();
   renderTimelineList();
+}
+
+// ── Books / Sources view ──────────────────────────────────────────────────
+// Aggregates `source` + `readings` strings across all concepts, parses a year
+// out of each, and groups by decade.
+let booksRendered = false;
+let booksMode = localStorage.getItem('kopilka_books_mode') || 'all'; // 'all' | 'readings' | 'sources'
+
+function parseBibLine(line) {
+  // Strip leading bullets/dashes
+  let s = String(line).trim().replace(/^[—–•·\-\s]+/, '');
+
+  // Year extraction — try BC first ("−400", "400 г. до н.э.", "~ -55"), then plain.
+  let year = null;
+  const bcMatch = s.match(/(?:^|[^0-9])(\d{2,4})\s*(?:г\.?\s*)?до\s*н\.?\s*э\.?/i)
+                || s.match(/[−\-]\s?(\d{2,4})/);
+  if (bcMatch) {
+    year = -parseInt(bcMatch[1], 10);
+  } else {
+    const yearMatches = [...s.matchAll(/(?:^|[^\d])(\d{3,4})(?!\d)/g)];
+    if (yearMatches.length) {
+      year = parseInt(yearMatches[yearMatches.length - 1][1], 10);
+    } else {
+      const roman = s.match(/\b([IVX]+)\s*в\./);
+      if (roman) {
+        const rmap = {I:1,V:5,X:10,L:50,C:100,D:500,M:1000};
+        let n=0, p=0;
+        for (let i=roman[1].length-1; i>=0; i--) {
+          const v=rmap[roman[1][i]]; if (v<p) n-=v; else { n+=v; p=v; }
+        }
+        year = (n - 1) * 100 + 50;
+      }
+    }
+  }
+
+  let author = null, title = null, note = null;
+  const dashSegs = s.split(/\s—\s/);
+
+  if (dashSegs.length >= 2) {
+    // Format: "Author — Title[, Year][ — note]"
+    author = dashSegs[0].trim();
+    const rest = dashSegs.slice(1).join(' — ').trim();
+    const restParts = rest.split(/\s—\s/);
+    if (restParts.length >= 2) {
+      title = restParts[0];
+      note = restParts.slice(1).join(' — ').trim();
+    } else {
+      title = rest;
+    }
+  } else {
+    // Format: "Author, Title, Year" or "Author, Title (Year)" or just text
+    const commaParts = s.split(/,\s*/).map(p => p.trim()).filter(Boolean);
+    if (commaParts.length >= 2) {
+      // Assume first is author if it has ≤6 words and looks like a name
+      // (capitalized words or initials).
+      const first = commaParts[0];
+      const looksLikeName = /^[А-ЯA-ZЁ«][^.,]*$/.test(first) && first.split(/\s+/).length <= 6;
+      if (looksLikeName) {
+        author = first;
+        // Drop trailing parts that are pure year or "г. до н.э." annotations
+        const rest = commaParts.slice(1).filter(p =>
+          !/^~?\s*[−\-]?\s*\d{3,4}(\s*г\.?\s*до\s*н\.?\s*э\.?)?$/i.test(p) &&
+          !/^до\s*н\.?\s*э\.?$/i.test(p) &&
+          !/^в\.?$/i.test(p)
+        );
+        title = rest.join(', ').trim();
+      } else {
+        title = s;
+      }
+    } else {
+      title = s;
+    }
+  }
+
+  // Cleanup title: strip trailing year, "г.", trailing commas, surrounding quotes
+  if (title) {
+    title = title
+      .replace(/,?\s*(?:~|ок\.|ca\.?|\bок\b)?\s*[−\-]?\s*\d{3,4}\s*(?:г\.?(?:\s*до\s*н\.?\s*э\.?)?)?\s*$/i, '')
+      .replace(/[,;\s]+$/, '')
+      .replace(/^[«"„'']\s*/, '')
+      .replace(/\s*[»"'']$/, '')
+      .trim();
+  }
+  if (author) author = author.replace(/[,;\s]+$/, '').trim();
+  if (note) note = note.replace(/^[«"„'']\s*/, '').replace(/\s*[»"'']$/, '').trim();
+
+  return { author, title, note, year, raw: s };
+}
+
+function collectBooks() {
+  // Map of (author|title|year) → { author, title, note, year, sources: [conceptId,...], kind }
+  const map = new Map();
+  function add(conceptId, conceptName, raw, kind) {
+    if (!raw) return;
+    const p = parseBibLine(raw);
+    if (!p.author && !p.title) return; // unparseable
+    const key = (p.author || '') + '||' + (p.title || '').toLowerCase() + '||' + (p.year || '');
+    let entry = map.get(key);
+    if (!entry) {
+      entry = { author: p.author, title: p.title, note: p.note, year: p.year, sources: [], kinds: new Set() };
+      map.set(key, entry);
+    }
+    entry.sources.push({ id: conceptId, name: conceptName });
+    entry.kinds.add(kind);
+    // Promote richer note if first one was empty
+    if (!entry.note && p.note) entry.note = p.note;
+  }
+  concepts.forEach(c => {
+    add(c.id, c.name, c.source, 'source');
+    (c.readings || []).forEach(r => add(c.id, c.name, r, 'reading'));
+  });
+  // Filter by mode
+  const all = [...map.values()];
+  let filtered = all;
+  if (booksMode === 'readings') filtered = all.filter(e => e.kinds.has('reading'));
+  else if (booksMode === 'sources') filtered = all.filter(e => e.kinds.has('source'));
+  // Sort by year asc, then author
+  filtered.sort((a, b) => {
+    const ya = a.year ?? 99999;
+    const yb = b.year ?? 99999;
+    if (ya !== yb) return ya - yb;
+    return (a.author || '').localeCompare(b.author || '', 'ru');
+  });
+  return filtered;
+}
+
+function bucketByDecade(books) {
+  // Returns array of { label, items: [...] }
+  const buckets = [];
+  let current = null;
+  const labelFor = y => {
+    if (y == null) return 'Без даты';
+    if (y < 0) return `${Math.abs(Math.floor(y/100)*100)}–${Math.abs(Math.floor(y/100)*100) - 100 || ''} BC`.replace('–0 ', ' ').trim();
+    if (y < 500) return `Античность · ${Math.floor(y/100)*100}-е`;
+    if (y < 1500) {
+      const c = Math.floor(y/100)+1; return `${c} век`;
+    }
+    if (y < 1900) return `${Math.floor(y/100)*100}-е`;
+    return `${Math.floor(y/10)*10}-е`;
+  };
+  books.forEach(b => {
+    const lbl = labelFor(b.year);
+    if (!current || current.label !== lbl) {
+      current = { label: lbl, items: [] };
+      buckets.push(current);
+    }
+    current.items.push(b);
+  });
+  return buckets;
+}
+
+function renderBooksHead(totalBooks, totalUniqueAuthors) {
+  const head = document.getElementById('books-head');
+  head.innerHTML = `
+    <span><span class="b-count">${totalBooks}</span> источников</span>
+    <span><span class="b-count">${totalUniqueAuthors}</span> авторов</span>
+    <div class="b-toggle">
+      <button data-mode="all"      class="${booksMode==='all'?'active':''}">Все</button>
+      <button data-mode="readings" class="${booksMode==='readings'?'active':''}">Только «Что почитать»</button>
+      <button data-mode="sources"  class="${booksMode==='sources'?'active':''}">Только первоисточники</button>
+    </div>
+  `;
+  head.querySelectorAll('.b-toggle button').forEach(b => {
+    b.addEventListener('click', () => {
+      booksMode = b.dataset.mode;
+      localStorage.setItem('kopilka_books_mode', booksMode);
+      renderBooks();
+    });
+  });
+}
+
+function renderBooks() {
+  const books = collectBooks();
+  const authors = new Set(books.map(b => (b.author || '').toLowerCase()).filter(Boolean));
+  renderBooksHead(books.length, authors.size);
+
+  const list = document.getElementById('books-list');
+  if (!books.length) {
+    list.innerHTML = `<div class="tl-empty">Нет источников в этом режиме</div>`;
+    return;
+  }
+  const buckets = bucketByDecade(books);
+  let html = '';
+  buckets.forEach(bk => {
+    html += `<div class="books-decade">
+      <span class="b-d-label">${escapeHtml(bk.label)}</span>
+      <span class="b-d-count">${bk.items.length}</span>
+    </div>`;
+    bk.items.forEach(b => {
+      const yearLbl = b.year == null ? '—' : (b.year < 0 ? Math.abs(b.year)+' BC' : b.year);
+      const author = b.author ? escapeHtml(b.author) : '<span style="color:var(--ink-faint)">Без автора</span>';
+      const title = b.title ? escapeHtml(b.title) : '';
+      const note  = b.note  ? `<div class="book-row-note">${escapeHtml(b.note)}</div>` : '';
+      const sourcesHtml = b.sources.map((s, i) =>
+        `<a data-id="${s.id}">${escapeHtml(s.name)}</a>${i < b.sources.length-1 ? '<span class="b-sep">·</span>' : ''}`
+      ).join('');
+      html += `<div class="book-row">
+        <div class="book-row-year">${yearLbl}</div>
+        <div class="book-row-body">
+          <div class="book-row-author">${author}</div>
+          ${title ? `<div class="book-row-title">${title}</div>` : ''}
+          ${note}
+          <div class="book-row-from">в концептах: ${sourcesHtml}</div>
+        </div>
+      </div>`;
+    });
+  });
+  list.innerHTML = html;
+  list.querySelectorAll('.book-row-from a').forEach(a => {
+    a.addEventListener('click', () => openDetail(a.dataset.id));
+  });
 }
 
 // Initial render
